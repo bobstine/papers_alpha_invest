@@ -1,0 +1,163 @@
+\documentclass[12pt]{article}
+\usepackage[longnamesfirst]{natbib}
+\usepackage{graphicx}
+% \usepackage[dvips]{graphics}
+\input{../standard}
+\newtheorem{definition}{Definition}
+
+% --- Paragraph split
+\setlength{\parskip}{0.00in}
+
+% --- Line spacing
+\renewcommand{\baselinestretch}{1.4}
+
+% --- Hypthenation
+\sloppy  % fewer hyphenated
+\hyphenation{stan-dard}
+\hyphenation{among}
+
+% --- Customized commands, abbreviations
+\newcommand{\TIT}{{\it  {\tiny  Alpha-investing controls the mFDR}}}
+
+\newcommand{\SDR}[1]{{\mbox{$\mbox{SDR}_{\mbox{\scriptsize #1}}$}}}
+
+% --- Header
+\pagestyle{myheadings}
+\markright{\TIT}
+
+\usepackage[usenames]{color}
+
+\newcommand{\jrss}[1]{\noindent{\textcolor{BrickRed}{\{{\bf jrss:} \em
+#1\}}}}
+\newcommand{\dpf}[1]{\noindent{\textcolor{Blue}{\{{\bf dpf:} \em
+#1\}}}}
+\newcommand{\ras}[1]{\noindent{\textcolor{Orange}{\{{\bf ras:} \em
+#1\}}}}
+
+
+% --- Title
+
+\title{  
+         alpha-investing for dependent tests
+}
+
+\author{
+        Dean P. Foster and Robert A. Stine\footnote{All correspondence
+regarding this manuscript should be directed to Prof. Stine at 
+the address shown with the title.  He can be reached via e-mail at
+stine@wharton.upenn.edu.}                                    \\
+        Department of Statistics                             \\
+        The Wharton School of the University of Pennsylvania \\
+        Philadelphia, PA 19104-6340                          \\
+}
+
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle 
+%------------------------------------------------------------------------
+
+\dpf{Cut from the other paper.}
+
+
+\subsection{Dependent Tests}
+
+
+The previous examples illustrate EDC and alpha-investing rules when
+testing a closed set of $m$ hypotheses using independent tests.  For
+dependent tests, however, step-down testing does not guarantee control
+of FDR.  In comparison, one can find alpha-investing rules that
+control EDC.
+
+
+EDC itself makes no assumption of independence of the tests, but
+does require that the tests be conditionally correct in the sense of
+\eqn{eq:alpham}.  When hypothesis tests are independent, it is simple
+to assure that each test indeed has level $\alpha_j$.  One need only form
+each test as though only one hypothesis were being tested; the
+outcomes of the prior tests $R_1,\, R_2\, \ldots, R_{j-1}$ do not
+affect its level.  This condition is much more difficult to establish
+when the tests are dependent.  Although EDC allows any sort of
+dependence, it may not be possible to construct tests that satisfy
+this condition without making assumptions on the form of the
+dependence.
+
+
+In some cases, however, known properties of multivariate distributions
+suggest a suitable test procedure.  For example, suppose that the test
+statistics $Y = (Y_1,\, \ldots, Y_m)$ for ${\cal H}(m)$ have a
+multivariate normal distribution with mean vector $\vec\mu$ and
+covariance matrix $\Sigma$, $Y \sim N(\vec\mu, \Sigma)$.  In this
+case, \citet{dykstra80} shows that
+\begin{equation}
+   \pr(|Y_m| < c_m \given |Y_1| \le c_1,\, \ldots, |Y_{m-1}| \le c_{m-1})
+   \ge \pr(|Y_m| \le c_m)   \;.
+\label{eq:dyk}
+\end{equation}
+Thus, so long as no prior two-sided hypothesis has been rejected, an
+$\alpha$-level test of $H_m$ that ignores the prior outcomes --- as
+though they were independent ---  has level at least $\alpha$.
+The procedure is conservative.  If, however, some prior test rejects a
+null hypothesis, these results no longer hold.
+
+
+In this case, the simplest way to ensure the level of a test
+is to remove the effect of the rejected hypothesis.  If $H_k$, say,
+has been rejected, then one can guarantee \eqn{eq:alpham} holds by
+constructing subsequent tests to be independent of $Y_k$ {\em and} any
+$Y_j, j<k$ which is correlated with $Y_k$.  By removing the
+information from the rejected test, the acceptance region for
+subsequent two-sided tests is a symmetric convex set around the origin and
+inequalities such as \eqn{eq:dyk} hold.
+
+
+For example, consider a balanced two-way analysis of variance with $r$
+row effects $\beta_{r,i}$ and $c$ column effects $\beta_{c,j}$ with
+$\sum_i \beta_{r,i} = \sum_j \beta_{c,j} = 0$.  Write the vector of row
+effects as $\vec\beta_r$ and the vector of column effects
+$\vec\beta_c$.  For each cell of the design, we have $n$ independent
+normally distributed observations $Y_{ijk}$
+\begin{displaymath}
+  Y_{ijk} = \mu_0 + \beta_{r,i} + \beta_{c,j} + Z_{ijk}, 
+         \quad Z_{ijk} \iid N(0,\sigma^2), k=1,\ldots,n,
+\end{displaymath}
+with known variance $\sigma^2$.  Assume that the hypotheses to be
+tested have the form $H_j: \vec\la_{r,j}' \vec\beta_r = 0,
+\vec\la_{c,j}' \vec\beta_c = 0$.  Standard results from linear models
+show that the usual tests of $H_j$ and $H_k$ are independent if
+$\vec\la_{r,j}' \vec\la_{r,k} = 0$ and $\vec\la_{c,j}' \vec\la_{c,k}=0$.
+Suppose one begins with tests of the row effects ($\la_c=0$).  There are no
+constraints on the tests until rejecting a hypothesis, $H_k$ say.  At
+this point, one can commence testing column effects, ignoring the
+prior results for the row effects because these are orthogonal.  One
+can continue testing other hypotheses among the row effects so long as
+$\vec\la_{r,j}$ is orthogonal to $\vec\la_{r,k}$.
+
+
+A similar procedure can be used in stepwise regression.  Consider the
+familiar forward stepwise search, seeking predictors of the response
+$Y$ among $X_1,\, X_2,\, \ldots, X_m$ in a linear model
+\begin{displaymath}
+  Y_i = \beta_0 + \beta_1 X_{1,i} + \beta_2 X_{2,i} + \cdots + \beta_m X_{m,i}
+      + Z_{i},    \quad Z_{i} \iid N(0,\sigma^2) \;.
+\end{displaymath}
+Assume that all of the variables have mean zero and $\beta_0=0$.
+Under the normal linear model with known error variance, \eqn{eq:dyk}
+implies that tests of $H_j: \beta_j = 0$ based on the familiar
+$z$-scores for the predictors $Z_j = (X_j'Y)/(X_j'X_j)$ satisfy
+\eqn{eq:alpham} until some $H_k$ is rejected.  For further tests, one
+can assure that \eqn{eq:alpham} holds by sweeping $X_k$ {\em and} all
+predictors among $X_1,\, X_2,\, \ldots, X_{k-1}$ that are correlated
+with $X_k$ from the remaining predictors.  In practice, most
+predictors are correlated with each other to some extent and this
+condition requires sweeping $X_1,\, X_2,\, \ldots, X_k$ from
+subsequent predictors.  If we collect these $k$ predictors into an $n
+\times k$ matrix $X$, then the subsequent predictors would be
+$\tilde{X}_j = (I-X'(X'X)^{-1}X)X_j,\, j = k+1,\ldots$.  The resulting
+loss of variation in predictors suggests it would be prudent to at
+least partially ``orthogonalize'' the predictors prior to using this
+type of search.
+
+\end{document}

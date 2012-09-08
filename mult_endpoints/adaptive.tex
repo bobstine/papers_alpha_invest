@@ -1,0 +1,279 @@
+\documentclass{article}
+
+\renewcommand{\baselinestretch}{1.4}
+\newcommand{\target}{{\hbox{\scriptsize target}}}
+
+
+\begin{document}
+
+
+% % % % % % % dpf comment % % % % % % % % %
+
+{\bf I think we can further justify the micro payment scheme as
+follows.  It is kinda forshadows the incentive compatibility that will
+come up in auctions, but doesn't mention any of that stuff:
+
+An anternative to this micro-payment scheme would be to pay all of
+$\alpha_j$ at once.  But this really is mixing some very proffitable
+``bets'' (i.e. when the likelyhood ratio between the nulll and the
+alternative is very attractive) with some marginaly attractive
+``bets'' (i.e. when the likelyhood ratio is just at the limit of what
+we consider signficant.)  So the micro-payment scheme allows the
+system to buy the most attractive points first--namely those with the
+smallest p-values.  Only after these are found to be wanting, are less
+attractive bets considered.
+
+
+}
+
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\section{Intro: Adapative methods using alpha betting}
+
+Traditional testings typically uses a fixed sample size, $n$.  Since
+ Wald, we have known that if you use a random sample size you can end
+ up with a more powerful test that uses fewer samples on average.  But
+ these tests require monitoring the process as it goes along.  This
+ monitoring is expensive.  So the cure for the cost of monitoring is
+ group sequential methods.  Basically it is the same as Wald testing
+ but instead taking each observation seperately, it takes them in
+ groups.
+
+But there are those who find even this level of monitoring too
+ expensive.  The heuristic is, after the first ``look'' we should be
+ able to come up with a fixed sample size to collect at the second
+ stage that has almost all the benefits of group sequential methods
+ with only using two looks.
+
+This approach goes under the name {\em adaptive design.}  This paper
+ will provide a framework for creating these designs that will allow
+ efficiency, flexibility and while maintaining tight control over
+ alpha.
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\section{Butch}
+
+\begin{itemize}
+\item Cite Tsiatas.
+
+Anastasios A. Tsiatis and Cyrus Mehta, ``On the inefficiency of the
+adaptive design for monitoring clinical trials,'' {\em Biometrika}
+(2003), {\bf 90}, 2, pp. 367 - 378.
+\item Discuss our basic approach: If you don't reject, you can't look.
+  Say that this is close to Tsiastis's oppinion.
+\item Limitations of alpha spending: no way of generating new alpha.
+\item Via gambling, our investment rules allow generating new alpha.
+\end{itemize}
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\subsection{Notation and  basic definitions}
+\begin{itemize}
+\item $X_i \sim N(\mu,1)$ i.i.d.
+\item  $H_0: \mu = 0$
+\item  $H_1: \mu = \mu_1 < 0$ 
+\item  $n = $ initial sample size
+\item  $\overline{X} = \frac{\sum_{i=1}^n X_i}{n}$ 
+\item  $\alpha(\overline{X}) = $ desired alpha in second test
+\item  $m(\overline{X}) = $ desired sample size in second test
+\item $\Phi(z_\alpha) = \alpha$
+\item $\alpha_\target = $ target size of test
+\item $n_\target = $ target total sample size
+\item $\beta(\alpha,n,\mu) = P_\mu(\sqrt{n}\overline{X}_n \le
+z_\alpha) = $ power given alpha, n and mu.
+\end{itemize}
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\subsection{Testing proceedure}
+\begin{itemize}
+\item Observe the first $n$ observations and compute $\overline{X}$
+\item compute $m \equiv m({\overline{X}})$ and $\alpha \equiv \alpha(\overline{X})$.
+\item Observe $m$ more observations and compute their
+average $\overline{Y}$.
+\item Reject null if $\sqrt{m} \overline{Y} \le z_{\alpha}$
+\end{itemize}
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\subsection{alpha level tests}
+
+We will say that such a testing proceedure is a $\alpha_\target$ level
+test if
+\begin{displaymath}
+E(\alpha(\overline{X})) \le \alpha_\target
+\end{displaymath}
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\subsection{Interpreting alpha level tests}
+
+We will think of this as a alpha-investing rule.  After the first $n$
+observations have been taken, we have a total of $\alpha_\target$
+burn.  Instead of using any of it for testing, we will place a bet on
+the outcome of the first $n$ observations.  We will pay
+$\alpha_\target$ for the bet and win back $\alpha(\overline{X})$.  So
+as long as $E(\alpha(\overline{X})) \le \alpha_\target$ this is a
+legal bet.  Obviously if we end up with a total alpha of one after the
+bet, we can simply buy the alternative.  This corresponds to rejecting
+the null.  Likewise if we end up with a total alpha of zero after the
+bet, there is no point in collecting further data.  We could never
+reject.  So this corresponds to the acceptance region of usual
+sequential testing.  When we end up with alpha some where between zero
+and one, it makes sense to collect some more data.  
+
+Notice that any bet which doesn't allow alpha to go negative will end
+up generating a $\alpha_\target$ level test.
+
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\subsection{Sample size target}
+
+The test should achieve the target sample size:
+\begin{displaymath}
+n + E_0(m(\overline{X})) \le n_\target
+\end{displaymath}
+
+(Hopefully the following the sample size goals are also met under the
+alternative: $ n + E_\mu(m(\overline{X})) \le n_\target $ But it
+doesn't seem necessary or obvious that it would.)
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\subsection{One computable goal}
+
+We can now state an optimality goal in an anally rententive
+mathematical fashion:
+\begin{equation}
+\label{eq:goal}
+\max_{\alpha(\cdot),m(\cdot)}\left\{
+E_{\mu_1}(\beta(\alpha(\overline{X}),m(\overline{X}),\mu_1)) \mid
+E_0 \alpha(\overline{X}) \le \alpha_\target, \quad E_0
+m(\overline{X}) \le m_\target \right\}
+\end{equation}
+
+%  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  
+
+\newpage
+\section*{Appendix: Notes that might be useful}
+
+\begin{itemize}
+\item Bayes testing should be the right thing to do (for a fixed
+alternative) 
+\item Recall definition for the power function:
+\begin{eqnarray}
+\label{eq:beta}
+\beta(\alpha,n,\mu) &=& P_\mu(\sqrt{n} \; \overline{X}_n \le
+z_\alpha) \\ \nonumber
+                    &=& P_0(\sqrt{n} \; (\overline{X}_n - \mu) +
+\sqrt{n}\; \mu\le
+z_\alpha) \\  \nonumber
+                    &=& P(Z \le z_\alpha - \sqrt{n} \; \mu ) \\ \nonumber
+                    &=& \Phi(z_\alpha - \sqrt{n} \; \mu ) 
+\end{eqnarray}
+\item The following two partial derivatives are useful for computing
+optimality: 
+\begin{equation}
+\label{eq:partial:n}
+\frac{\partial \beta(\alpha,n,\mu)}{\partial n}
+ = \frac{-\mu \phi(z_\alpha - \sqrt{n} \; \mu)}{2\sqrt{n}}
+\end{equation}
+and
+\begin{equation}
+\label{eq:partial:alpha}
+\frac{\partial \beta(\alpha,n,\mu)}{\partial \alpha} 
+= \frac{\phi(z_\alpha - \sqrt{n} \; \mu)}{\phi(z_\alpha)}
+\end{equation}
+\item in order for $\alpha(\cdot)$ and $m(\cdot)$ to be optimal the
+following two equations must hold:
+\begin{eqnarray*}
+\left.
+\frac{\phi(\sqrt{n}(\overline{X} -
+\mu_1))}{\phi(\sqrt{n}\;\overline{X})} 
+\frac{\partial \beta(\alpha,m,\mu)}{\partial m}
+\right|_{m = m(\overline{X}), \alpha = \alpha(\overline{X})}
+& = & \lambda_m = \hbox{constant} \\
+\left.
+\frac{\phi(\sqrt{n}(\overline{X} -
+\mu_1))}{\phi(\sqrt{n}\;\overline{X})} 
+\frac{\partial \beta(\alpha,m,\mu)}{\partial \alpha}
+\right|_{m = m(\overline{X}), \alpha = \alpha(\overline{X})}
+& = & \lambda_\alpha = \hbox{constant} 
+\end{eqnarray*}
+\item Helpful equations
+\begin{itemize}
+\item Taking the ratio we get:
+\begin{displaymath}
+\frac{\partial \beta(\alpha,m,\mu)/\partial m}{\partial
+\beta(\alpha,m,\mu)/\partial \alpha} = \frac{\lambda_m}{\lambda_\alpha}
+\end{displaymath}
+which simplifies to 
+\begin{displaymath}
+\frac{-\mu \phi(z_\alpha)}{2 \sqrt{m}} = \frac{\lambda_m}{\lambda_\alpha}
+\end{displaymath}
+\end{itemize}
+\item Looking at the $\alpha$ constraint:
+\begin{displaymath}
+\frac{\phi(\sqrt{n}(\overline{X} -
+\mu_1))}{\phi(\sqrt{n}\;\overline{X})} 
+\frac{\phi(z_\alpha - \sqrt{m} \; \mu)}{\phi(z_\alpha)} = \lambda_\alpha
+\end{displaymath}
+taking logs and multiplying by $-2$ we get:
+\begin{displaymath}
+n(\overline{X} - \mu_1)^2 - n\overline{X}^2 + (z_\alpha - \sqrt{m} \;
+\mu_1)^2 - z_\alpha^2 = -2 \log(\lambda_\alpha)
+\end{displaymath}
+which simplifies to
+\begin{displaymath}
+- 2 n \overline{X}\mu_1 + \mu_1^2 + 2 z_\alpha \sqrt{m} \;
+\mu_1 - m \mu_1^2 =  -2 \log(\lambda_\alpha)
+\end{displaymath}
+putting all the unknowns (i.e. $\alpha$ and $m$) on the LFS
+\begin{displaymath}
+2 z_\alpha \sqrt{m} \;
+ - m \mu_1 =  -2 \log(\lambda_\alpha)/\mu_1 + 2 n \overline{X} -  \mu_1
+\end{displaymath}
+which might be prettier as:
+\begin{displaymath}
+\sqrt{m}(z_\alpha  - \sqrt{m} \mu_1/2) =  - (\log(\lambda_\alpha)/\mu_1
++ \mu_1/2) +  n \overline{X}
+\end{displaymath}
+where we notice that $\sqrt{m}\mu_1$ is the expected distance between the
+null and alternative in z units for the second test.  
+\item Our equations to solve are:
+\begin{eqnarray}
+\frac{-\mu \phi(z_\alpha)}{2 \sqrt{m}} &=&
+\frac{\lambda_m}{\lambda_\alpha} \\
+\sqrt{m}(z_\alpha  - \sqrt{m} \mu_1/2) &= & - (\log(\lambda_\alpha)/\mu_1
++ \mu_1/2) +  n \overline{X}
+\end{eqnarray}
+These can be combined:
+\begin{displaymath}
+- k_1 \mu_1 \phi(z_\alpha) (z_\alpha  + k_1 \phi(z_\alpha) \mu^2_1/2) = k_2 -  n \overline{X}
+\end{displaymath}
+where $k_1$ and $k_2$ are new constants.
+\item In the extreamly low signal environment, $z_\alpha$ is
+approximately zero, and hence $\phi(z_\alpha)$ approximately a
+constant.  Then our equations are:
+\begin{eqnarray*}
+k'_1 z_\alpha &=& k'_2 - n \overline{X} \\
+m &= &k_3
+\end{eqnarray*}
+This case is a fixed sample design.
+\item In the very low signal environment, $z_\alpha$ is close to zero,
+and hence $\phi(z_\alpha) = (2\pi)^{-1/2}(1 - z_\alpha^2/2)$.  Then
+our equations are:
+\begin{eqnarray*}
+m &= &k''_3 (1 - z_\alpha^2/2)^2 \\
+k_1 \mu_1 (1 - z_\alpha^2/2)(z_\alpha + k_1(1 - z_\alpha^2/2)\mu_1^2/2) &=& k_2 - n \overline{X} 
+\end{eqnarray*}
+Which using ``extreme asymptotics''
+\begin{eqnarray*}
+m &= &k''_3 (1 - z_\alpha^2/2)^2 \\
+z_\alpha &=& k''_2 - k''_1 \overline{X} 
+\end{eqnarray*}
+\end{itemize}
+\end{document}

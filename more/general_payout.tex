@@ -1,0 +1,200 @@
+\documentclass[12pt]{article}
+\input{../standard}
+\newtheorem{definition}{Definition}
+\usepackage[usenames]{color}
+\newcommand{\dpf}[1]{\noindent{\textcolor{blue}{\{{\bf dpf:} \em
+#1\}}}}
+\newcommand{\ras}[1]{\noindent{\textcolor{green}{\{{\bf ras:} \em
+#1\}}}}
+
+\begin{document}
+
+\dpf{I figured that we would need the general proof anyway at some
+point.  Since it should provide a check on the modified version you
+wrote--I thought I'd write it up this way.}
+
+\subsection*{Generalized payout functions}
+
+Let $\psi(\alpha,p)$ be the payoff when a hypothesis is tested at
+ level $\alpha$ and $p$ is the resulting p-value of the test.  Define
+\begin{eqnarray*}
+\overline{\psi}(\alpha) & \equiv& \sup_p  \psi(\alpha,p) \\
+\underline{\psi}(\alpha) &\equiv& \inf_p \psi(\alpha,p) 
+\end{eqnarray*}
+For the system to be allowed to bid $\alpha$ at time $i$, we need that
+$W_i + \underline{\psi}(\alpha) \ge 0$.  In other words, the wealth
+must be guarenteed to be positive after the test is done.  
+
+\subsection*{Properties of payoff functions}
+
+\begin{definition}[monotone] 
+We will say that a payoff function is {\em monotone} if for all $p' <
+ p''$ we have that $\psi(\alpha,p') \ge \psi(\alpha,p'')$ for all
+ $\alpha \in [0,1]$.
+\end{definition}
+The motivation for the monotone assumption is that small p-values
+should be worth more than large p-values.  Hence they should have a
+higher payoff.  Under the monotone assumption $\overline{\psi}(\alpha)
+= \psi(\alpha,0) \ge \psi(\alpha,1) = \underline{\psi}(\alpha)$.  We
+will not actually use this assumption.
+
+\begin{definition}[Conservative Payout Function] 
+We will say that $\psi(\cdot,\cdot)$ is a $\alpha^*$-conservative
+ payout function if
+\begin{equation}
+\label{eq:conservative}
+(\forall \alpha \in [0,1]) \quad E \psi(\alpha,U) \le -\alpha(1-\alpha^*)
+\end{equation}
+where $U \sim$ Uniform$[0,1]$. (Alternatively this can be written as:
+\begin{equation}
+(\forall \alpha \in [0,1]) \quad \int_0^1 \psi(\alpha,x) dx \le -\alpha(1-\alpha^*)
+\end{equation}
+\end{definition}
+This condition will insure that under the null, the wealth decreases
+enough to cover the expected increase in number of incorrectly
+rejected nulls.
+
+\begin{definition}[No free lunch] 
+We will say that $\psi(\cdot,\cdot)$ satisfies the {\em no free lunch}
+assumption if
+\begin{equation}
+\label{eq:no:free:lunch}
+(\forall p > \alpha) \quad \psi(\alpha,p) \le 0.
+\end{equation}
+\end{definition}
+This assumption says that if we don't reject, we aren't allowed any
+new money to spend.  I don't think it should be necessary--but it is
+currelty used in the proof.
+
+\begin{definition}[Mesurablity] The p-values must be honest when
+conditioning on all the information contained in $\psi(\alpha,p_i)$.
+In other words,
+\begin{displaymath}
+  \forall \theta \in \Theta, \quad
+  E_\theta(V^\theta_j \given
+\psi(\alpha_{j-1},p_{j-1}),\psi(\alpha_{j-2},p_{j-2}) , \ldots)
+  \le \alpha_j   \;.
+\end{displaymath}
+\end{definition}
+
+\subsection*{Examples}
+Here are some examples of payout functions.  
+\begin{description}
+\item[Standard:] In our existing paper we used the following
+\begin{eqnarray*}
+\psi(\alpha,p) &\equiv&
+ \omega I_{p < \alpha} - \alpha/(1-\alpha) I_{p\ge
+ \alpha}\\
+\underline{\psi}(\alpha) &\equiv&- \alpha/(1-\alpha)
+\end{eqnarray*}
+Note, $E(\psi(\alpha,U)) = \omega \alpha - \alpha =
+-\alpha(1-\omega)$, hence this is a $\alpha^*$-conservative payoff for
+any $\alpha^* \le \omega$.
+
+\item[alpha spending:] We can think of old fashioned alpha spending as
+a special case of alpha investing if the payoff function is taken to
+be: 
+\begin{eqnarray*}
+\psi(\alpha,p) &\equiv& -\alpha\\
+\underline{\psi}(\alpha) &\equiv& -\alpha
+\end{eqnarray*}
+Clearly, $E(\psi(\alpha,U)) = -\alpha$ which is
+ $\alpha^*$-conservative for all $\alpha^*$.  We could use $\alpha(1 -
+ \alpha^*)$ as the payout and it would still be $\alpha^*$
+ conservative.  This would allow slightly more alpha spending than
+ usual.
+
+\item[log:] Our ``log'' version is:
+\begin{eqnarray*}
+\psi(\alpha,p) &\equiv&  \omega I_{p < \alpha} + \log(1 - (p \wedge
+\alpha)) \\
+\underline{\psi}(\alpha) &\equiv& \log(1 - \alpha)
+\end{eqnarray*}
+\item[Old version:] We used to use
+\begin{eqnarray*}
+\psi(\alpha,p) &\equiv&
+ \omega I_{p < \alpha} - \alpha\\
+\underline{\psi}(\alpha) &\equiv&- \alpha
+\end{eqnarray*}
+Note, $E(\psi(\alpha,U)) = \omega \alpha - \alpha =
+-\alpha(1-\omega)$, hence this is a $\alpha^*$-conservative payoff for
+any $\alpha^* \le \omega$.
+
+\item[General betting version:] Let $g(\alpha,x)$ be any function
+which has $E(g(\alpha,U)) \le 0$ for all $\alpha$, then define:
+\begin{eqnarray*}
+\psi_g(\alpha,p) &\equiv&
+ \omega I_{p < \alpha} - \alpha/(1-\alpha) I_{p\ge
+ \alpha} + g(\alpha,p)
+\end{eqnarray*}
+Note, $E(\psi_g(\alpha,U)) = \omega \alpha - \alpha + E(g(\alpha,U)) \le
+-\alpha(1-\omega)$, so this is a $\alpha^*$-conservative payout
+function for any $\alpha^* \le \omega$.  This is the sort of function
+we need for sequential testing.
+
+Trivially if $g(\alpha,x) \le 0$ for $x \le \alpha$ then
+ $\overline{\phi}_g(\alpha,x) = \omega$.
+
+\end{description}
+
+\subsection*{Proof of Theorem \ref{th:main}}
+
+Thus to show Theorem \ref{th:main} all we need is to prove the
+ submartingale property of $A(j)$. 
+
+\paragraph{Definitions of increments:} 
+We begin with some notation for the increments of  $R(j)$,
+ $V^\theta(j)$ and $W(j)$.  Write $V^\theta(m)$ and $R(m)$ as sums of
+ indicators $V^\theta_j,\, R_j \in \{0,1\}$,
+\begin{displaymath}
+   V^\theta(m) = \sum_{j=1}^m V^\theta_j \;, \qquad
+   R(m) = \sum_{j=1}^m R_j \;.
+\label{eq:sums}
+\end{displaymath}
+Similarly write the accumulated alpha-wealth $W(m)$ as a sum of
+ increments, $W(m) = \sum_{j=0}^m W_j$.  The change in the
+ alpha-wealth from testing $H_j$ is written as:
+\begin{displaymath}
+  W_j  =  \psi(\alpha_j,p_j)  \;,
+\end{displaymath}
+
+\newpage  % used to keep the proof on one page
+
+\begin{lemma} \label{le:martingale} Consider the alpha investing rule
+ ${\cal I}_{\psi}$.  Suppose that the p-values are measurable against
+ this $\psi$ and that the $\psi$ is $\alpha^*$-conservative and
+ $\overline{\psi}(\alpha) \le \alpha^*$ for all $\alpha \in [0,1]$,
+ and $\psi$ satisfies the no free lunch assumption.  Then the process
+\begin{eqnarray*}
+    A(j)  &\equiv& \alpha^* R(j) - V^\theta(j) - W(j) 
+\end{eqnarray*}
+is a sub-martingale.
+\end{lemma}
+
+\noindent 
+{\bf Proof.} 
+As with the other processes, define $A(m) = \sum_{j=0}^m A_j$.
+So $A_j$ is
+\begin{displaymath}
+   A_j  =  \alpha^* R_j -V^\theta_j - \psi(\alpha_i,p_i)
+\end{displaymath}
+We need to prove that the conditional expectation of $A_j$ is
+ non-negative.
+
+If $\theta_j \in H_j$, then $V^\theta_j = R_j$ so $A_j =
+ -(1-\alpha^*)R_j - \psi(\alpha_i,p_i)$.  By the assumption of
+ measurability, we know that $E(R_j|H_j) \le \alpha_i$.  By since
+ $\psi$ is conservative, we know that $E(\psi(\alpha,p_j)|H_j) \le
+ -\alpha_j(1-\alpha^*)$.  So the expected value of $A_i$ is greater
+ than or equal to zero.
+
+If $\theta_j \not\in H_j$, then $V^\theta_j = 0$ so $A_j = \alpha^*R_j
+ - \psi(\alpha_i,p_i)$.  If $p_j \le \alpha_j$, then
+ $\psi(\alpha_i,p_i) \le \overline{\psi}(\alpha_i) \le \alpha^*$, we
+ see that $A_j \ge 0$ almost surely.  On the other hand, if $p_j >
+ \alpha_j$, by the {\em no free lunch} assumption we see that $A_j \ge
+ 0$.
+
+\hfill \QED
+
+\end{document}

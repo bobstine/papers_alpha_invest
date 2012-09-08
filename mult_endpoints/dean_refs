@@ -1,0 +1,32 @@
+@article{Deme:Lan:1994,
+    author = {Demets, David L. and Lan, K. K. Gordon},
+    title = {Interim analysis: {T}he alpha spending function approach ({D}isc: p1353-1356)},
+    year = {1994},
+    journal = {Statistics in Medicine},
+    volume = {13},
+    pages = {1341--1352},
+    keywords = {Clinical trial; Group sequential design}
+}
+
+@article{Lee:Kim:Tsia:1996,
+    author = {Lee, Sandra J. and Kim, Kyungmann and Tsiatis, Anastasios A.},
+    title = {Repeated significance testing in longitudinal clinical trials},
+    year = {1996},
+    journal = {Biometrika},
+    volume = {83},
+    pages = {779--789},
+    keywords = {Error spending function; Generalized estimating equation; Wald test}
+}
+
+
+@article{Armi:McPh:Rowe:1969,
+    author = {Armitage, P. and McPherson, C. K. and Rowe, B. C.},
+    title = {Repeated significance tests on accumulating data},
+    year = {1969},
+    journal = {Journal of the Royal Statistical Society, Series A, General},
+    volume = {132},
+    pages = {235--244},
+    keywords = {Sequential procedure}
+}
+
+Lan KKG, Demets DL. Discrete sequential boundaries for clinical trials. Biometrika 1983; 70:659}663.

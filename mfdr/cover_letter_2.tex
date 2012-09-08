@@ -1,0 +1,231 @@
+\documentclass[12pt]{letter}
+
+\usepackage[american]{babel}
+\renewcommand{\baselinestretch}{1.2}   % double spaces a document
+\usepackage[usenames]{color}
+\newcommand{\dpf}[1]{\noindent{\textcolor{Blue}{\{{\bf dpf:} \em #1\}}}}
+ 
+\setlength{\topmargin}{0in}         % 1 in top/bottom
+\setlength{\headheight}{0.25in}
+\setlength{\headsep}{0.25in}
+\setlength{\textheight}{8.0in}
+\setlength{\oddsidemargin}{0.0in}   % 1. in left/right
+\setlength{\textwidth}{6.5in}
+\pagestyle{empty}  % so no page numbers
+
+\begin{document}
+
+\noindent
+October 5, 2006
+
+\vspace{0.3in}
+
+\noindent
+Professor A. T. A. Wood\\
+School of Mathematical Sciences \\
+University of Nottingham \\
+University Park \\
+Nottingham NG7 2RD \\  
+United Kingdom
+
+\vspace{0.3in}
+
+\noindent
+Dear Professor Wood: 
+
+\noindent
+Please find enclosed our revision to (Please note the new title):
+
+\noindent
+{\bf JRSSB submission B6215}: ``Alpha investing: A new multiple
+hypothesis testing procedure that controls mFDR.'' (with Foster)
+
+\noindent
+We have substantially rewritten the entire paper to address the
+suggestions and comments.  We have removed the EDC criterion which we
+introduced in the prior version and
+instead concentrate on an existing criterion, namely mFDR.  This puts
+the focus on the new procedure, namely alpha investing.  We have
+added several new theorems to help show how the new procedure differs
+from existing procedures.
+
+On our own rereading, we agreed that the original version was too
+terse.  Hopefully this version will be easier on the referees and more
+attractive to them.
+
+We enclose a detailed response to all the comments we received,
+starting with your comments, the AE's, and then those of the two referees.
+
+\vspace{0.3in}
+\noindent
+Sincerely,
+\vspace{0.3in}
+
+\noindent
+Robert A. Stine  \\
+stine@wharton.upenn.edu
+
+
+
+\newpage
+\centerline{\bf Wood's comments}
+
+Paragraph 1: We have deleted the EDC criterion which was introduced
+in the previous version and replaced it by
+ a slight modification of the mFDR criterion.  
+
+We have rewritten the entire paper to simplify it and clarify the
+presentation. 
+
+Paragraph 2: Our first choice is still JRSS!  Since so much of the
+ orginal research of this nature was published there, we would prefer to
+ have our paper in JRSS also.  Hopefully this version is more
+ deserving.
+
+
+
+\newpage
+\centerline{\bf AE's report}
+
+paragraph 1: We have taken to heart the criticism that introducing EDC
+was unnecessary and have removed it.  In its stead, we use mFDR
+(or more accurately, a slight modification of mFDR).  We have a
+section relating our version of mFDR to several of the other versions
+of FDR (cFDR, pFDR, eFDR).
+
+We honestly don't see much of a connection to the tail probabilities
+of the false discovery proportions.  But we made an effort to generate
+a a result (without proof) that is similar in spirit to the tail
+probability results.  (See statements 4 and 5 after theorem 3.)  We
+left out the proof since it is standard for martingales.
+
+paragraph 2: We don't need EDC to handle the sequential nature for
+evaluation.  But we do need the new alpha investing rule that is
+presented in the paper.  So this focus has been removed.
+
+
+
+\newpage
+\centerline{\bf Response to referee \#1 titled: ``Report on B6215''}
+
+paragraph 1 \& 2 \& 3: Agreed!
+
+paragraph 4: We now compare to a variety of existing criteria.  We
+felt the dependent testing was both difficult and not relevant
+for the ideas we discuss and have removed that section.
+
+paragraph {\bf The criterion.} We removed the concept of EDC and
+ replaced it by a modification of mFDR.  We show that controlling our
+ stopped version of mFDR makes almost all FDR-like definitions
+ equivalent.
+
+GW02, GW04 paragraph: Thanks for pointing out this connection.  We
+have added a discussion of these papers in the ``Relating mFDR to
+FDR'' subsection.  
+
+Choice paragraph: We removed the EDC criterion and use mFDR. 
+We have worked with that criterion throughout.  Interesting side light: 
+Yoav Benjamini said that he actually considered mFDR first and then
+switched his focus to FDR.
+
+{\bf Dependent tests.} The issue of dependent testing gets very
+difficult.  We have removed the extensive discussion of it since we
+didn't feel it was laid out clearly enough.  We are working on
+developing an algorithm that will generate $\alpha_m$ hypothesis tests
+without having to orthogonalize the tests.  To make this
+precise, we need some new theorems about Gibbs sampling of convex sets
+before we can claim to have a complete solution. (We need a slight
+extension of the recent work of Santosh Vempala, ``Sampling
+Integration and Optimization of High-dimensional Log-concave
+Functions.''  We have been pushing Santosh to include these extensions
+in a review paper he is writing.  So we will wait until that is out
+before tackling our application.)  In our more applied research, we
+have tended to simply ignore the dependence in the tests and cross our
+fingers.  It empirically works well in data mining.  We hope to pursue
+that in yet a different paper.
+
+{\bf Minor remarks.} 
+
+a) New graphs, hopefully to your liking.
+
+b) Fixed.
+
+{\bf References}: Both have been added.
+
+
+
+\newpage
+\centerline{\bf Response to referee \#2 titled: ``B6215-ref2''}
+
+{\bf Your opening paragraph:} We apologize for being confusing in the
+ first version.  Hopefully this version will be easier to track and
+ your initial enthusiasm will return.
+
+{\bf ``(1)''} The introduction has been significantly rewritten.
+Hopefully it is clearer now. 
+
+{\bf ``(2)''} We have removed the EDC and replaced it by the slightly modified version of mFDR.
+This helps focus attention on the sequential aspect (which you
+correctly identified as our primary contribution) and the new
+algorithm, alpha investing.  Though the ratio of expectations has some
+undesirable properties, we show that in our setting it is often close
+to the other more traditional criteria.  The numerical equivalence of
+5 different criteria is one of the new theorems in this version.
+
+{\bf ``(3)''} We have thought hard about the language to use here.  We
+want to leverage the idea that our approach is a modification of alpha
+spending rules.  The word ``spending'' correctly suggests that we are
+burning through alpha and never get any new alpha back.  So we want a
+metaphor that suggests that we are spending alpha, but that we can
+earn new alpha to spend.  So the ``investment'' language is best
+thought of as a metaphor, but we give it no more meaning than the
+spending analogy.  So neither alpha spending nor alpha investing
+advocate that alpha-wealth is appropriate as a  utility function.
+
+{\bf ``(4)''} We have tried to make it clear that an alpha investing
+rule is representative of a class of rules.  Some of these rules might make
+multiple passes over the hypothesis, others won't.  Some might only
+test further hypothesis when the primary endpoints have been proven
+(i.e. rejected).  Others might save alpha for the future.  All of
+these are design decisions that go into creating the testing rule.  To
+help clarify this, we have added a new section called ``designing
+alpha investing rules.''
+
+{\bf ``In summary:''} We have rewritten the entire paper.  We have
+added several new theorems that will hopefully show what it is that we
+have accomplished.  We have added a discussion of how to design rules.
+
+{\bf Detailed comments:} We have made all the changes you suggested.
+
+\newpage
+{\bf Changes made in new revision of B6215: Foster and Stine}
+
+A quick ``diff'' showed 1800 changes in the latex source file.  So we
+ will not provide a line by line list of changes.  But  major
+ changes are listed below:
+
+\begin{description}
+\item[EDC $\to$ mFDR] The most visible change, is removing the new
+criteria of EDC.  We have replaced it with mFDR.  This allows a more
+direct comparison to other versions of FDR.
+\item[Language] Much of the language has been changed to better match
+standard usage.
+\item[Stopped testing] We have some new results concerning stopping
+the testing.  In particular, the new theorem 1 converts our results to
+a ``conditional'' form of FDR.  These ideas are further elaborated in
+the new section entitled ``Universal mFDR.''
+\item[Stopping time discussion] We discuss a situation where one can
+expect to be able to stop at a fixed number of rejections.  This
+allows a very close connection between 5 versions of FDR.
+\item[Figures] New figures have been generated to match the use of mFDR.
+\item[Removed example] We removed the dependent testing example from
+the {\em Examples} section.  We feel that to do it justice will take
+a paper in its own right.  So we defer it to another day.
+\item[Designing alpha investing rules] A new section has been added to
+help understand issues that go into designing alpha investing rules.
+This will also help set up the rules that we discuss in the examples
+section. 
+\end{description}
+
+
+\end{document}  

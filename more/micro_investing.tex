@@ -1,0 +1,43 @@
+
+\subsection*{Micro-investing}
+
+\dpf{More random snipets that probably should also be delete:
+\newline
+$\log 1/(1-p_j) \approx
+p_j$ from the invested $\alpha_j$ and earns a pay-out $\omega$ that is
+added to its alpha-wealth.  If $p_j > \alpha_j$, the procedure does not
+reject $H_j$ and its alpha-wealth decreases by $\log(1-\alpha_j)$.
+\newline
+If the p-value is uniformly distributed on [0,1], then the expected
+ change in the alpha-wealth is $-(1 - \omega) \alpha_j$, which
+ suggests alpha-wealth decreases when testing a true null hypothesis.
+ (A section in the appendix explains the presence of logs in
+ \eqn{eq:Wm}. The approximation $\log(1-p) \approx -p$ provides a more
+ interpretable, nearly identical adjustment.)
+}
+
+The presence of $\log (1-\alpha)$ and $\log (1-p)$ in \eqn{eq:Wm}
+ deserves some explanation.  Suppose for this discussion that an alpha-investing rule spends the level $\alpha$, which is slightly less than $-\log(1-\alpha)$, when the hypothesis is not rejected.  In this setting, consider the following
+ ``micro-investment'' approach to testing a single null hypothesis
+ $H_0$.  Set the initial wealth $W(0) = \alpha$. Rather than use one test at
+ level $\alpha$, a micro-investment approach uses a sequence of tests,
+ each risking a small amount $\ep \ll \alpha$ of the total
+ alpha-wealth.   First test $H_0$ at level $\ep$; reject $H_0$ if the initial p-value of the test $p \le \ep$.  If $p > \ep$, the investing rule pays $\ep$ for the
+ first test, and then tests $H_0$ conditionally on $p > \ep$ at
+ level $\ep$.  This second test rejects $H_0$ if $\ep < p \le 2\ep -
+ \ep^2$.  If this second test does not reject $H_0$, the investing
+ rule again pays $\ep$ and retests $H_0$, now conditionally on $p >
+ 2\ep - \ep^2$.  This process continues until the investing rule
+ either spends all of its alpha-wealth or rejects $H_0$ on the $k$th
+ attempt because
+\begin{displaymath}
+  1-(1-\ep)^{k-1} < p \le 1-(1-\ep)^k \;.
+\end{displaymath}
+If the procedure rejects $H_0$ after $k$ tests, then the total
+of the micro-payments made is
+\begin{displaymath}
+  k \,\ep \ge \frac{\log (1-p)}{\log (1-\ep)}\; \ep
+  \rightarrow -\log (1-p) \mbox{ as } \ep \rightarrow 0\;.
+\end{displaymath}
+The increments to the wealth defined in equation \eqn{eq:Wm}
+essentially treat each test as a sequence of such micro-level tests.

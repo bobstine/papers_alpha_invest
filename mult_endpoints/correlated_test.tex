@@ -1,0 +1,132 @@
+\documentclass[14pt]{extarticle}
+\renewcommand{\baselinestretch}{1.3}
+
+\begin{document}
+
+\section{mFDR vs FDR}
+
+I find it curious that the following test has good FDR properties and
+bad mFDR properties.  Since it is a stupid test, this is a big ``YEA''
+for mFDR.
+
+Consider the test which is completely randomized and doesn't look at
+ the data.  With probabily .05 it rejects ALL hypothesis, and with
+ probability .95 it rejects none.  Then the FDR is .05.  So it
+ controls the FDR rate nicely.  But the mFDR is 1 (Or more accurately,
+ $1 - 1/(1+p)$.)  So the mFDR says this is a stupid test.  Since most
+people would consider this a stupid test that doesn't really control
+5\% of the rejections to be significant--I think mFDR gets it better.  
+
+\section{Issues of correlated tests}
+
+Typically when we do testing in regression, we are happy with
+orthognalizing a new variable.  So we haven't really addressed issues
+of correlated testing.  But your example in the paper got me
+thinking.  Or more accurately worrying.
+
+So let's do a simple example to get some idea of what the issues are.
+Suppose we have two means we want to esimate.  But they are
+correlated.  So to make it extreme, consider:
+\begin{eqnarray*}
+X & = & \mu_X + \epsilon \\
+Y & = & \mu_Y + \epsilon \\
+& \vdots & \\
+Z & = & \mu_Z + \epsilon \\
+\epsilon & \sim & N(0,1)
+\end{eqnarray*}
+where there is only one $\epsilon$.  So the tests are perfectly
+ correlated.  Let's consider doing some statistics in this setting. 
+
+To start with, the ``correct'' confidence region would be a degenerate
+ elipse centered around the point $(X,Y,\ldots,Z)$ which extends from
+ $(X-2,Y-2,\ldots,Z-2)$ at one ``corner'' up to $(X+2,Y+2,\ldots,Z+2)$
+ at the other corner.  This means we could construct bonferroni shaped
+ confidence region consisting of a box with width 4 and height 4, etc
+ centered at the point $(X,Y,\dots,Z)$.  Ok, enough for the easy
+ stuff.
+
+What would a Simes like test look like?  Suppose we do a naive Simes
+ test where the Bonferroni point is $Z = k$
+ and then the 5\% point is at $Z=2$.  In a step-up test (hard to
+easy) under the overall null, there would be a .05/p probability of
+getting a large $\epsilon$ and hence reject all the tests.  This gives
+a FDR of .05/p and an mFDR of (.05)/(1 + .05).  So both control at a
+.05 level.  But for the step-down test (easy test first, Bonferroni
+last) the FDR will be .05 whereas the mFDR will be (.05p)/(1 +
+.05p).  So this proceedure controls the FDR but not the mFDR.
+Curious!  Basically this is acting like the random test described
+earlier. 
+
+\section{Sequential testing with perfectly correlated errors}
+
+What do our sequential methods do?  So what does a conditional test
+ look like is now the question?  Let's now simplify down to just an
+ $X, Y$ so we can think with pictures.
+
+\paragraph{One sided testing is a problem:}  Suppose we test $X$ first.
+  After the first test, we learn something both about $\mu_X$ and
+about the value of $\epsilon$.  This can be bad.  For example, suppose
+we do a one-sided test: $H_X: \mu_X = 0$ vs $H_{X>0}: \mu_X > 0$ with a
+rejection region of $X > 2$.  Yea!  We rejected!  Can do now test
+$H_Y$?  I claim no.  The problem is that the null includes all
+$\theta$ with any value for $\mu_X$ and $\mu_Y = 0$.  So consider the
+value of $\mu_X = -18$.  Since we rejected the null in the first test,
+we ``know'' that $\epsilon > 20$.  So an resonable test of $Y$ will
+now reject (down to a p-value of 1/googol).  So we would have to
+require $Y$ to be larger than 21 before we could safely reject. 
+
+This is somewhat saved by doing two sided testing.  Then we don't
+learn as much about the value of $\epsilon$ since if $\mu_X = -18$ it
+is much more likely that we are in the negative region and so don't
+have to worry about these extreme $\epsilon$'s.
+
+\subsection{The Trouble with Nibbles}
+
+(I assume you know the single best episode of star-treck is called 
+``The Trouble with Tribbles''?)
+
+If we nibble away testing $H_X$ at less and less significant p-values
+until we reject or run out of $\alpha$ then we will know the exact
+value for $\mu_X + \epsilon$ when we are done.  This is particularilly
+true if we take a bit out of the left tail, and then one out of the
+right tail and keep switching.  So at that point, we can't come up
+with any conditional test for $\mu_Y$ which will be a .05 level test.
+Oops.
+
+\subsection{What's your Null?}
+
+Suppose we start with a two sided test for $X$, but we don't reject.
+Again we get into trouble.  If $\mu_X = -100$ then we know that the
+error is at least 98.  So any resonable test of $H: \mu_Y = 0$ will
+reject.  But if we instead take $H: (mu_Y = 0 \cap mu_X = 0)$ now we
+can do a valid test of this null.  
+
+\section{A solution: Sequential nulls}
+
+So we could do the following tests and have them have sensiable
+rejection regions:
+\begin{enumerate}
+\item Test $H_X$ say two sided.
+\item Based on the outcome, test different hypothesis:
+\begin{description}
+\item[Reject $H_X$:] Now we can test $H_2: \mu_Y = \mu_X$.
+\item[Accept $H_X$:] Now we can test $H_2: \mu_Y =0 \cap  \mu_X = 0$.
+\end{description}
+\end{enumerate}
+With the above sequential test, we can get the conditional
+probabilities that we desire.  
+
+
+\section{A solution: add some randomizations}
+
+A curious solution is to add a bit of random rejections.  So consider
+the test which rejects if $X > 2$ or if a random .001 coin lands
+heads.  Then we no longer learn as much about the value of
+$\epsilon$.  The most anoyning $\mu_X$ would be about $\mu_X = -1$
+where there is about a .001 chance of $X > 2$.  So we are equally
+likely to have generated this rejection from $\epsilon > 3$ or the
+coin landing heads.  But if $\mu_X \ll -1$ then we pretty much know it
+was the coin.
+
+
+\end{document}

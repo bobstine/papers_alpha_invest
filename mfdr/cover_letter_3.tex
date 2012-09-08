@@ -1,0 +1,123 @@
+\documentclass[12pt]{letter}
+
+\usepackage[american]{babel}
+\renewcommand{\baselinestretch}{1.2}   % double spaces a document
+\usepackage[usenames]{color}
+\newcommand{\dpf}[1]{\noindent{\textcolor{Blue}{\{{\bf dpf:} \em #1\}}}}
+ 
+\setlength{\topmargin}{0in}         % 1 in top/bottom
+\setlength{\headheight}{0.25in}
+\setlength{\headsep}{0.25in}
+\setlength{\textheight}{8.0in}
+\setlength{\oddsidemargin}{0.0in}   % 1. in left/right
+\setlength{\textwidth}{6.5in}
+\pagestyle{empty}  % so no page numbers
+
+\begin{document}
+
+\noindent
+July 24, 2007
+
+\vspace{0.3in}
+
+\noindent
+Professor A. T. A. Wood\\
+School of Mathematical Sciences \\
+University of Nottingham \\
+University Park \\
+Nottingham NG7 2RD \\  
+United Kingdom
+
+\vspace{0.3in}
+
+\noindent
+Dear Professor Wood: 
+
+\noindent
+Please find attached our revision to
+
+\noindent
+{\bf JRSSB submission B6215R}: ``Alpha investing: A procedure for sequential control of expected false discoveries'' (with Dean Foster)
+
+\noindent
+We have rewritten the paper to address the suggestions and comments.  First, as you may have noticed, we changed the title a little to clarify the topic of the paper and remove an acronym. Further changes emphasize a general tightening of the language that reduces the length to 26 pages.
+
+We enclose a detailed response to the comments on the previous version,
+starting with your comments, those of the AE, and then those of the referee.
+
+\vspace{0.3in}
+\noindent
+Sincerely,
+\vspace{0.3in}
+
+\noindent
+Robert A. Stine  \\
+stine@wharton.upenn.edu
+
+
+
+\newpage
+\centerline{\bf Editor's report}
+
+The revised paper is more concisely written, with a general reduction in length down to 26 pages (a bit less than requested).
+
+{\bf Typos and minor}
+
+We either fixed the mistakes or removed the sentences with the noted typos. As to the format of references, we use bibtex and a style file that alleges it produces an RSS citation.  We hope they look OK in this version.
+
+
+\newpage
+\centerline{\bf AE's report}
+
+{\bf Major comment}
+
+We shortened all of the sections of the paper. With regard to the suggested specific reductions,
+\begin{enumerate}
+ \item We reduced Section 5.1 and merged the results into the rest of Section 5.
+ \item The former Section 7 is shorter with a more concise description of the examples 
+          and now appears as Section 6.
+ \item We removed the last two paragraphs, as suggested.
+\end{enumerate}
+
+{\bf Minor comments}
+
+The citations now refer to the published papers.
+
+
+\newpage
+\centerline{\bf Response to referee}
+
+\begin{description}
+
+  \item[Justification of mFDR vs FDR] This preliminary comparison no longer appears.
+  
+  \item[Example in Section 7.2] We added two examples. One example directly compares    
+         alpha-investing to the weighted BH procedure that uses an oracle to assign 
+         weights (see Figure 2).  The second added example demonstrates the use
+         of alpha-investing for a sequence of hypotheses (summarized in Figure 3).
+         
+   \item[Minor comments] \ \
+      \begin{itemize}
+        \item We consistently use the word ``uniform'' in the revision.
+        \item We agree and have made Section 5.1 much more brief.
+        \item We moved this paragraph into the concluding discussion.
+      \end{itemize}
+\end{description}
+
+\newpage
+\centerline{\bf Summary of Other Changes}
+
+\begin{itemize}
+
+  \item Merged the reduced Section 5 with Section 6.
+  \item Removed former Theorem 3 and relegate these 
+           tangental results to a remark at the end of Section 5.
+  \item Removed distinct breaks for  subsections from the paper.
+  \item Shortened section 7.1 (designing rules) and merged the discussion into the rest of
+           Section 6 (in the new numbering).
+  \item Added simulations that (a) compare alpha-investing to weighted BH and 
+          (b) demonstrate that it works when applied to a sequence of hypotheses.
+
+\end{itemize}
+
+\end{document}  
