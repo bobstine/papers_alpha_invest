@@ -1,0 +1,143 @@
+\documentclass{article}
+
+\begin{document}
+\title{Good choices: How to pick the parameters in alpha investing?}
+
+There are three parameters we need to pick:
+\begin{itemize}
+\item initial wealth ($W_0$)
+\item return on investment ($\omega$)
+\item Scaling factor on spending rule $k$
+\end{itemize}
+Define
+\begin{displaymath}
+T(x) = \sum_{i=x}^\infty t(i)
+\end{displaymath}
+and 
+\begin{displaymath}
+t(i) = \frac{1}{i \log(i)^2}
+\end{displaymath}
+Define the bid function:
+\begin{displaymath}
+B(W) = k t(\lceil T^{-1}(W/k) \rceil))
+\end{displaymath}
+which says how much to bid if you currently have wealth $W$.  Notice
+that $k$ enters twice as a conversion factor: first to convert wealths to
+our universal function $T$, and then to convert the output of $t$ back
+into probabilities.
+
+\section{Balance: $\omega = .5$}
+
+If a fraction of about $p$ hypothesis are not null, then our emphasis
+is on finding signal at about the critical region of $\sqrt{2
+\log(1/p)}$.  In other words, if the signal is much higher--it is
+trival to find--if it is much lower it is impossible.  So the $\mu$'s
+that we are worried about are at this critical value.  Hence, calling
+a null significant and estimating it has about the same cost as
+missing a significant variable and calling it a zero.  So we would
+like to have about the same number of type I errors as we have type II
+errors.  This pegs our $\omega$ at .5.
+
+\section{The constant term: $W_0 \approx .5$}
+
+We estimate the constant term automatically.  So if we add a spurious
+variable--it won't cause that much damange to the risk we already
+substain by having the constant term in the model.  So we want to add
+about $O(1)$ new variables.  To pick the actual amount, we can think
+of adding the constant term to the regression as a successful
+rejection and so we should pay out $\omega$ for it.  Thus our initial
+wealth would be $W_0 = \omega$.  but this is just a
+heuristic--anything else which is $O(1)$ is find also.
+
+\section{Scaling: $k = $?}
+
+Ideally, if we had about $p$ fraction of non-null hypothesis, then we
+would like to set our threshold at about $p$.  Why?  Because then we
+would find as many alternatives as we can but still only add about as
+many nulls as we have alternatives.  So again--it is a balance
+argument. 
+
+So, if we see a sequence if IID hypothesis each with $p$ probability
+of being the alternative, then we would like to test all of them at an 
+alpha of about $p$.
+
+So the actual bids that we will use will be $t(x)$ up to $t(x+1/p)$
+where $x$  is defined by:
+\begin{displaymath}
+\sum_{x=i}^{i+1/p} k t(i) \approx  \omega
+\end{displaymath}
+We would like these bids to all be about size $p$.  If we are in a
+region where $t(i)$ is basically flat (i.e. $x \ne o(1/p)$, or in
+words, $x$ is about as large is $1/p$ or larger).  So we want 
+\begin{eqnarray*}
+\sum_{x=i}^{i+1/p} k t(i) &\approx&  \omega \left(= .5 \right) \\
+\frac{1}{p} k t(x) &\approx&  .5 \\
+t(x) & \approx& \frac{p}{2k} \\
+\frac{1}{x \log(x)^2} & \approx&\frac{p}{2k} \\
+k & \approx& \frac{1}{2} p x \log(x)^2 
+\end{eqnarray*}
+We also want $kt(x) \approx p$, so:
+\begin{eqnarray*}
+ kt(x) &\approx& p \\
+\frac{k}{x \log(x)^2} &\approx& p \\
+k & \approx&  xp \log(x)^2 \\
+\end{eqnarray*}
+Since this doesn't solve for $k$, what that means is that for many
+$k$'s we can find an $x$ that will work.  So the key fact that we want
+then is that 
+\begin{displaymath}
+t(x)/t(x+1/p) \approx 1
+\end{displaymath}
+This is then where the teeth of this story live.  But this will work
+as long as $x \ne o(1/p)$ which just says that $k$ should be large.
+So we don't have much to work with here--only making $k$ larger is a
+good thing.
+
+But we don't want $k$ to be too large.  So we need a more refined
+argument.  
+
+What we want to happen is to have a rejection region that for IID with
+$p$ fraction alternatives looks like a rejection region which has a
+alpha of $p$.  But we know that for very small $p$, this is not very
+sensitive to $p$.  So if we had a cut off of $z_a$ when we would like
+to have used $z_b$, if $|z_a - z_b|$ is small, we don't really care.
+But the $P(Z > z_a)/P(Z > z_b)$ could be huge.  So let's pick an
+arbitary tuning parameter, call it $c$.  We want to have $|z_a-z_b|<c$
+for our IID sequence.  This means that we would like to have
+\begin{displaymath}
+|\Phi^{-1}(k t(x+1/p)) - \Phi^{-1}(k t(x+1/p))| \le c
+\end{displaymath}
+for the appropiate $x$.  We couldn't achieve this for any finite $k$
+since there would always be a $p$ sooooo small that when we get a hit
+it jumps to a much larger bid amount than it should.  But this isn't
+really a problem since that leads to over fitting.  But we know we
+don't over fit.  So the real problem is if the 
+\begin{displaymath}
+\Phi^{-1}(k t(x+1/p)) > \Phi^{-1}(p) + c
+\end{displaymath}
+Then we will start missing signal that we care about finding.  This
+now isn't a problem for extremely small $p$ since then $x \approx
+o(1/p)$ and so we want:
+\begin{displaymath}
+\Phi^{-1}(k p /\log(1/p)^2) < \Phi^{-1}(p) + c
+\end{displaymath}
+which will be true if $p$ is small enough.  So it is only checking for
+large values of $p$ that we care about.  So we now have an
+optimazation to solve:
+\begin{itemize}
+\item Pick the smallest $c$ such that
+\item there is a $k$ such that
+\item for all $p$, if we define $x$ so that
+\begin{displaymath}
+k  \approx  xp \log(x)^2
+\end{displaymath}
+\item then 
+\begin{displaymath}
+\Phi^{-1}(k t(x + 1/p)) < \Phi^{-1}(p) + c
+\end{displaymath}
+\end{itemize}
+
+My guess is that $k \approx 4$ is about right.  Why?  I like it.  
+
+
+\end{document}
