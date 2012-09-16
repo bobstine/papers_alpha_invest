@@ -1,6 +1,12 @@
 \documentclass{article}
 
 \begin{document}
+
+NOTE: This is a .Rnw file since I'm hoping to actually draw some
+pictures and maybe even calculate the answer.  But at the moment, it
+will complie as pure latex.
+
+
 \title{Good choices: How to pick the parameters in alpha investing?}
 
 There are three parameters we need to pick:
