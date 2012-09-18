@@ -4,3 +4,4 @@ Sweave.sty
 *.log
 good_choices.tex
 
+*.R
