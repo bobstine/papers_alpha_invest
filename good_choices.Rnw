@@ -41,12 +41,18 @@ t <- function(i)
 # Insert value from mathematica for a more accurate answer
 global.T.1 <- (function(x){sum(t(1:x))+1/log(x+1)})(3000000)
 
-global.T.cumsum.cache = cumsum(t(1:10000000))
+global.largest.cache = 10000000
+global.T.cumsum.cache = cumsum(t(1:global.largest.cache))
+
+global.omega = .5
+
 
 T_real <- function(n)
     {
         if(n == 1)
             return( global.T.1 )
+        if(n > global.largest.cache)
+            n = global.largest.cache
         else
             return (global.T.1 - global.T.cumsum.cache[ n - 1])
     }
@@ -62,7 +68,7 @@ T_inverse_bisection <- function(p,n.lower, n.upper)
         if(n.lower >= n.upper - 1)
             return(n.lower)
         n.middle = floor((n.lower + n.upper)/2)
-        cat(n.middle, T(n.middle),"\n")
+#        cat(n.middle, T(n.middle),"\n")
         if(T(n.middle) < p)
             return( T_inverse_bisection(p, n.lower, n.middle))
         else
@@ -154,6 +160,20 @@ good thing.
 
 <<computingX>>=
 
+
+recursive_find_x <- function(k,p, lower, upper)
+    {
+        if(lower >= upper - 1)
+            return(lower)
+        middle = floor((lower + upper)/2)
+        if(k* T(middle) < global.omega + k * T(1+ floor(middle + 1/p)))
+            return(recursive_find_x(k,p, lower,middle))
+        else
+            return( recursive_find_x(k,p, middle,upper))
+    }
+
+
+
 find_x <- function(k,p)
     {
         if(p > 1)
@@ -161,9 +181,49 @@ find_x <- function(k,p)
         if(k < 1)
             cat("oops: find_x(k,p) not the other way around.\n")
 
+        a.very.large.number = 10000000
+#        if(p <  T(a.very.large.number) + global.omega / k)
+#            return(a.very.large.number)
 
+        if(p > k * T(1) + global.omega)
+            return(1)
 
+        lower = 1
+        upper = a.very.large.number
+        answer = recursive_find_x(k, p, lower, upper)
+
+        return(answer)
     }
+
+describe <- function(k,p,answer)
+{
+    if(answer < 1000000)
+    {
+        cat("find_x: (",k,",",signif(p,2),") --> ",signif(answer,3),"   \tkT(",answer,") = ",k*T(answer)," > ",k*T(answer+1/p)+.5," = kT(",round(answer+1/p),") + .5",sep="")
+        cat("\t\t [kt(l)/p,...,kt(u)/p] = [ ",k*t(answer)/p , " ... " , k*t(answer+1/p)/p," ]\n",sep="")
+    }
+    return(answer)
+}
+
+@
+
+The following output should be interpreted as follows.  The result of
+find\_x is the point where and IID sequence with probably $p$ of the
+alternative will jump up to when it gets a hit.  For example, if
+$p=.01$, then about every 100 rounds we will get a hit.  From
+find\_x(.01) = 19, we see that the process will spend down to about
+kT(119) and then get a hit and jump back up to about 19.  This make
+sense since kT(119) is about .83 (and if it jumps later, it will still
+be about .82.)  So when it jumps back up, it will jump up to a value
+of about 1.3 which means the process will be at a kT wealth of about
+19.  When it starts out at 19 it is spending at a rate much faster
+than .01, and when it finishes and finally gets a hit it is spending
+at a rate much slower.  In fact it is starting out spending at 2.2
+times the target rate and end up .14 times the target rate.
+
+<<tableOfValues>>=
+
+table <- sapply(1:100, function(x){value=signif(.8^x,0); c(value,describe(4,value,find_x(4,value)))} )
 
 
 @
