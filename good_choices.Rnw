@@ -19,7 +19,7 @@ Define
 \begin{displaymath}
 T(x) = \sum_{i=x}^\infty t(i)
 \end{displaymath}
-and 
+and
 \begin{displaymath}
 t(i) = \frac{1}{i \log(i)^2}
 \end{displaymath}
@@ -31,6 +31,58 @@ which says how much to bid if you currently have wealth $W$.  Notice
 that $k$ enters twice as a conversion factor: first to convert wealths to
 our universal function $T$, and then to convert the output of $t$ back
 into probabilities.
+<<definitions,echo=FALSE>>=
+
+t <- function(i)
+    {
+        return(1 / ((i+1) * log(i+1)^2));
+    }
+
+# Insert value from mathematica for a more accurate answer
+global.T.1 <- (function(x){sum(t(1:x))+1/log(x+1)})(3000000)
+
+global.T.cumsum.cache = cumsum(t(1:10000000))
+
+T_real <- function(n)
+    {
+        if(n == 1)
+            return( global.T.1 )
+        else
+            return (global.T.1 - global.T.cumsum.cache[ n - 1])
+    }
+
+T <- function(arrayN)
+    {
+        return( sapply(arrayN,T_real))
+    }
+
+
+T_inverse_bisection <- function(p,n.lower, n.upper)
+    {
+        if(n.lower >= n.upper - 1)
+            return(n.lower)
+        n.middle = floor((n.lower + n.upper)/2)
+        cat(n.middle, T(n.middle),"\n")
+        if(T(n.middle) < p)
+            return( T_inverse_bisection(p, n.lower, n.middle))
+        else
+            return(T_inverse_bisection(p, n.middle, n.upper))
+    }
+
+T_inverse <- function(p)
+    {
+        return( T_inverse_bisection(p,1,10000000));
+    }
+
+@
+
+
+<<bidPlot,fig=TRUE,echo=FALSE>>=
+
+plot(T(1:1000),t(1:1000),log="xy",xlab="Wealth",ylab="bid amount")
+
+@
+
 
 \section{Balance: $\omega = .5$}
 
@@ -61,10 +113,10 @@ Ideally, if we had about $p$ fraction of non-null hypothesis, then we
 would like to set our threshold at about $p$.  Why?  Because then we
 would find as many alternatives as we can but still only add about as
 many nulls as we have alternatives.  So again--it is a balance
-argument. 
+argument.
 
 So, if we see a sequence if IID hypothesis each with $p$ probability
-of being the alternative, then we would like to test all of them at an 
+of being the alternative, then we would like to test all of them at an
 alpha of about $p$.
 
 So the actual bids that we will use will be $t(x)$ up to $t(x+1/p)$
@@ -74,13 +126,13 @@ where $x$  is defined by:
 \end{displaymath}
 We would like these bids to all be about size $p$.  If we are in a
 region where $t(i)$ is basically flat (i.e. $x \ne o(1/p)$, or in
-words, $x$ is about as large is $1/p$ or larger).  So we want 
+words, $x$ is about as large is $1/p$ or larger).  So we want
 \begin{eqnarray*}
 \sum_{x=i}^{i+1/p} k t(i) &\approx&  \omega \left(= .5 \right) \\
 \frac{1}{p} k t(x) &\approx&  .5 \\
 t(x) & \approx& \frac{p}{2k} \\
 \frac{1}{x \log(x)^2} & \approx&\frac{p}{2k} \\
-k & \approx& \frac{1}{2} p x \log(x)^2 
+k & \approx& \frac{1}{2} p x \log(x)^2
 \end{eqnarray*}
 We also want $kt(x) \approx p$, so:
 \begin{eqnarray*}
@@ -90,7 +142,7 @@ k & \approx&  xp \log(x)^2 \\
 \end{eqnarray*}
 Since this doesn't solve for $k$, what that means is that for many
 $k$'s we can find an $x$ that will work.  So the key fact that we want
-then is that 
+then is that
 \begin{displaymath}
 t(x)/t(x+1/p) \approx 1
 \end{displaymath}
@@ -99,8 +151,27 @@ as long as $x \ne o(1/p)$ which just says that $k$ should be large.
 So we don't have much to work with here--only making $k$ larger is a
 good thing.
 
+
+<<computingX>>=
+
+find_x <- function(k,p)
+    {
+        if(p > 1)
+            cat("oops: find_x(k,p) not the other way around.\n")
+        if(k < 1)
+            cat("oops: find_x(k,p) not the other way around.\n")
+
+
+
+    }
+
+
+@
+
+
+
 But we don't want $k$ to be too large.  So we need a more refined
-argument.  
+argument.
 
 What we want to happen is to have a rejection region that for IID with
 $p$ fraction alternatives looks like a rejection region which has a
@@ -117,7 +188,7 @@ for the appropiate $x$.  We couldn't achieve this for any finite $k$
 since there would always be a $p$ sooooo small that when we get a hit
 it jumps to a much larger bid amount than it should.  But this isn't
 really a problem since that leads to over fitting.  But we know we
-don't over fit.  So the real problem is if the 
+don't over fit.  So the real problem is if the
 \begin{displaymath}
 \Phi^{-1}(k t(x+1/p)) > \Phi^{-1}(p) + c
 \end{displaymath}
@@ -137,13 +208,13 @@ optimazation to solve:
 \begin{displaymath}
 k  \approx  xp \log(x)^2
 \end{displaymath}
-\item then 
+\item then
 \begin{displaymath}
 \Phi^{-1}(k t(x + 1/p)) < \Phi^{-1}(p) + c
 \end{displaymath}
 \end{itemize}
 
-My guess is that $k \approx 4$ is about right.  Why?  I like it.  
+My guess is that $k \approx 4$ is about right.  Why?  I like it.
 
 
 \end{document}
