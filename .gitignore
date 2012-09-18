@@ -1,0 +1,6 @@
+Sweave.sty
+*.pdf
+*.aux
+*.log
+good_choices.tex
+
