@@ -121,6 +121,26 @@ rejection and so we should pay out $\omega$ for it.  Thus our initial
 wealth would be $W_0 = \omega$.  but this is just a
 heuristic--anything else which is $O(1)$ is find also.
 
+<<firstBid,fig=TRUE,echo=FALSE>>=
+
+ks <- c(.001,.01,.1,.2,.5,1:100,1000,10000)
+
+t_first_bid <- function(k)
+   {
+        index <- T_inverse(global.omega / k)
+        bid <- k * t(index)
+        t <- -qnorm(bid)
+        return(t)
+   }
+
+bids <- sapply(ks, t_first_bid)
+
+plot(ks,bids)
+
+
+@ 
+
+
 \section{Scaling: $k = $?}
 
 Ideally, if we had about $p$ fraction of non-null hypothesis, then we
