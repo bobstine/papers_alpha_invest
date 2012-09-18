@@ -1,6 +1,9 @@
 \documentclass{article}
 
+
+
 \begin{document}
+
 
 NOTE: This is a .Rnw file since I'm hoping to actually draw some
 pictures and maybe even calculate the answer.  But at the moment, it
@@ -31,6 +34,7 @@ which says how much to bid if you currently have wealth $W$.  Notice
 that $k$ enters twice as a conversion factor: first to convert wealths to
 our universal function $T$, and then to convert the output of $t$ back
 into probabilities.
+
 <<definitions,echo=FALSE>>=
 
 t <- function(i)
@@ -52,9 +56,9 @@ T_real <- function(n)
         if(n == 1)
             return( global.T.1 )
         if(n > global.largest.cache)
-            n = global.largest.cache
+            return(1/log(n))
         else
-            return (global.T.1 - global.T.cumsum.cache[ n - 1])
+            return (global.T.1 - global.T.cumsum.cache[ round(n - 1)])
     }
 
 T <- function(arrayN)
@@ -67,6 +71,8 @@ T_inverse_bisection <- function(p,n.lower, n.upper)
     {
         if(n.lower >= n.upper - 1)
             return(n.lower)
+        if(n.lower > .9999999* n.upper)
+            return(n.lower)
         n.middle = floor((n.lower + n.upper)/2)
 #        cat(n.middle, T(n.middle),"\n")
         if(T(n.middle) < p)
@@ -77,7 +83,9 @@ T_inverse_bisection <- function(p,n.lower, n.upper)
 
 T_inverse <- function(p)
     {
-        return( T_inverse_bisection(p,1,10000000));
+       lower.guess = .1  * exp(1/p)
+       upper.guess = 10 * exp(1/p)
+        return( T_inverse_bisection(p,lower.guess,upper.guess));
     }
 
 @
@@ -178,18 +186,9 @@ find_x <- function(k,p)
     {
         if(p > 1)
             cat("oops: find_x(k,p) not the other way around.\n")
-        if(k < 1)
-            cat("oops: find_x(k,p) not the other way around.\n")
-
-        a.very.large.number = 10000000
-#        if(p <  T(a.very.large.number) + global.omega / k)
-#            return(a.very.large.number)
-
-        if(p > k * T(1) + global.omega)
-            return(1)
 
         lower = 1
-        upper = a.very.large.number
+        upper = 10000000
         answer = recursive_find_x(k, p, lower, upper)
 
         return(answer)
@@ -276,5 +275,42 @@ k  \approx  xp \log(x)^2
 
 My guess is that $k \approx 4$ is about right.  Why?  I like it.
 
+\section{And the calculation}
+
+Ok, I'm going to try it slightly differently.  For each value of $k$
+I'll compute the maximum
+\begin{displaymath}
+\Phi^{-1}(k p /\log(1/p)^2) - \Phi^{-1}(p)
+\end{displaymath}
+
+<<calculation,echo=FALSE>>=
+
+max_gap <- function(k,ps)
+  {
+    result <- 0
+    location  <- 0
+    for(i in 1:length(ps))
+      {
+        p <- ps[i]
+        x <- find_x(k,p)
+        final.bid <- k * t(x + floor(1/p))
+        final.t <- -qnorm(final.bid)
+        target.t <- -qnorm(p)
+        diff <- final.t - target.t
+        if(diff > result)
+          {
+            result <- diff
+            location <- i
+          }
+      }
+    cat(k,ps[i],result,"\n")
+    return( result )
+  }
+
+ps <- .5 * .9 ^ (1:500)
+
+ sapply(c(.01,.1,.5,1:10,20,30,100,1000,100000), function(x){max_gap(x,ps)})
+
+@ 
 
 \end{document}
