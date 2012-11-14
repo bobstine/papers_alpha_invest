@@ -1,0 +1,8 @@
+Sweave.sty
+*.pdf
+*.aux
+*.log
+*.bbl
+*.blg
+*~
+*.R
