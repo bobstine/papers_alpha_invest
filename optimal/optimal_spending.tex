@@ -35,7 +35,7 @@
 \hyphenation{among}
 
 % --- Customized commands, abbreviations
-\newcommand{\TIT}{{\it  {\tiny Optimal Levels for Sequential Testing (draft) (\today)}}}
+\newcommand{\TIT}{{\it  {\tiny Optimal Alpha Investing (DRAFT) (\today)}}}
 
 % --- Header
 \pagestyle{myheadings}
@@ -43,7 +43,7 @@
 
 % --- Title
 
-\title{ Optimal Levels for Sequential Testing using Alpha Investing }
+\title{ Optimal Streaming Feature Selection  }
 \author{
         Robert A. Stine\thanks{Research supported by NSF grant DMS-1106743 }  \\
         Department of Statistics            \\
@@ -54,7 +54,6 @@
 
 \date{\today}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -63,7 +62,22 @@
 
 \abstract{ 
 
-  
+ Streaming feature selection identifies variables to add to a model by testing a
+ sequence of proposed variables. Rather than specify a set of explanatory
+ variables as in the typical stepwise regression, streaming selection allows the
+ search for predictors to adapt to the success of prior choices.  The choice of
+ the next variable can depend on results of prior tests.  To avoid over-fitting,
+ alpha-investing controls the expected false discovery rate (mFDR) of these
+ sequential tests. Alpha investing rules, however, provide the modeler with
+ considerable flexibility in both the selection of features to test as well as
+ the alpha-level committed to each test. Our work here identifies optimal
+ strategies for alpha investing that perform within a tolerance of the best
+ possible. The modeler is then free to focus on strategies for choosing the next
+ explanatory variable rather than setting the level of the next test. We show
+ that a spending rule based on a universal prior is competitive with an oracle
+ that knows the strategy of the modeler and sets the signal of the tested
+ hypothesis. We also consider the risk-ratio of the selected model vis-a-vis
+ that of the oracle model.
 
 }
 
@@ -71,7 +85,7 @@
 \vspace{0.05in}
 
 \noindent
-{\it Key Phrases: streaming feature selection, risk, testimator, false discovery rate}
+{\it Key Phrases: } 
 
 \begin{itemize}
   \item note that we find the convex hull of the feasible set of solutions
