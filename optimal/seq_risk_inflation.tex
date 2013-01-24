@@ -89,213 +89,124 @@
 
 
 % ----------------------------------------------------------------------
-\section{Introduction}
+\section{ Introduction }
 % ----------------------------------------------------------------------
 
-
- Alpha-investing is a sequntial approach to multiple testing.  Rather than test
- several hypotheses at once, alpha-investing performs tests in a specific
+ Alpha-investing is a sequential approach to multiple testing.  Rather than test
+ several hypotheses at once, alpha-investing tests hypotheses in a specified
  order.  Alpha-investing begins with an initial allowance for Type I error which
- is called its alpha-wealth.  As in an alpha-spending rule, each test consumes
- some of the available alpha-wealth.  Alpha-investing overcomes the
- conservatism of such procedures by earning a contribution to its alpha-wealth
- for each rejected null hypothesis.  Thus rejections beget more rejections.
-  Alpha-investing rules further allow one to test an infinite stream of
- hypotheses, accommodate dependent tests, and incorporate domain knowledge, all
- the while controlling the expected number of false rejections.
+ is called its alpha-wealth.  Each test consumes some of the available
+ alpha-wealth.  Alpha-investing overcomes the conservatism of alpha-spending
+ procedures such as the Bonferroni method by earning a contribution to its
+ alpha-wealth for each rejected null hypothesis.  Thus rejections beget more
+ rejections.  Alpha-investing further allows one to test an infinite stream
+ of hypotheses, accommodate dependent tests, and incorporate domain knowledge,
+ all the while controlling the expected number of false rejections.
 
  
- Sequential testing offers a fast method for building up a model by selecting
- features from a large collection of potential explanatory variables.  Streaming
- feature selection identifies predictive features by testing candidate
- predictors one-at-a-time in an order specified by an exogenous source rather
- than choose the best from a predeterimined collection.  Sequential testing is
- necessary when the set of features is unbounded to too large to manipulate
- collectively.  Unlike stepwise regression, streaming selection evaluates each
- predictor in the context of the current model, without knowledge of others that
- might follow.  This approach allows the modeler to explore infinite sequences
- of explanatory variables much faster than is possible through conventional
- methods \citep{fosterlin10, langford}.
+ A natural role for alpha-investing is the control of fast, sequential methods
+ for building models by selecting features from a large collection of potential
+ explanatory variables.  Streaming feature selection, for example, identifies
+ predictive features by testing candidate predictors one-at-a-time in an order
+ specified by an exogenous source rather than choosing the best from a
+ predetermined collection.  Unlike stepwise regression, streaming selection
+ evaluates each predictor in the context of the current model, without requiring
+ knowledge of all of the other predictors that might follow.  This approach
+ allows the algorithm to explore essentiallyt infinite collections of
+ explanatory variables more rapidly than possible through conventional methods
+ \citep{fosterlin10, langford}.  Because alpha-investing can test an infinite
+ sequence of hypotheses, it is well-matched to a search of an unbounded
+ collection of features that is too large to manipulate at once.
 
 
- For applications in model selection, the risk produced by a selection procedure
- may be more relevant than the number of false rejections.  Suppose one has a
- collection of $p$ variables $X_1, \ldots, X_p$ to consider as explanatory
- variables in the classical linear regression model
+ Though risk or squared error may be more relevant for model selection, multiple
+ testing procedures such as alpha-investing are usually evaluated from the
+ perspective of error rates.  Consider testing the sequence of two-sided
+ hypotheses $H_j: \mu_j = 0$, $j = 1,\ldots, p$ using a corresponding sequence
+ of independent test statistics $Y_j \sim N(\mu_j, \sigma^2)$.  The vectors $\mu =
+ (\mu_1,\ldots,\mu_p)'$ and $Y = (Y_1,\ldots,Y_p)'$ collect these items.  Let
+ the indicators $\gamma_j = I_{\{\beta_j\ne 0\}}$ identify the hypotheses for
+ which $\mu_j \ne 0$; $\gamma_j = 1$ implies $H_j$ is false.  Corresponding to
+ these, let $\hat\gamma_j$ indicate which hypotheses are rejected.  We assume
+ that the test rejects $H_j$ if the observed test statistic exceeds a threshold
+ determined by a multiple $\hat\tau_j$ of the noise level,
  \begin{equation}
-   Y_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip} + \ep_i, 
-     \qquad \ev \ep_i = 0, \Var(\ep_i)=\sigma^2,  \quad i = 1,\ldots,n\;.
- \label{eq:regr}
+    \hat\gamma_j = I_{\{\hat\tau_j^2 \sigma^2 < Y_j^2\}} \;.  
+ \label{eq:gammahat}
  \end{equation}
- One approach to selecting variables for an estimated model tests the hypotheses
- $H_j: \beta_j = 0, \; j = 1, \ldots,p$.  Let $\gamma_j = \pm 1$ denote those
- $\beta_j \ne 0$, and let $\hat\gamma_j = \pm 1$ identify the rejected
- hypotheses, and define vectors $\gamma = (1,\gamma_1, \ldots, \gamma_p)'$ and
- $\hat\gamma = (1,\hat\gamma_1, \ldots, \hat\gamma_p)'$.  The explanatory
- variable $X_j$ appears in the fitted model if $\hat\gamma_j = 1$ and is
- excluded otherwise (hence estimating $\beta_j$ = 0).  Model selection via the
- false discovery rate (FDR) guarantees that, for some $0 < \alpha$ that
+  $\hat\gamma_j = 0$ implies that $H_j$ is not rejected.  Alpha-investing allows
+ the outcome of prior tests to influence the choice of the threshold, so that
  \begin{equation}
-     \ev \left(\frac{V}{R} \given R > 0 \right) < \alpha \;,
- \label{eq:fdr}
+   \hat\tau_j = \tau(\hat\gamma_1, \ldots, \hat\gamma_{j-1}) \;.   
+ \label{eq:tauhat}
  \end{equation}
- where $R = \sum_j \hat\gamma_j$ is the total number of rejections and $V =
- \sum_j \hat\gamma_j(1-\gamma_j)$ counts the number of false rejections. Model
- selection using alpha-investing controls the expected false discover rate (mFDR),
+ Collect these indicators into the vectors $\gamma$ and $\hat\gamma$.  Note that
+ our notation suppresses the fact that $\gamma$ is a function $\gamma(\mu)$ of
+ the underlying parameters.  Let $W(\hat\gamma) = \sum_j \hat\gamma_j$ denote
+ the total number of rejections, and let $V(\hat\gamma, \gamma) = \sum_j
+ \hat\gamma_j (1-\gamma_j)$ count the number of false rejections.  A selector
+ $\hat\gamma$ controls the expected false discovery rate (mFDR) if
  \begin{equation}
-     \frac{\ev V}{1 + \ev R} < \alpha \;.
- \label{eq:fdr}
+     \ev V(\hat\gamma, \gamma) \le \alpha(1 + \ev W(\hat\gamma)) \;.
+ \label{eq:mfdr}
  \end{equation}
-  Controlling FDR or mFDR at level $\alpha$ implies that the model has not
- included too many explanatory variables for which the true effect $\beta_j =
- 0$.  Neither implies control on the risk.  Let $\hat\beta_{\hat\gamma}$ denote
- the $p+1$-element vector with non-zero elements $\beta_0$ and those
- $\hat\beta_j$ for which $\hat\gamma_j = 1$.  The risk of the estimator $\hat\beta_{\hat\gamma}$
- is
+ \citet{fosterstine08} show that alpha-investing provides a generic recipe for
+ constructing selectors that satisfy \eqn{eq:mfdr}.  Control of the number of
+ false rejections, however, does not address the risk of the estimator.  
+
+ 
+ The risk of estimators used in orthogonal regression provide conjectures for
+ the risk of estimators produced by alpha-investing.  Given a selector
+ $\hat\gamma$, define the ``testimator'' (or keep-or-kill estimator)
+ $\hat\mu_{\hat\gamma} \in \Rp$ with elements
  \begin{equation}
-    R(\beta, \hat\beta_{\hat\gamma}) 
-      = \ev_\beta \normsq{X\hat\beta_{\hat\gamma} - X\beta} \;,
+   (\hat\mu_{\hat\gamma})_j 
+          = \hat\mu(Y_j, \hat\tau_j) 
+          = \left\{ \begin{array}{cc}
+                                Y_j & \mbox{ if } \hat\tau_j^2 \sigma^2 < Y_j^2,  \cr
+                                 0  & \mbox{ otherwise. }
+                              \end{array}\right.
+ \label{eq:muhat}
+ \end{equation}
+ The risk of $\hat\mu_{\hat\gamma}$ is
+ \begin{equation}
+    R(\hat\mu_{\hat\gamma}, \mu) 
+      = \ev_\mu \normsq{\hat\mu_{\hat\gamma} - \mu} \;,
  \label{eq:risk}
  \end{equation}
- where $\normsq{x} = x'x$ for vectors $x$.
-
- 
- Streaming feature selection operates differently.  Rather than find the feature
- that adds the most explanatory power to the current model, streaming selection
- considers features in an order determined by an exogenous source.  Suppose the
- initial model has an intercept.  Rather than find the feature that maximizes
- the correlation with $Y$, streaming selection begins with the first variable
- $X_1$ that a researcher selects.  For example, a scientist might order the
- genes to consider when modeling their impact on disease in a micro-array
- experiment, or an economist might have a particular variable that represents a
- theory of unemployment.  Whatever the setting, the ordering of the explanatory
- variables reflects this precedence.  The streaming selection algorithm then
- evaluates $X_1$, such as testing for statistical significance using the usual
- $t$-statistic, say $t_1$.  If the $t$-statistic exceeds a threshold, say
- $\tau_1^2 < t_1^2$, the algorithm adds $X_1$ to the regression model.
-  Otherwise, the model remains with only an intercept.  The algorithm then
- examines the second feature $X_2$ and adds this variable if its $t$-statistic
- exceeds a threshold, $\tau_2^2 < t_2^2$.  
-
-
- Before we describe alpha-investing, we introduce a variation on
- the marginal false discovery rate (mFDR), an existing criterion for
- multiple testing.  Let the observable
- random variable $R$ denote the total number of hypotheses rejected by
- a testing procedure, and let $V$ denote the unobserved number of
- falsely rejected hypotheses.  A testing procedure controls mFDR
- at level $\alpha$ if
-\begin{equation}
-\label{eq:mFDR}
-\hbox{mFDR}_1 \equiv \frac{E(V)}{E(R) + 1} \le \alpha.
-\end{equation}
-mFDR traditionally does not add 1 to the denominator; following our
-notation, we denote the traditional version mFDR${}_0$. 
-The addition of a positive constant to the denominator
-avoids statistical problems under the complete null hypothesis.  Under the
-complete null hypothesis, all hypotheses are false, implying, $V \equiv R$
-and mFDR${}_{0}$ = 1. 
-
-
- More specifically, an alpha-investing rule $\cal I$ is a function that
- determines the $\alpha$-level for testing the next hypothesis in a sequence of
- tests.  We assume an exogenous system external to the investing rule chooses
- which hypothesis to test next.  (Though not part of the investing rule itself,
- this exogenous system can use the sequence of rejections to pick the next
- hypothesis.)  Let $W(k) \ge 0$ denote the alpha-wealth accumulated by an
- investing rule after $k$ tests; $W(0)$ is the initial alpha-wealth.
-  Conventionally, $W(0) = 0.05$ or $0.10$.  At step $j$, an alpha-investing rule
- sets the level $\alpha_j$ for testing $H_j$ from 0 up to the maximum
- alpha-level it can afford.  The rule must ensure that its wealth never goes
- negative.  Let $R_j \in \{0,1\}$ denote the outcome of testing $H_{j}$:
-\begin{equation}
-   R_{j} = \left\{\begin{array}{cl}
-       1, & \mbox{if } H_{j} \mbox{ is rejected }(p_{j} \le \alpha_{j}),\mbox{ and } \\
-       0, & \mbox{ otherwise.}
-       \end{array} \right.
-\label{eq:Rj}
-\end{equation}
-Using this notation, the investing rule $\cal I$ is a function of $W(0)$ and the prior
-outcomes,
-\begin{equation}
-  \alpha_j = {\cal I}_{W(0)}(\{R_1,\, R_2, \ldots,R_{j-1}\}).
-\label{eq:invest-rule}
-\end{equation}
-
-
-The outcome of testing $H_{1},\,H_{2},\,\ldots,H_{j}$ determines the alpha-wealth
-$W(j)$ available for testing $H_{j+1}$.  If $p_j \le \alpha_j$, the test rejects
-$H_j$ and the investing rule earns a contribution to its alpha-wealth, 
-called the {\em pay-out} and denoted by $\omega < 1$. We typically set $\alpha = \omega = W(0)$.  If $p_j > \alpha_j$, its alpha-wealth decreases by $\alpha_j/(1-\alpha_j)$, which is slightly more than 
- the cost extracted in alpha-spending.  The change in the alpha-wealth is thus
-\begin{equation}
-  W(j) - W(j-1) =
-   \left\{ \begin{array}{cc}
-                \omega                            & \mbox{ if } p_j \le \alpha_j  \;,\cr
-                 -\alpha_j/(1-\alpha_{j})     & \mbox{ if } p_j > \alpha_j   \;.
-           \end{array} \right.
-\label{eq:Wm}
-\end{equation}
-If the p-value is uniformly distributed on [0,1], then the expected
- change in the alpha-wealth is $-(1 - \omega) \alpha_j < 0$.  This
- suggests alpha-wealth decreases when testing a true null hypothesis.
- Other payment systems are possible; see the discussion in Section
- \ref{sec:discussion}.
- 
-
-
- Our methodology computes the risk produced by a method that sets the sequence
- of thresholds $\tau_1, \tau_2, \ldots$.  The following section describes risk
- inflation in the context of sequential testing.  Section 3 describes the
- computations.  Section 4 describes several selection procedures that determine
- $\tau_j$, with an emphasis on those derived from alpha-investing.  Section 5
- shows examples of the calculations, and we conclude with a summary and
- discussion of open issues in Section 6.
-
-
-% ---------------------------------------------------------------------------
-\section{ Risk Inflation in Sequential Testing }
-% ---------------------------------------------------------------------------
-
- The risk inflation criterion was defined by \citet{fostergeorge94} in the
- context of the classical variable selection problem for the regression model
- \eqn{eq:regr}.  Let $\gamma = (1, \gamma_1, \ldots, \gamma_p)$ and $\eta = (1,
- \eta_1, \ldots,\eta_p)'$ denote binary vectors that indicate those elements of
- $\beta$ that are estimated ($\gamma_j,\eta_j=1$) and those set to zero
- ($\gamma_j,\eta_j = 0$).  
-
-   The risk inflation of the estimator
- based on the selector $\gamma$ is the maximum of the ratio of the risk of
- $\hat\beta_\gamma$ to the smallest risk possible for an oracle that knows
- $\beta$,
+ where $\normsq{x} = x'x$ for vectors $x$.  The analysis in
+ \citet{fostergeorge94} bounds the risk of the multivariate estimator
+ $\hat\mu_{\gamma(\tau)}$; this estimator uses the fixed selector $\gamma(\tau)$
+ that rejects those $H_j$ for which $\tau^2 \sigma^2 < Y_j^2$.  The key
+ difference from $\hat\mu_{\hat\gamma}$ is that the threshold $\tau$ is set
+ without reference to data, being determined only by $p$.
+  \citet{fostergeorge94} show that the risk inflation of any testimator
+ $\hat\mu_{\gamma(\tau)}$ of this form is asympototically $2 \log p$,
  \begin{equation}
-    \mbox{RI}(\gamma) = \sup_\beta 
-                        \frac{R(\beta, \hat\beta_\gamma)}
-                        {\inf_\eta{R(\beta, \hat\beta_\eta)}}   \;.
+    2 \log p - o(\log p) 
+    \le
+    \sup_\mu  \frac{\sigma^2 + R(\hat\mu_{\gamma(\tau)}, \mu)}
+                   {\sigma^2 + \inf_\eta{R(\hat\mu_\eta, \mu)}}  
+    \le 
+    2 \log p + 1 \;.
  \label{eq:ri}
  \end{equation}
- The usual definition of risk inflation from \citet{fostergeorge94} restricts
- the denominator in \eqn{eq:ri} to the risk obtained by the least squares
- estimator that `knows' which of the $\beta_j \ne 0$ and estimates these.  In
- that case, the denominator becomes $\sigma^2 \sum \eta_j$.  They show that the
- properties of these two definitions of risk inflation are similar, and the
- version in \eqn{eq:ri} is more natural for our application.  Key results
- obtained by Foster and George show that when choosing predictors for which $X'X$
- is diagonal that
- \begin{equation}
-     2 \log p + o(log p) \le  RI(\gamma) \;,
- \label{eq:lower}
- \end{equation}
- and that hard thresholding (basically, Bonferroni selection) with the constant
- threshold $\tau_j^2= 2 \log p$ is essentially optimal,
- \begin{equation}
-       RI(\gamma_{2 \log p}) < 1 + 2 \log p \;.
- \label{eq:upper}
- \end{equation}
- Comparable results were obtained by \citet{donohojohnstone94} around the same time. 
+ The selector $\eta$ is any binary vector $\eta \in \{0,1\}^p$.  This result
+ (and the related results in \citet{donohojohnstone94}) suggest that one might
+ expect similar properties for an estimator developed sequentially.  Results for
+ the multivariate estimator also show that hard thresholding obtained by setting
+ $\tau^2 = 2 \log p$ is asymptotically optimal.  That begs the question of the
+ performance of this conservative procedure for sequential estimation.
 
 
- How does the sequential testing procedure differ from this context?
+ Our methodology bounds the risk of any alpha-investing or sequential testing
+ procedure.  In the spirit of risk inflation and oracle bounds, we compute the
+ worst-case risk relative to an oracle that is able to see the outcome of prior
+ tests.  The following section describes the computations that solve a set of
+ Bellman equations.  Section 3 describes several selection procedures that
+ determine $\tau_j$, with an emphasis on those derived from alpha-investing.
+  Section 4 displays the risk of these procedures, and we conclude with a
+ summary and discussion of open issues in Section 5.
 
  
 
@@ -597,16 +508,71 @@ only need a one-dimensional optimization at each test,
  \end{figure}
 
 
+ {\ras Connection to risk inflation.}
+
+ The risk inflation of the testimator
+ $\hat\mu_{\hat\gamma}$ is the maximum over choices of $\mu$ (and hence of
+ $\gamma$) of the ratio of the risk of $\hat\mu_{\hat\gamma}$ to the smallest
+ risk attainable by any testimator:
+ \begin{equation}
+    \mbox{RI}(\hat\gamma) 
+          = \sup_\mu  \frac{R(\mu, \hat\mu_{\hat\gamma})}
+                           {\inf_\eta{R(\mu, \hat\mu_\eta)}}   \;,
+ \label{eq:ri}
+ \end{equation}
+ where $\eta \in \{0,1\}^p$ denotes an arbitrary selector.  This version of risk
+ inflation is denoted $\widetilde{\mbox{RI}}$ in \citet{fostergeorge94}; the
+ more common form restricts the denominator in \eqn{eq:ri} to the risk of the
+ ``correct'' testimator, $R(\mu, \hat\mu_\gamma)$.  In that case, the
+ denominator reduces to the number of non-zero means, $\sum \gamma_j$.  Foster
+ and George show that the properties of these two definitions of risk inflation
+ are similar; the version in \eqn{eq:ri} is more natural for our application.
+  Given independent simultaneous (rather than sequential) tests,
+ RI$(\hat\gamma)$ is asymptotically equal to $2 \log p$.  \citet{fostergeorge94}
+ show that
+ \begin{equation}
+     2 \log p + o(\log p) \le  RI(\hat\gamma) \;,
+ \label{eq:lower}
+ \end{equation}
+ and that hard thresholding (basically, Bonferroni selection) is essentially optimal,
+ \begin{equation}
+       RI(\gamma_{2 \log p}) < 1 + 2 \log p \;.
+ \label{eq:upper}
+ \end{equation}
+ Comparable results were obtained by \citet{donohojohnstone94} around the same time. 
+
 
 
 %--------------------------------------------------------------------------
-\section{Discussion}
+\section{ Discussion }
 %--------------------------------------------------------------------------
+
+
+ Return to model selection.
+
+  Suppose one has a collection of $p$ variables $X_1, \ldots, X_p$ to consider as
+ explanatory variables in the classical linear regression model
+ \begin{equation}
+   Y_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip} + \ep_i, 
+     \qquad \ev \ep_i = 0, \Var(\ep_i)=\sigma^2,  \quad i = 1,\ldots,n\;.
+ \label{eq:regr}
+ \end{equation}
+ As a method for picking a model, subset selection (sometimes called $L_0$
+ selection) in effect tests the hypotheses $H_j: \beta_j = 0, \; j = 0, 1, \ldots, p$.
+  Let $\gamma_j = \pm 1$ denote those $\beta_j \ne 0$, and let $\hat\gamma_j =
+ \pm 1$ identify the rejected hypotheses.  The explanatory variable $X_j$
+ appears in the fitted model if $\hat\gamma_j = 1$ and is excluded otherwise
+ (hence estimating $\beta_j$ = 0).  We insert an intercept in all models (as
+ needed by risk inflation below) and so set $\gamma_0=\hat\gamma_0 = 1$.  The
+ vectors $\gamma = (1, \gamma_1, \ldots, \gamma_p)'$ and $\hat\gamma = (1,
+ \hat\gamma_1, \ldots, \hat\gamma_p)'$ collect these indicators.
+
 
 Alpha investing can mimic regular testing procedure by revisiting the test of
 prior hypotheses. 
 
 Improve the estimator by shrinkage.
+
 
 
 One might also use accumulated alpha wealth as a measure of the performance, and
@@ -632,6 +598,7 @@ One might also use accumulated alpha wealth as a measure of the performance, and
 
 
 %--------------------------------------------------------------------------
+\section{ Bibliography }
 \section*{Acknowledgement}
 %--------------------------------------------------------------------------
 
