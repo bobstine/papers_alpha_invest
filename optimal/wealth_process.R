@@ -127,10 +127,12 @@ simulate <- function(nSteps=5000) {
 
 # --- where does it stay
 draw.hist <- function(x, parms) {
-	hist(log(-parms$f(x[x<1000])), # avoid burn in
+	alpha <- -parms$f(x[100:(length(x))]);  # avoid initial values
+	hist(log(alpha), 
 		breaks=100, main=parms$name, xlab="Alpha Levels",
 		sub=paste("p=",p.reject,"  omega=",omega(),
-		     "  mean(-f(x)) = ", round(-mean(parms$f(x)),5), "  sd=",round(sd(parms$f(x)),5))
+		     "  mean(alpha) = ", round(mean(alpha),5), 
+		     "  sd=",round(sqrt(mean((alpha - p.reject)^2)),5))
 		)
 	}
 
