@@ -1,25 +1,22 @@
 ### Properties of the alpha investing processes
 
-# --- recursion...get next position from prior
-#       p is rejection probability in Bayes model
-
-build.recursion <- function(parms, p, omega) {
-	function (x) { parms$Finv(parms$F(x) + ifelse(rbinom(1,1,p), omega, parms$f(x))) }
-	}
 	
-plot.parms <- function(parms, range, w=.5) {
-	x0 <- parms$Finv(w);
-	plot(parms$F, range[1], max(x0+1,range[2]), main=parms$name, sub=paste("X0 =",round(x0,2)))
-	lines(rep(x0,2), c(0,parms$F(x0)), col="red")
+plot.alpha <- function(alpha,range=c(0,0.01)) {
+	w <- seq(0,1,0.01);
+	plot(w,sapply(w,function(x){alpha(x,1)}),col="red", type="l", ylim=range);
+	lines(w,sapply(w,function(x){alpha(x,2)}),col="green");
+	lines(w,sapply(w,function(x){alpha(x,3)}),col="blue");
 	}
 
 ######################################################################
 ###   
-###   omega is global constant set by a function
+###   omega is global constant set by these functions
 ###
       omega <- function() { 0.5 }
 ###
 ######################################################################
+
+K.scale <- 4;
 
 ###  Harmonic  ###
 #
@@ -29,45 +26,40 @@ plot.parms <- function(parms, range, w=.5) {
 #     finds the right level (i.e., would have lower power).
 #
 
-K.har <- log(1000);
-
-parms.har <- list(
-	name = "Harmonic",
-	F=      function(x) { K.har - log(x)}, 
-	Finv =  function(F) { exp(K.har-F) },
-	f =     function(x) { pmax(-omega(),-1/x) }
-)
+alpha.har <- function(w, scale=K.scale) {
+	K.har <- log(1000);
+	Finv  <-  function(F) { exp(K.har-F) };
+	f     <-  function(x) { 1/x };
+	scale*f(Finv(w/scale))
+}
+#	F     <-  function(x) { K.har - log(x) };
 
 
 ###  Universal ### (note you can solve for x < 1 to handle high wealth)
-#
-#   Choose the starting point to match up to the corresponding geometric
-#
 
-d.univ <- 3;
-K.univ <- 1/c(2.10974, 1.06906, 0.79288)[d.univ]
-
-parms.univ <- list(
-	name = "Universal",
-	F = 	function(x) { K.univ/log(x+d.univ) },
-	Finv = function(F) { exp(K.univ/F)-d.univ },
-	f = 	function(x) { pmax(-omega(),-K.univ/((x+d.univ)*log(x+d.univ)^2)) }
-)
+alpha.univ <- function(w, scale=K.scale) {
+	K.univ <- 1/c(2.10974, 1.06906, 0.79288)[d.univ <- 1];
+	Finv <- function(F) { exp(K.univ/F)-d.univ };
+	f    <- function(x) { K.univ/((x+d.univ)*log(x+d.univ)^2) };
+	scale*f(Finv(w/scale))
+}
+#	F <- function(x) { (K.univ/log(x+d.univ)) },
 
 
 ###  Geometric ### (note you can solve for x < 1 to handle high wealth)
 
-psi <- 0.05
-parms.geo <- list(
-	name = "Geometric",
-	F = 	function(x) { -psi*(1-psi)^(x-1)/log(1-psi) },
-	Finv = function(F) { z <- log(1-psi); log(F*(psi-1)*z/psi)/z },
-	f = 	function(x) { pmax(-omega(),-psi*(1-psi)^(x-1)) }
-)
+alpha.geo <- function(w, scale=K.scale){
+	psi <- 0.05;
+	psi * w
+}
+#	Finv <-function(F) { z <- log(1-psi); log(F*(psi-1)*z/psi)/z };
+#	f <-	function(x) { psi*(1-psi)^(x-1) };
+#	scale*f(Finv(w/scale))
+#	F <- 	function(x) { psi*(1-psi)^(x-1)/log(1-psi) },
 
 
 #####################################################################
-# All have a problem that |f| > F for some x < 1.  That means they
+# All had a problem that |f| > F for some x < 1.  That means they
 # will try to spend more than they have, which is not good.  
 #   Remedy: bound derivative by omega.
 #
@@ -75,12 +67,11 @@ parms.geo <- list(
 
 check <- function() {
 	# --- check inverse functions
-	with( parms.har,  	Finv(F(10)))
-	with( parms.har,  	F(Finv(0.3)))
+	Finv(F(10))
+	F(Finv(0.3))
 	# --- plot to see wealth function F and bids (neg ok for geometric)
-	plot.parms(parms.univ,c(0,5))
+	plot.alpha(alpha.univ,c(0,0.3))
 
-	parms <- parms.har; F <- parms$F; Finv <- parms$Finv; f <- parms$f;
 	F(x)                  # wealth at x
 	Finv(F(x)) - x        # should be 0
 
@@ -95,55 +86,49 @@ check <- function() {
 	
 #####################################################################
 
-simulate <- function(nSteps=5000) {
+simulate <- function(nSteps) {
 	# --- conditions
-	p.reject <<- 0.01; 
+	p.reject <<- 0.05; 
+	p.values <- rbinom(nSteps,1,1-p.reject) # 0/1 pvalues
 
-	# --- iteration functions
-	next.geo  <- build.recursion(parms.geo , p.reject, omega())
-	next.har  <- build.recursion(parms.har , p.reject, omega())
-	next.univ <- build.recursion(parms.univ, p.reject, omega())
+	wealth <- matrix(0, nrow=nSteps, ncol=2);
+	colnames(wealth) <- c("geo","univ");
 
-	# --- initial values
-	x0.geo  <- parms.geo$Finv(0.5); 
-	x0.har  <- parms.har$Finv(0.5); 
-	x0.univ <- parms.univ$Finv(0.5); 
-
-	x.geo  <- rep(0,nSteps) ; x.geo [1]<-x0.geo
-	x.har  <- rep(0,nSteps) ; x.har [1]<-x0.har
-	x.univ <- rep(0,nSteps) ; x.univ[1]<-x0.univ
-
+	wealth[1,] <- rep(0.5	,2)
 	for(i in 2:nSteps)	{ 
-		x.geo [i] <- next.geo (x.geo [i-1]);
-		x.har [i] <- next.har (x.har [i-1]);
-		x.univ[i] <- next.univ(x.univ[i-1]);
+		a <- alpha.geo(w <-wealth[i-1,"geo"])
+		wealth[i,"geo"] <- ifelse(p.values[i]<a, w+omega(), w-a)
+		a <- alpha.univ(w <-wealth[i-1,"univ"])
+		wealth[i,"univ"] <- ifelse(p.values[i]<a, w+omega(), w-a)
 		}
-		z <- cbind(x.geo, x.univ, x.har)
-		colnames(z) <- c("geo", "univ", "har")
-		z 
+	wealth
 }
 
-# simres <- simulate()
 
 # --- where does it stay
-draw.hist <- function(x, parms) {
-	alpha <- -parms$f(x[100:(length(x))]);  # avoid initial values
-	hist(log(alpha), 
-		breaks=100, main=parms$name, xlab="Alpha Levels",
-		sub=paste("p=",p.reject,"  omega=",omega(),
-		     "  mean(alpha) = ", round(mean(alpha),5), 
-		     "  sd=",round(sqrt(mean((alpha - p.reject)^2)),5))
+draw.hist <- function() {
+	hist(log(wealth[,"geo"]), 
+		breaks=100, main="Geometric", xlab="Wealth",
+		sub=paste("p=",p.reject,"  omega=",omega())
+		)
+	hist(log(wealth[,"univ"]), 
+		breaks=100, main="Universal", xlab="Wealth",
+		sub=paste("p=",p.reject,"  omega=",omega())
 		)
 	}
 
 see.results <- function() {
-	
-	# sequences
-	i<- 1:500; parms <- parms.geo; idx <- "univ"
-	
-		plot(i, parms$F(simres[i,idx]), main=paste("Wealth(",idx,")"), type="p")
-	 	plot(i,-parms$f(simres[i,idx]), main=paste("Alpha(",idx,")"), log="y")
+
+	nSteps <- 2000; 	i <- 1:nSteps
+
+	wealth <- simulate(nSteps)
+
+	idx <- "geo"; plot(i, wealth[i,idx], main=paste("Wealth(",idx,")"), type="p")
+	idx <- "univ"; points(i, wealth[i,idx], pc=23)
 	 
+	idx <- "geo"; i <- 1:500
+	plot(  i[-1], -diff(wealth[i,idx]), main="Changes", type="l", ylim=c(0,0.05))
+	idx <- "univ"; lines(i[-1], -diff(wealth[i,idx]), col="red")
 
 	par(mfrow=c(3,1))
 		draw.hist(simres[,1] , parms.geo );
