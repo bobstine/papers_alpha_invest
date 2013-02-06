@@ -43,7 +43,7 @@
 
 % --- Title
 
-\title{ The Risk  of Alpha-Investing Estimators }
+\title{ Risk Inflation of Sequential Testing }
 \author{
         Dean P. Foster and Robert A. Stine\thanks{Research supported by NSF grant DMS-1106743 }  \\
         Department of Statistics            \\
@@ -432,8 +432,28 @@ only need a one-dimensional optimization at each test,
 \section{ Examples }
 %--------------------------------------------------------------------------
  
+ The examples in this section compute the feasible risks produced by the alpha
+ investing rules just described.  We also consider several choice for the payout
+ $\omega$ that controls mFDR.  The choices span from $\omega=0.05$ to $\omega =
+ 0.5$ and larger.  Setting $\omega=0.5$ implies that we allow up to half of the
+ rejected hypotheses to be Type I errors.  Such a large error rate would not be
+ used in testing, but is natural when trying to minimize worst case risk.
+  Consider testing a collection of $m$ simple hypotheses
+ \begin{equation}
+    H_{0,j}: \mu_j = 0  
+    \qquad \mbox{ versus } \qquad 
+    H_{a,j}: \mu_j = \mu = \sigma \sqrt{2 \log m}
+ \label{eq:simple}
+ \end{equation}
+ for large $m$ and data $Y_j \sim N(\mu_j, \sigma^2)$.  The minimax argument
+ that leads to the risk inflation criterion in \citet{fostergeorge94} suggests
+ that one choose an estimator for which the risk of Type I and Type II errors
+ match.  Suppose one rejects $H_{0,j}$ if $Y_j^2 > \mu^2$.  Each Type II error
+ produces risk $\mu^2/2$.  
+
+
  To evaluate an alpha investing rule, we consider its performance in the
- following context.  Consider testing a sequence of $T$ one-sided null
+ following context.  Consider testing a sequence of $T$ null
  hypotheses $H_j: \mu_j \le 0, \, j=1,\,2,\, \ldots, \mu_T$ versus the alternatives
  $H_{j,a}: \mu_j > 0$.  \marginpar{$\mu_{1:T}$} Denote the collection of mean
  parameters $\mu_{1:T} = \{\mu_1, \mu_2, \ldots, \mu_T\}$.  The test statistics
@@ -443,6 +463,8 @@ only need a one-dimensional optimization at each test,
  the start of testing.  For the purpose of calculating risks, a sequence of
  tests defines a sequence of `testimators' by setting $\hat\mu_j = Z_j$ if
  $p_j<\al_j$ and zero otherwise.
+ 
+
  
 
  Within this context, how does the choice of an investing rule influence the
