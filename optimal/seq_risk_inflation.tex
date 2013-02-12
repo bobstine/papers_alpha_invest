@@ -208,7 +208,7 @@
  hold for the sequential estimator $\hat\mu_{\hat\gamma}$.  Results for the
  multivariate estimator also show that hard thresholding obtained by setting
  $\tau^2 = 2 \log p$ is asymptotically optimal.  Since thresholding at $\sigma
- \sqrt{\log p}$ is essentially equivalent to using the Bonferroni rule, this
+ \sqrt{2 \log p}$ is essentially equivalent to using the Bonferroni rule, this
  optimal property begs the question of the optimality of the risk produced by
  such a conservative procedure for sequential estimation.
 
@@ -433,24 +433,48 @@ only need a one-dimensional optimization at each test,
 %--------------------------------------------------------------------------
  
  The examples in this section compute the feasible risks produced by the alpha
- investing rules just described.  We also consider several choice for the payout
- $\omega$ that controls mFDR.  The choices span from $\omega=0.05$ to $\omega =
- 0.5$ and larger.  Setting $\omega=0.5$ implies that we allow up to half of the
- rejected hypotheses to be Type I errors.  Such a large error rate would not be
- used in testing, but is natural when trying to minimize worst case risk.
-  Consider testing a collection of $m$ simple hypotheses
- \begin{equation}
-    H_{0,j}: \mu_j = 0  
-    \qquad \mbox{ versus } \qquad 
-    H_{a,j}: \mu_j = \mu = \sigma \sqrt{2 \log m}
- \label{eq:simple}
- \end{equation}
- for large $m$ and data $Y_j \sim N(\mu_j, \sigma^2)$.  The minimax argument
- that leads to the risk inflation criterion in \citet{fostergeorge94} suggests
- that one choose an estimator for which the risk of Type I and Type II errors
- match.  Suppose one rejects $H_{0,j}$ if $Y_j^2 > \mu^2$.  Each Type II error
- produces risk $\mu^2/2$.  
+ investing rules just described.  We also consider several choice for the payoff
+ $\omega$ that controls mFDR.  The choices span from the conventional Type I
+ error rate with $\omega=0.05$ to $\omega = 0.5$ and larger.  Setting
+ $\omega=0.5$ implies that we allow up to half of the rejected hypotheses to be
+ Type I errors.  Such a large error rate would not be used in testing, but is
+ natural when trying to minimize worst case risk.  
 
+ \clearpage
+
+ To see the value of a large payoff, consider the risk produced by a testimator
+ defined by a test of simple hypotheses for a mean.  Suppose that a test of the
+ hypotheses $H_0: \mu=0$ versus $H_a: \mu=\mu_\al$ has level $\alpha$.  The test
+ rejects $H_0$ if $Y^2 > \sigma^2 z_{\al/2}$ for $Y \sim N(\mu,\sigma^2)$.  To
+ make the problem hard, suppose that the mean under the alternative has been
+ chosen to produce maximum risk for the testimator,
+ \begin{equation}
+    \mu_\al = \arg \max_\mu R(\hat\mu,\mu) \approx \mbox{[add this]}
+ \label{eq:Malpha}
+ \end{equation}
+ Figure \ref{fi:risk} shows a plot of the risk with $\alpha=0.05$ and
+ $\alpha=0.0005$, a more typical value in, say, model selection.
+  \citet{fostergeorge94} show that as $\alpha \rightarrow 0$, $\mu_\al = \sqrt{2
+ \log 1/\al} + o(something) \approx z_{\al/2}.$ Assume, as in a Bayesian model,
+ $H_a$ holds with small probability $\pi$; in other words, we are in the 'nearly
+ black' setting in which most parameters are zero.  The major contributions to
+ the risk in this setting come from Type I and Type II errors.  The risk from a
+ Type I error is large because the test rejects $H_0$ only if $Y$ is far from
+ zero: $\alpha (1-\pi) 2 \log(1/\al).$ The risk from a Type II error is also
+ large because of the size of $\mu_\al$; this risk is approximately $(\pi/2) 2
+ \log(1/\al)$. (The $\pi/2$ comes from the distribution of $Y$ under $H_a$ being
+ located on the rejection boundary.)  Setting mFDR equal to 1/2 balances these
+two risks.  In this context,
+ \begin{equation}
+    mFDR = \frac{\al(1-\pi)}
+                {\al(1-\pi) + \pi/2} \;.   
+ \label{eq:mfdrexample}
+ \end{equation}
+ Balancing the risks of Type I and Type II errors implies that we set
+$\pi/2=\al(1-\pi)$ and hence that we want $mFDR = 1/2$.
+
+
+\clearpage
 
  To evaluate an alpha investing rule, we consider its performance in the
  following context.  Consider testing a sequence of $T$ null
