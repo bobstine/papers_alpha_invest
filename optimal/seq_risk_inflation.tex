@@ -3,6 +3,7 @@
 \usepackage[longnamesfirst]{natbib}
 \usepackage[usenames]{color}
 \usepackage{graphicx}  % Macintosh pdf files for figures
+\usepackage{bbm}       % one symbol
 \usepackage{amssymb}   % Real number symbol {\Bbb R}
 \input{../../standard}
 
@@ -442,12 +443,59 @@ only need a one-dimensional optimization at each test,
 
  \clearpage
 
- To see the value of a large payoff, consider the risk produced by a testimator
- defined by a test of simple hypotheses for a mean.  Suppose that a test of the
- hypotheses $H_0: \mu=0$ versus $H_a: \mu=\mu_\al$ has level $\alpha$.  The test
- rejects $H_0$ if $Y^2 > \sigma^2 z_{\al/2}$ for $Y \sim N(\mu,\sigma^2)$.  To
- make the problem hard, suppose that the mean under the alternative has been
- chosen to produce maximum risk for the testimator,
+ A simple approximation suggests that alpha investing procedures should allow
+ larger values for mFDR than typical in testing.  Consider the risk produced by
+ a testimator defined by a test of simple hypotheses for a mean.  Suppose that a
+ test of the hypotheses $H_0: \mu=0$ versus $H_a: \mu=\eta$ has level $\alpha$.
+  The test rejects $H_0$ if $Y^2 > z_{\al/2}^2$ for $Y \sim
+ N(\mu,1)$.  Our approximations decompose the risk of the testimator
+ $\hat\mu_\al = Y\,\one{Y^2>z_{\al/2}^2}$ as shown in the following table. Note that we treat $\mu$ as a
+ r.v. with probability $\pi$ on $\eta$ and 0 otherwise.
+
+\begin{center}
+\begin{tabular}{c|cc}
+            &   $\hat\mu=0$            & $\hat\mu\ne 0$               \cr \hline
+ $\mu=0$    &  0                       & $\al (1-\pi) (2 \log 1/\al)$ \cr
+ $\mu=\eta$ &  $(\pi/2)(2 \log 1/\al)$ & $\pi/2 \cdot 1$              \cr
+\end{tabular}
+\end{center}
+
+ \noindent
+ These approximations use $z_\al \approx \sqrt{2 \log 1/\al}$ and estimate the
+ risk at this threshold by $2 \log \al$.  The components in this table are
+ summands in the decomposition
+ \begin{equation}
+   \ev (\hat\mu_\al - \mu)^2 
+     = \sum_{C} \ev \left((\hat\mu_\al-\mu)^2 | C\right) \pr(C),
+ \label{eq:decomp}
+ \end{equation}
+ where the conditions are $\{\mu=0, Y^2 < z_{\al/2}^2\}, \{\mu=0, Y^2 \ge
+ z_{\al/2}^2\},\{\mu=\eta, Y^2 < z_{\al/2}^2\},\,\mbox{ and
+ },\{\mu=\eta, Y^2 \ge z_{\al/2}^2\}$.
+
+
+ Now consider the mFDR for this table:
+ \begin{equation}
+     mFDR = \frac{\al(1-\pi)}
+                 {\al(1-\pi) + \pi/2} \;.
+ \label{eq:mfdrtable}
+ \end{equation}
+ To perform well, the testimator should balance the risk associated with the two
+ types of errors, so that \ras{Should this balance refer to {\bf both} of terms
+ from the second column or just to the Type I and Type II errors? It would not
+ make much difference here, but it does in the more accurate calculations. }
+ \begin{equation}
+   \al(1-\pi) 2 \log (1/\al) \approx (\pi/2) (2 \log(1/\al) \Rightarrow   
+         \pi/2 \approx \al(1-\pi) \;.
+ \label{eq:balance}
+ \end{equation}
+ Plugging this back in \eqn{eq:mfdrtable} gives mFDR$=\half$.
+
+ \clearpage
+
+ To make the problem hard, suppose that the mean
+ under the alternative has been chosen to produce maximum risk for the
+ testimator,
  \begin{equation}
     \mu_\al = \arg \max_\mu R(\hat\mu,\mu) \approx \mbox{[add this]}
  \label{eq:Malpha}
