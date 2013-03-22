@@ -1,1 +1,1 @@
-../../../mmr/alpha_allocation.nb
+/Users/bob/mma/alpha_allocation.nb

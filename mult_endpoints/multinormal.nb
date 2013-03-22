@@ -1,1 +1,1 @@
-../../../mmr/multinormal.nb
+/Users/bob/mma/multinormal.nb

@@ -1,1 +1,1 @@
-/Users/bob/work/mmr/alpha_allocation.R
+/Users/bob/work/mmr/R/alpha_allocation.R
