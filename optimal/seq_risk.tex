@@ -36,7 +36,7 @@
 \hyphenation{among}
 
 % --- Customized commands, abbreviations
-\newcommand{\TIT}{{\it  {\tiny Risk inflation of alpha-investing (\today)}}}
+\newcommand{\TIT}{{\it  {\tiny Risk of sequential tests (\today)}}}
 
 % --- Header
 \pagestyle{myheadings}
@@ -44,7 +44,7 @@
 
 % --- Title
 
-\title{ Risk Inflation of Sequential Testing }
+\title{ Risk of Sequential Testing with Alpha Investing }
 \author{
         Dean P. Foster and Robert A. Stine\thanks{Research supported by NSF grant DMS-1106743 }  \\
         Department of Statistics            \\
@@ -64,17 +64,14 @@
 
 \abstract{ 
 
- Alpha-investing tests a possibly infinite sequence of hypotheses while
- controlling the expected number of false rejections.  This paper finds the risk
- of an estimator produced by these tests.  We characterize the worst-case risk
- of this estimator vis-a-vis an oracle.  Our analysis provides the exact risk
- inflation of alpha-investing in a finite sequence of tests.  Our results show
- that the asymptotic bound $2 \log p$ from \citet{fostergeorge94} holds for the
- alpha-investing estimator.  The best results relative to the oracle occur when
- the underlying tests are allowed to produce a surprisingly large number of
- false rejections.  Our results also characterize the population models that
- produce the maximum risk.  For example, for one type of alpha-investing, the
- model that produces the largest risk inflation has oracle risk $\log p$.
+ Streaming feature selection evaluates potential explanatory variables
+ sequentially rather than all at once.  This approach produces novel challenges
+ for variable selection.  Spending rules such as alpha investing control the
+ rate of false discoveries, but little is known about the risk of the resulting
+ estimator.  We provide here a computational framework for finding and comparing
+ the finite-sample, worst-case risk of streaming selection.  Our findings
+ demonstrate that in all but very sparse models, estimators allowed to have
+ larger rates of false discoveries produce smaller risk.  
 
 }
 
@@ -82,7 +79,8 @@
 \vspace{0.05in}
 
 \noindent
-{\it Key Phrases: bellman equations, hard thresholding, testimator, variable selection}
+{\it Key Phrases: Bellman equations, hard thresholding, streaming feature
+ selection, testimator, variable selection}
 
 \clearpage
 
@@ -91,95 +89,118 @@
 \section{ Introduction }
 % ----------------------------------------------------------------------
 
- Alpha-investing is a sequential approach to multiple testing.  Rather than test
- multiple hypotheses at once, alpha-investing tests hypotheses one-at-a-time in
- a specified order.  Alpha-investing begins with an initial allowance for Type I
- error that is called its alpha-wealth.  Each test consumes some of the
- available alpha-wealth.  Alpha-investing overcomes the conservatism of
- alpha-spending procedures such as the Bonferroni method by earning a
- contribution to its alpha-wealth for each rejected null hypothesis.  Thus
- rejections beget more rejections.  Alpha-investing further allows one to test
- an infinite stream of hypotheses, accommodate dependent tests, and incorporate
- domain knowledge, all the while controlling the expected number of false
- rejections. The following section describes alpha-investing in more detail and
- provides several examples.
 
+ Streaming feature selection constructs a predictive model by choosing
+ explanatory variables from a sequence offered by an exogenous source.  Rather
+ than evaluate these variables simultaneously, streaming selection evalutes them
+ one-at-a-time.  Greedy searches like stepwise regression consider the full
+ batch of, say, $p$ potential explanatory variables together, choosing at the
+ first step the predictor $X_{(1)}$ that obtains the best fitting model.  In
+ contrast, streaming selection evaluates the offered predictors sequentially as
+ $X_1, \, X_2, \ldots$, performing the evalation of $X_j$ in the context of the
+ model produced by picking from $X_1, \ldots, X_{j-1}$.  Hence, streaming
+ selection does not require the full set of explanatory variables at the start
+ of the search and is free to use the results of evaluating initial variables to
+ guide the search for those to add subsequently.  For example, if it adds $X_j$
+ to the model, the streaming search might then be expand add interactions $X_j
+ \, X_k$ to the queue of possible variables to consider.  Streaming selection
+ can thus rapidly explore collections of explanatory variables that are larger
+ than typically considered with conventional methods; the slowest step in
+ forward stepwise regression is the calculation of the $X'X$ matrix.
+  \citet{fosterlin10} show examples selecting from up to $p$=100,000 explanatory
+ variables.
+
+
+ Streaming selection poses a challenge, however, for variable selection.
+  Although it is advantageous to avoid simultaneously evaluating every
+ predictor, the absence of a fixed set of features in streaming selection
+ requires a different type of selection criterion from those commonly used.  For
+ example, suppose the search begins with a list of $p$ possible features $X_1,
+ X_2, \ldots, X_p$.  As mentioned previously, the search could expand to include
+ interactions in $X_j$ once $X_j$ joins the model.  If the search is limited to
+ second-order interactions (one could allow higher order interactions as well),
+ then the maximum number of possible explanatory variables is $m = p(p+1)/2$
+ variables.  Since few of these would be considered, it would be very
+ conservative to combine $m$ with a criterion such as AIC, BIC, or RIC.
+  Similarly, selection using FDR requires the full set of marginal $p$-values.
+
+
+ Alpha investing \citep{fosterstine08} is a sequential testing procedure
+ designed to support streaming feature selection.  Because alpha investing can
+ test an infinite sequence of hypotheses, it is well-matched to a search of an
+ unbounded collection of features that is too large to manipulate
+ simultaneously.  Rather than test multiple hypotheses at once, alpha investing
+ tests hypotheses one-at-a-time in a specified order.  Alpha investing begins
+ with an initial allowance for Type I error that is called its alpha wealth.
+  Each test consumes some of the available alpha wealth, as in the alpha
+ spending rules used in clinical trials.  Alpha investing differs from these and
+ overcomes the conservatism of alpha spending rules, which include the
+ Bonferroni method, by earning a contribution to the alpha wealth available for
+ subsequent tests for each rejected null hypothesis.  Thus rejections beget more
+ rejections.  Alpha investing further allows one to test an infinite stream of
+ hypotheses, accommodate dependent tests, and incorporate domain knowledge.
  
- A natural use for alpha-investing is to control of fast, sequential methods for
- building models by selecting features from a large collection of potential
- explanatory variables.  Streaming feature selection, for example, identifies
- predictive features by testing candidate predictors one-at-a-time in an order
- specified by an exogenous source rather than choosing the best from a
- predetermined collection.  Unlike stepwise regression, streaming selection
- evaluates each predictor in the context of the current model, without requiring
- knowledge of all of the other predictors that might follow.  This approach
- allows the algorithm to explore essentially infinite collections of
- explanatory variables more rapidly than possible through conventional methods
- \citep{fosterlin10, langford11}.  Because alpha-investing can test an infinite
- sequence of hypotheses, it is well-matched to a search of an unbounded
- collection of features that is too large to manipulate at once.
+
+ Though flexible, alpha investing controls the expected number of false
+ rejections.  Controlling the false discovery rate with alpha investing guards
+ against overfitting in variable selection.  With alpha inveseting, one can
+ guarantee that on average not more than, say, 5\% of the rejected hypotheses
+ spuriously add a predictor to the model.  When building a predictive model,
+ however, controlling the false discovery rate is frequently secondary to
+ obtaining a more predictive model.  Control of the false discovery rate does
+ not imply that one will find the most predictive model possible.  It only
+ guarantees that a high percentage of chosen features are in fact useful.  The
+ risk of the implied estimator is more relevant.
 
 
- Though risk or squared error may be more relevant for model selection, multiple
- testing procedures such as alpha-investing or FDR are usually evaluated from
- the perspective of controlling the rate of Type I errors.  Consider testing the
- sequence of two-sided hypotheses $H_j: \mu_j = 0$, $j = 1,\ldots, p,$ using a
- corresponding sequence of independent test statistics $Y_j \sim N(\mu_j,
- \sigma^2)$ with known variance $\sigma^2$.  The vectors $\mu = (\mu_1, \ldots,
- \mu_p)'$ and $Y = (Y_1, \ldots, Y_p)'$ collect these items.  Let the indicators
- $\gamma_j = I_{\{\beta_j\ne 0\}}$ identify the hypotheses for which $\mu_j \ne
- 0$; $\gamma_j = 1$ implies $H_j$ is false.  Corresponding to these, let
- $\hat\gamma_j$ indicate which hypotheses are rejected by tests based on $Y$.
-  We assume that a test rejects $H_j$ if the observed test statistic exceeds a
- threshold determined by a multiple $\hat\tau_j$ of the noise level,
- \begin{equation}
-    \hat\gamma_j = I_{\{\hat\tau_j^2 \sigma^2 < Y_j^2\}} \;.  
- \label{eq:gammahat}
- \end{equation}
-  $\hat\gamma_j = 1$ implies that the test rejects $H_j$ and is zero otherwise.
-  Alpha-investing allows the outcome of prior tests to influence the choice of
- the threshold, so that
- \begin{equation}
-   \hat\tau_j = \tau(\hat\gamma_1, \ldots, \hat\gamma_{j-1}) \;.   
- \label{eq:tauhat}
- \end{equation}
- Collect these indicators into the vectors $\gamma$ and $\hat\gamma$.  Note that
- our notation suppresses the fact that $\gamma$ is a function $\gamma(\mu)$ of
- the underlying parameters.  Let $W(\hat\gamma) = \sum_j \hat\gamma_j$ denote
- the total number of rejections, and let $V(\hat\gamma, \gamma) = \sum_j
- \hat\gamma_j (1-\gamma_j)$ count the number of false rejections.  A selector
- $\hat\gamma$ controls the expected false discovery rate (mFDR) if
- \begin{equation}
-     \ev V(\hat\gamma, \gamma) \le \alpha(1 + \ev W(\hat\gamma)) \;.
- \label{eq:mfdr}
- \end{equation}
- \citet{fosterstine08} show that alpha-investing provides a generic recipe for
- constructing selectors that satisfy \eqn{eq:mfdr}.  Control of the number of
- false rejections, however, does not address the risk of the estimator.  
+ Our analysis here considers the cumulative risk of a sequence of testimators
+ implied by testing a sequence of null hypotheses.  A testimator is also known
+ as a keep-or-kill estimator or a hard thresholding estimator.  The estimation
+ problem we consider is a simplified version of the variable selection problem
+ that avoids issues related to the collinearities among the explanatory
+ variables.  Rather than observe a sequence of slope estimates, we assume that
+ the observed data are a finite sequence of $p$ random variables $Y_j \sim
+ N(\mu_j,1)$.  Now consider the corresponding sequence of two-sided tests of the
+ sequence of null hypotheses $H_j: \mu_j = 0$.  We derive a testimator from the
+ familiar two-sided, $\al$-level test that rejects $H_j$ if $z_\alpha^2 \le
+ Y_j^2$, where $z_\al$ denotes the critical value $z_\al = \Phi^{-1}(1-\al/2)$.
+  The usual simultaneous testimator fixes a common $\al$-level for all $p$
+ tests.  Sequential testing with alpha investing allows the $\al$-level to vary
+ over the sequence.  In general, alpha investing allows $\alpha_j$, the level of
+ the $j$th test, to depend on whether prior tests reject $H_k$, $k < j$.  
 
- 
- Our objective here is to understand how well alpha-investing controls the risk
- of an estimator produced by the associated tests.  In particular, we consider
- the risk of a so-called ``testimator'' (also known as a keep-or-kill estimator
- or a hard thresholding estimator).  Given the selector $\hat\gamma$, the
- testimator $\hat\mu_{\hat\gamma} \in \Rp$ zeros out coordinates in which the
- data fail to reject $H_j$:
+
+ The resulting estimator of $\mu = (\mu_1,\ldots,\mu_p)'$ has $j$th element
  \begin{equation}
-   (\hat\mu_{\hat\gamma})_j 
-          = \hat\mu(Y_j, \hat\tau_j) 
-          = \left\{ \begin{array}{cc}
-                                Y_j & \mbox{ if } \hat\tau_j^2 \sigma^2 < Y_j^2,  \cr
-                                 0  & \mbox{ otherwise. }
-                              \end{array}\right.
+    \hat\mu_j = \left\{
+      \begin{array}{cc}
+            Y_j  & z_{\al_j}^2 \le Y_j^2 \cr
+            0  & \mbox{ otherwise. }
+      \end{array} \right.
  \label{eq:muhat}
  \end{equation}
- The risk of $\hat\mu_{\hat\gamma}$ is
+ We collect these estimates in the vector $\hat\mu = (\hat\mu_1, \ldots,
+ \hat\mu_p)'$.  If the data are collected in the vector $Y = (Y_1, \ldots,
+ Y_p)'$, then the testimator zeroes out the elements for which the corresponding
+ test fails to reject the null hypothesis.  The risk of $\hat\mu$ is
  \begin{equation}
-    R(\hat\mu_{\hat\gamma}, \mu) 
-      = \ev_\mu \normsq{\hat\mu_{\hat\gamma} - \mu} \;,
+    R(\hat\mu, \mu) 
+      = \ev_\mu \normsq{\hat\mu - \mu} \;,
  \label{eq:risk}
  \end{equation}
  where $\normsq{x} = x'x$ for vectors $x$. 
+
+
+
+
+ %% HERE
+
+
+  Let the indicator $\hat\gamma_j = \one{z_{\al_j}\le Y_j}$ denote whether the
+ test at level $\al_j$ rejects $H_j$.  To capture the role of prior tests, we
+ treat $\al_j$ as a function of the prior outcomes $\hat\gamma_1, \ldots,
+ \hat\gamma_{j-1}$.  The following section provides more details of this
+ function.
 
 
  The risk of estimators used in orthogonal regression provide conjectures for
