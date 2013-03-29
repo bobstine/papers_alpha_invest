@@ -343,6 +343,55 @@
  
 
 %--------------------------------------------------------------------------
+\section{ Risk Analysis}
+%--------------------------------------------------------------------------
+
+We start by considering the risk of testimators in the more familiar case of a
+single test or simultaneous tests.  This context allows us to introduce the
+approach that we take when studying the risk of alpha investing procedures in
+the sequential context.
+
+
+
+%--------------------------------------------------------------------------
+\subsection{ Scalar Risk }
+%--------------------------------------------------------------------------
+
+We first consider the squared error risk of testimators for a single parameter.
+  Denote the scalar testimator based on the test with level $\al$ as
+ $\hat\mu_\al(Y)$ where $Y \sim N(\mu,1)$.
+
+The risk of $\hat\mu_\al$ is
+ \begin{eqnarray}
+   R(\hat\mu_\al,\mu) 
+     &=& \ev(\hat\mu_\al(Y) - \mu)^2  \cr
+     &=& \mu^2 \pr(Y^2 \le z_\al) 
+         + \int_{y^2>z_\al} (y-\mu)^2 \phi(y) dy \;.
+ \label{eq:risk_mu_al}
+ \end{eqnarray}
+ The first summand is the squared bias that arises if the test does not reject
+ when $\mu \ne 0$.  The second is the variance of the estimator.  Figure
+ \ref{fig:risk}(a) shows a graph of the risk of two testimators with $\al=0.05$
+ and $\al = 0.20$.  Figure \ref{fig:risk}(b) shows the decomposition of the risk
+ of $\hat\mu_{0.05}$ into bias and variance terms.  Because the variance
+ component of the risk is bounded by one, the bias dominates the risk unless
+ $\al$ is unusually large.
+
+
+ \begin{figure}
+ \caption{ \label{fig:risk} Risk of testimators. (a) Risk of testimators with
+$\al$ = 0.05, 0.20 versus $\mu$. (b) Components of the risk of $\hat\mu_{0.05}$. }
+ \centerline{ 
+   \includegraphics[width=2.5in]{figures/risk_a}
+   \includegraphics[width=2.5in]{figures/risk_b} }
+ \end{figure}
+
+ 
+
+
+% RAS
+
+%--------------------------------------------------------------------------
 \section{ Computation }
 %--------------------------------------------------------------------------
 
