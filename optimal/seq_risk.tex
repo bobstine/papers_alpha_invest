@@ -155,22 +155,17 @@
 
  Our analysis here considers the cumulative risk of a sequence of testimators
  implied by testing a sequence of null hypotheses.  A testimator is also known
- as a keep-or-kill estimator or a hard thresholding estimator.  The estimation
- problem we consider is a simplified version of the variable selection problem
- that avoids issues related to the collinearities among the explanatory
- variables.  Rather than observe a sequence of slope estimates, we assume that
- the observed data are a finite sequence of $p$ random variables $Y_j \sim
- N(\mu_j,1)$.  Now consider the corresponding sequence of two-sided tests of the
- sequence of null hypotheses $H_j: \mu_j = 0$.  We derive a testimator from the
- familiar two-sided, $\al$-level test that rejects $H_j$ if $z_\alpha^2 \le
- Y_j^2$, where $z_\al$ denotes the critical value $z_\al = \Phi^{-1}(1-\al/2)$.
-  The usual simultaneous testimator fixes a common $\al$-level for all $p$
- tests.  Sequential testing with alpha investing allows the $\al$-level to vary
- over the sequence.  In general, alpha investing allows $\alpha_j$, the level of
- the $j$th test, to depend on whether prior tests reject $H_k$, $k < j$.  
-
-
- The resulting estimator of $\mu = (\mu_1,\ldots,\mu_p)'$ has $j$th element
+ as a keep-or-kill estimator or a hard thresholding estimator.  The estimator of
+ a parameter $\mu$ is zero unless a test of the null hypothesis that claims $\mu
+ = 0$ is rejected.  The estimation problem we consider is a simplified version
+ of the variable selection problem that avoids issues related to the
+ collinearities among the explanatory variables.  Rather than observe a sequence
+ of slope estimates, we assume that the observed data are a finite sequence of
+ $p$ random variables $Y_j \sim N(\mu_j,1)$.  We obtain a testimator from a
+ sequence of two-sided tests.  For coordinate $j$, the level of the test is
+ $\al_j$.  The test rejects $H_j: \mu_j = 0$ if $z_{\alpha_j}^2 \le Y_j^2$,
+ where $z_{\al_j}$ denotes the corresponding two-sided critical value $z_{\al_j}
+ = \Phi^{-1}(1-\al_j/2)$.  The resulting estimator has $j$th element
  \begin{equation}
     \hat\mu_j = \left\{
       \begin{array}{cc}
@@ -180,66 +175,64 @@
  \label{eq:muhat}
  \end{equation}
  We collect these estimates in the vector $\hat\mu = (\hat\mu_1, \ldots,
- \hat\mu_p)'$.  If the data are collected in the vector $Y = (Y_1, \ldots,
- Y_p)'$, then the testimator zeroes out the elements for which the corresponding
- test fails to reject the null hypothesis.  The risk of $\hat\mu$ is
+ \hat\mu_p)'$ and similarly write $\mu = (\mu_1, \ldots, \mu_p)'$ and $Y = (Y_1,
+ \ldots, Y_p)'$.  The risk of $\hat\mu$ is
  \begin{equation}
     R(\hat\mu, \mu) 
       = \ev_\mu \normsq{\hat\mu - \mu} \;,
  \label{eq:risk}
  \end{equation}
- where $\normsq{x} = x'x$ for vectors $x$. 
+ where $\normsq{x} = x'x$ for vectors $x$.
 
 
-
-
- %% HERE
-
-
-  Let the indicator $\hat\gamma_j = \one{z_{\al_j}\le Y_j}$ denote whether the
- test at level $\al_j$ rejects $H_j$.  To capture the role of prior tests, we
- treat $\al_j$ as a function of the prior outcomes $\hat\gamma_1, \ldots,
- \hat\gamma_{j-1}$.  The following section provides more details of this
- function.
-
-
- The risk of estimators used in orthogonal regression provide conjectures for
- the risk of estimators produced by alpha-investing.  These results do not apply
- directly because they hold for multivariate estimates produced simultaneously
- rather than sequentially.  This change in the timing of when infomatino becomes
- available affects both the estimators and the relevant oracle.  The analysis of
- risk inflation in \citet{fostergeorge94} bounds the risk of the multivariate
- estimator $\hat\mu_{\gamma(\tau)}$; this estimator uses a selector
- $\gamma(\tau)$ with a fixed threshold that rejects those $H_j$ for which
- $\tau^2 \sigma^2 < Y_j^2$.  The key difference from $\hat\mu_{\hat\gamma}$ is
- that the threshold $\tau$ is set without reference to data, being determined
- only by $p$.  \citet{fostergeorge94} show that the risk inflation of any
- testimator $\hat\mu_{\gamma(\tau)}$ of this form is asympototically $2 \log p$,
+ Minimax bounds for the risk $R(\hat\mu,\mu)$ are well-understood in the
+ classical context of model selection that simultaneously fixes the level $\al_j
+ = \al$ of all of the tests.  Let $\hat\mu(\al)$ denote the testimator with
+ fixed level $\al$ for all $p$ tests.  \citet{fostergeorge94} define a ratio
+ known as the risk inflation of $\hat\mu(\al)$. \citep[][obtain similar
+ results.]{donohojohnstone94} The risk inflation of $\hat\mu(\al)$ is the
+ supremum of the ratio of the risk of the testimator with level $\al$ the risk
+ of a testimator that consults an oracle for the best possible level.  Their
+ results imply that the risk inflation of $\hat\mu(\al)$ is asymptotically $2
+ \log p$,
  \begin{equation}
     2 \log p - o(\log p) 
     \le
-    \sup_\mu  \frac{\sigma^2 + R(\hat\mu_{\gamma(\tau)}, \mu)}
-                   {\sigma^2 + \inf_\eta{R(\hat\mu_\eta, \mu)}}  
+    \sup_\mu  \frac{1 + R(\hat\mu(\al), \mu)}
+                   {1 + \inf_\eta{R(\hat\mu(\eta), \mu)}}  
     \le 
     2 \log p + 1 \;.
  \label{eq:ri}
  \end{equation}
- The selector $\eta$ in the denominator is any binary vector $\eta \in
- \{0,1\}^p$.  Their theorem \citep[and the related results
- in][]{donohojohnstone94} suggests that one might expect similar properties to
- hold for the sequential estimator $\hat\mu_{\hat\gamma}$.  Results for the
- multivariate estimator also show that hard thresholding obtained by setting
- $\tau^2 = 2 \log p$ is asymptotically optimal.  Since thresholding at $\sigma
- \sqrt{2 \log p}$ is essentially equivalent to using the Bonferroni rule, this
- optimal property begs the question of the optimality of the risk produced by
- such a conservative procedure for sequential estimation.
+ Foster and George also show that the testimator $\hat\mu(1/p)$ -- essentially
+ the Bonferoni estimator -- obtains the risk inflation threshold.  The constant
+ 1 in the ratio arises in the setting of regression models in which one always
+ estimates the intercept.  As a practical device, the constant also avoids
+ dividing by zero if every $\mu_j = zero$.
 
 
- The following section describes several procedures for determining $\tau_j$
- derived from alpha-investing.  Section 3 describes the computations that
- solve a set of Bellman equations.  Our methodology bounds the risk of any
- sequential testimator.  In the spirit of risk inflation and oracle bounds, we
- compute the convex set of attainable risks:
+ Though suggestive, these results do not apply directly to the estimator derived
+ from alpha investing because they describe multivariate estimates produced
+ simultaneously rather than sequentially.  This change in the timing of
+ information affects both the estimator and the competing oracle.  As described
+ in the following section, sequential testing with alpha investing allows the
+ $\al$-level to vary over the sequence of tests.  In general, the level of the
+ $j$th test, $\al_j$, is free to depend on whether prior tests reject $H_k$, $k
+ < j$.  Classical risk inflation has a fixed rule for selecting coordinates that
+ is set prior to observing data.  The dynamic aspect of sequential testing also
+ impacts the choice of a relevant oracle.  In \eqn{eq:ri}, the oracle picks a
+ fixed level that minimizes its risk.  For sequential testing, the oracle too is
+ free to vary its level depending on the behavior of the competing data-driven
+ estimator.
+
+
+ \ras{ Revise roadmap paragraph }
+ The following section describes the use of alpha-investing for setting the
+ levels $\al_j$ of the tests that determine the testimator $\hat\mu$.  Section 3
+ describes the computations that solve a set of Bellman equations.  Our
+ methodology bounds the risk of any sequential testimator.  In the spirit of
+ risk inflation and oracle bounds, we compute the convex set of attainable
+ risks:
  \begin{equation}
    \CC(\hat\gamma) 
       = \{(x,y): \exists \mu \mbox{ for which }
@@ -257,90 +250,122 @@
 \section{ Alpha-investing }
 % ---------------------------------------------------------------------------
 
- Alpha-investing defines an approach for testing a possibly infinite sequence of
- hypotheses that was designed with model selection in mind
- \citep{fosterstine08}.  Alpha-investing begins with an initial allocation $W_1$
- of alpha-wealth; alpha-wealth is the maximum alpha-level available when testing
- the next hypothesis.  An alpha-investing rule can test $H_1$ at any level up to
- the total available alpha wealth, $0 \le \alpha_1 \le W_1$.  The level $\al_1$
- is 'spent' and cannot be used for subsequent tests.  Let $p_1$ denote the
- p-value of the test of $H_1$.  If $p_1 \le \alpha_1$, the initial test rejects
- $H_1$.  In this case, the alpha-investing rule earns an additional contribution
- $\omega > 0$ \marginpar{$\omega$} to its alpha-wealth; otherwise, the alpha-
- wealth available to test $H_2$ falls to $W_2 = W_1 - \alpha_1$.  In general,
- the alpha-wealth available for the test of $H_{j+1}$ is \marginpar{$W_j$}
+ An alpha-investing rule \citep{fosterstine08} determines the level for testing
+ $H_j$ based on its alpha wealth, a limit on the maximum level that depends on
+ the results of prior tests.  The procedure is most easily described by
+ explaining the first few steps.  The process begins with an initial allocation
+ $W_0$ \marginpar{$W_0$} of alpha wealth.  The choice of this initial alpha
+ wealth is an important aspect of our analysis of the risk of $\hat\mu$.  An
+ alpha-investing rule can test $H_1$ at any level up to the total available
+ alpha wealth, $0 \le \alpha_1 \le W_0$.  The level $\al_1$ is `invested' and
+ cannot be used for subsequent tests.  We say that $\al_1$ is invested rather
+ than spent because of the way in which the outcome of the test of $H_1$
+ influences the subsequent wealth.  Let $p_1$ denote the p-value of the test of
+ $H_1$.  If $p_1 \le \alpha_1$, the test rejects $H_1$.  In this case, the
+ alpha-investing rule earns a contribution $\omega > 0$ \marginpar{$\omega$} to
+ its alpha wealth; otherwise, the alpha wealth available to test $H_1$ falls to
+ $W_1 = W_0 - \alpha_1$.  In general, the alpha wealth available for the test of
+ $H_{j+1}$ is \marginpar{$W_j$}
  \begin{equation}
-    W_{j+1} = W_j - \alpha_j + \omega \, I_{\{p_j < \al_j\}}
+    W_{j} = W_{j-1} - \alpha_j + \omega \, I_{\{p_j < \al_j\}}
  \label{eq:Wj}
  \end{equation}
- Alpha-investing thus resembles alpha-spending used in clinical trials, with the
+ Alpha investing thus resembles alpha spending used in clinical trials, with the
  key distinction that rejecting a hypothesis earns an additional allocation
- $\omega$ of alpha-wealth for subsequent testing. Alpha-investing controls a sequential version of mFDR.  Let $W(j)$
- count the number of hypothesis rejected in the first $j$ tests, and let $V(j)
- \le W(j)$ denote the number of false rejections through the first $j$ tests.
- The sequential mFDR is
+ $\omega$ of alpha-wealth for subsequent testing.  \ras{reference to QPD and
+ enhanced alpha investing}
+
+
+ Because rejecting a null hypothesis makes it easier to reject other null
+ hypotheses, it is important that alpha investing controls the rate of false
+ rejections.  To this end, \citet{fosterstine08} show that alpha investing
+ controls a sequential version of mFDR.  Let $D(j)$ count the number of
+ hypothesis rejected in the first $j$ tests, and let $V(j) \le D(j)$ denote the
+ number of {\em false} rejections through the first $j$ tests.  The sequential mFDR is
  \begin{equation}
-    \mbox{mFDR}(j) = \frac{\ev V(j)}{1+\ev R(j)} \;.
+    \mbox{mFDR}_\eta(j) = \frac{\ev V(j)}{\eta + \ev R(j)} \;, \eta > 0.
  \label{eq:mFDR}
  \end{equation}
- \citet{fosterstine08} show that if $W_1 \le \omega$, then all alpha-investing
- rules control $\mbox{mFDR}(k) \le \omega$, and this result implies weak control
- of the family wide error rate.  The index $k$ is allowed to be an arbitrary
- stopping time, such as the occurrence of the $k$th rejection.
+ The similar false discovery rate is essentiallyt the expected value of the
+ ratio rather than the ratio of expected values.  The constant $\eta$ in the
+ denominator of mFDR avoids dividing by zero under the complete null hypothesis
+ in which all $\mu_j = 0$.  If $W_0 \le \omega$, then alpha-investing rules
+ control $\mbox{mFDR}_\eta(p) \le \omega$, and this result implies weak control
+ of the family wide error rate.  Furthermore, the index $j$ in \eqn{eq:mFDR} is
+ allowed to be an arbitrary stopping time, such as the occurrence of the $k$th
+ rejection.
 
  
- For our analysis, we emphasize estimators derived from alpha-investing rules
- that are defined by a monotone discrete distribution on non-negative integers.
-  Let ${\cal F} = \{f:\{0,1,\ldots\} \mapsto \R^{+}, \, f(j) \ge f(j+1),\,
- \sum_j f(j) = 1\}$ denote the collection of monotone, non-increasing
- probability distributions on the non-negative integers.  Each $f \in {\cal F}$
- defines an alpha-investing rule that `resets' after rejecting a null
- hypothesis.  Given wealth $W_k$ after rejecting $H_{k-1}$
- ($\hat\gamma_{j-1}=1$), then the levels for testing subsequent hypotheses
- $H_{k+j}, \, j=0,1,\ldots,$ are $\al_{k+j} = W_k \; f(j)$, until the next
- rejection.  Monotonocity implies that the alpha-investing rule spends more
- heavily after rejecting a hypothesis than otherwise; such rules are suitable in
- applications in which one anticipates that non-zero $\mu_j$ occur in bundles.
-  \citet{fosterstine08} offer further motivation for this approach.
-
- 
- We focus alpha-investing rules identified by a geometric distribution and by a
- universal distribution.  Geometric alpha-investing rules spend a fixed fraction
- $\psi$ of the current alpha-wealth on each hypothesis test.  Let $g_\psi(j) =
- \psi(1-\psi)^{j},\, j=0,1,\ldots,$ denote the geometric distribution with
- parameter $0 < \psi < 1$.  \marginpar{$g_\psi, \psi$} For example, the
- geometric rule with $\psi = 0.25$ invests one-fourth of the available alpha-
- wealth in the test of $H_j$, $\alpha_j = W_j/4$.  In general, given wealth
- $W_{k}$ after rejecting $H_{k-1}$, say, the amount invested in testing
- $H_{k+j}$ is $\alpha_{k+j} = W_k \, g_\psi(j)$.  Large values for $\psi$
- rapidly spend down the alpha-wealth available after a rejected hypothesis.
- 
-
- A second type of alpha-investing rules employ a version the universal prior for
- integers defined by \citet{rissanen83}.  The universal prior arises in the
- context of encoding a sequence of positive integers using a prefix code.  A
- geometric rule spends a constant fraction of the wealth on each test.  The
- universal rule instead invests a diminishing proportion of the available alpha-
- wealth.  Of the wealth $W_k$ available after a rejecting $H_{k-1}$, say, the
- universal rule invests $\al_{k+j} = W_k\,u(j)$ with
+ Alpha-investing rules are quite general.  The underlying theory only requires
+ that the level of the test of $H_j$ is bounded by the available wealth
+ $W_{j-1}$ and that the test indeed have level $\al_j$.  Otherwise, an
+ alpha-investing rule is allowed to use the pattern of prior rejections as
+ captured by the sequence of wealths.  We can capture this dependence by
+ thinking of the investing rule ${\cal A}$ as a function of the sequence of
+ prior wealths $W_0^j = \{W_0, W_1, \ldots, W_j\}$.  A rule is then a map from
+ the sequence of wealths to a number bounded by the current wealth and 1:
  \begin{equation}
-   u_\delta(j) = \frac{c}{ (j+\delta) (\log (1+j+\delta))^2}, \qquad 
-                 j =  0,\,1,\,\ldots, \quad 1 \le \delta.
+    {\cal A}: W_0^j \mapsto [0, \min(W_j,1)]    
+ \label{eq:A}
+ \end{equation}
+ For example, the rule $\cal A$ can set the wealth of the next test higher or
+ lower depending upon how long since the last rejection or the number of
+ rejections to this point.  Though alpha investing allows this complete
+ generality, we focus our attention on a simpler class of investing rules that
+ depend only on the current wealth, ${\cal A}(W_0^j) = {\cal A}(W_j)$.  The
+ simplest representative of this class of alpha-investing rules are geometric
+ rules that invest a fixed percentage of the available wealth on each test:
+ \begin{equation}
+    {\cal A}_\psi(W_0^j) = \psi W_j, \quad  0 < \psi \le 1.
+ \label{eq:Ageo}
+ \end{equation}
+ For example, the geometric rule with $\psi = 0.25$ invests one-fourth of the
+ its alpha wealth $W_j$ in the test of $H_{j+1}$.  Generally speaking, since the
+ alpha wealth increases after a rejection, the rule ${\cal A}_\psi$ spends more
+ following a rejection and then gradually -- depending on $\psi$ -- reduces the
+ level of subsequent tests.
+ 
+
+ A second type of alpha-investing rule employs a version the universal prior for
+ integers defined by \citet{rissanen83}.  Rather than invest at a fixed rate, a
+ universal rule invests a higher percentage of the available wealth in the test
+ of $H_{j+1}$ when the wealth $W_j$ is large than when the available wealth is
+ small.  The universal rule is based upon the discrete distribution with
+ probabilities
+ \begin{equation}
+   u(j) = \frac{c}{ j (\log (j+1))^2}, \qquad 
+                 j =  1,\,2,\,\ldots \;.
  \label{eq:univ}
  \end{equation}
- in the tests of $H_{k+j}$ until the next rejection. ($c_\delta$ is a
- normalizing constant so that the discrete probabilities $u_\delta(j)$ add to 1;
- for example, $c_{1} \approx 3.388$ and $c_{20} \approx 0.3346$.)  The constant
- $\delta$ \marginpar{$\delta$} serves as an offset that slows the initial
- spending rate; our examples fix $\delta=20$ and we abbreviate $u_{20}(j) =
- u(j)$. (For instance, $u_1(0) \approx 0.614$ so that the rule spends about 60\%
- of the available wealth on the first test.)  More elaborate forms of the
- universal distribution make use of the so-called log-star function, defined as
- $\log^* x = \log x + \log \log x + \cdots$, where the sum accumulates only
- positive terms.  For example, $\log^{*} 8 = \log 8 + \log \log 8$.  The version
- \eqn{eq:univ} simply uses the first two summands of the $\log^{*}$ function.
+ The consant $c \approx 3.388$ normalizes the sum so that $\sum_j u(j) = 1$.
+  More elaborate forms of the universal distribution use the so-called log-star
+ function, defined as $\log^* x = \log x + \log \log x + \cdots$, where the sum
+ accumulates only positive terms.  (For example, $\log^{*} 8 = \log 8 + \log
+ \log 8$.)  The disribution in \eqn{eq:univ} simply uses the first two summands
+ of the $\log^{*}$ function.
  
  
+ To obtain an alpha-investing rule that is dependent only upon the current
+ wealth requires a few adjustments.  First, assume that the maximum alpha wealth
+ attainable by the procedure is bounded by $M$.  (This constraint can be
+ enforced by requiring ${\cal A}(M) = \omega$.)  Next, define the tail sum
+ \begin{equation}
+   \ol{U}(k) = \sum_{j=k}^{\infty} u(j) \;.
+ \label{eq:Ubar}
+ \end{equation}
+ $\ol{U}(k)$ is proportional to the alpha wealth remaining if the first $k-1$
+ tests fail to reject any hypothesis.  The alpha level of the test of a
+ hypothesis can then be defined as the following function of the wealth,
+ \begin{equation}
+   {\cal A}_u(W_0^j) = {\cal A}_u(W_j) 
+                     = M \; u \left(\ol{U}^{-1}(W_j/M) \right) \;.
+ \label{eq:Auniv}
+ \end{equation}
+ If there does not exist a $k$ such that $U(k)=W_j/M$ (that is,
+ $\ol{U}^{-1}(W_j/M)$) is not an integer) then we will use an interpolation
+ scheme.  We defer those details until we discuss details of the calculations in
+ Section XX.
+
 
 %--------------------------------------------------------------------------
 \section{ Risk Analysis}
