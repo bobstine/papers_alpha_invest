@@ -296,14 +296,15 @@
  rejection.
 
  
- Alpha-investing rules are quite general.  The underlying theory only requires
+ Alpha-investing rules are quite general.  The underlying theory requires only
  that the level of the test of $H_j$ is bounded by the available wealth
- $W_{j-1}$ and that the test indeed have level $\al_j$.  Otherwise, an
- alpha-investing rule is allowed to use the pattern of prior rejections as
- captured by the sequence of wealths.  We can capture this dependence by
- thinking of the investing rule ${\cal A}$ as a function of the sequence of
- prior wealths $W_0^j = \{W_0, W_1, \ldots, W_j\}$.  A rule is then a map from
- the sequence of wealths to a number bounded by the current wealth and 1:
+ $W_{j-1}$ and that the test indeed have level $\al_j$, conditional on the
+ outcomes of prior tests.  Otherwise, an alpha-investing rule is allowed to use
+ the pattern of prior rejections as captured by the sequence of wealths.  We can
+ capture this dependence by thinking of the investing rule ${\cal A}$ as a
+ function of the sequence of prior wealths $W_0^j = \{W_0, W_1, \ldots, W_j\}$.
+  A rule is then a map from the sequence of wealths to a number on the interval
+ 0 to the current wealth:
  \begin{equation}
     {\cal A}: W_0^j \mapsto [0, \min(W_j,1)]    
  \label{eq:A}
@@ -326,12 +327,61 @@
  level of subsequent tests.
  
 
- A second type of alpha-investing rule employs a version the universal prior for
- integers defined by \citet{rissanen83}.  Rather than invest at a fixed rate, a
- universal rule invests a higher percentage of the available wealth in the test
- of $H_{j+1}$ when the wealth $W_j$ is large than when the available wealth is
- small.  The universal rule is based upon the discrete distribution with
- probabilities
+ To motivate other investing rules of this form, we will take a small diversion
+ and offer a different motivation for the geometric rule \eqn{eq:Ageo}.  We can
+ think of the geometric procedure as describing how one spends down the
+ available wealth until the next rejection.  If the initial wealth is $W_0$,
+ then the amount invested in the $j$th test (assuming no intervening
+ test rejects) is
+ \begin{equation}
+    \al_j = W_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
+ \label{eq:alj1}
+ \end{equation}
+ It will be useful in our computations to define an investing rule for any $x$
+ rather than integers, and so consider the following alternative description of
+ geometric investing.  Rather than define the investing rule using a discrete
+ distribution on $j=1,\,2,\ldots$, we use a density on the interval
+ $[1,\infty)$.  In place of the geometric, define the density function
+ \begin{equation}
+   \al_{g}(x) = c_j\,\psi\,(1-\psi)^{x-1}, \quad 1 \le x\;,
+ \label{eq:alx}
+ \end{equation}
+ where the normalizing constant $c_g$ is
+ \begin{displaymath}
+   \quad c_g = \int_1^\infty \psi(1-\psi)^{x-1} = -\psi/(\log (1-\psi))\;.     
+ \end{displaymath}
+ The share of the initial wealth bid on the $j$th subsequent test is then
+ defined by the integral of $\al_g(x)$ from $x=j$ to $x=j+1$,
+ \begin{equation}
+    \al_j = W_0 \int_j^{j+1} \al_g(x) dx = W_0 \, \psi\; (1-\psi)^{j-1} \;,
+ \label{eq:alj2}
+ \end{equation}
+ matching the investment given by the discrete rule \eqn{eq:alj1}.  Now define
+ the tail integral 
+ \begin{equation}
+    W(x) = W_0 \int_x^\infty \al_g(t) dt = W_0 (1-\psi)^{x-1}\;.
+ \label{eq:Wx}
+ \end{equation}
+ For integers $j$, $W(j)$ is the wealth remaining after $j$ tests that fail to
+ reject.  This tail integral defines a function $A_g$ that determines the bid
+ from the available wealth,
+ \begin{equation}
+   A_g(w) = \al_g(W^{-1}(w)) = w\,\psi \;,
+ \label{eq:Aw}
+ \end{equation}
+ as in the intuitive description of geometric investing given in \eqn{eq:Ageo}.
+  This construction uses the inverse of the tail wealth to determine a 'test
+ index' $W^{-1}(w)$ that corresponds to the current input wealth $w$.  The rule
+ then invests as if bidding down from the initial wealth.
+
+
+
+A second type of alpha-investing
+ rule employs a version the universal prior for integers defined by
+ \citet{rissanen83}.  Rather than invest at a fixed rate, a universal rule
+ invests a higher percentage of the available wealth in the test of $H_{j+1}$
+ when the wealth $W_j$ is large than when the available wealth is small.  The
+ universal rule is based upon the discrete distribution with probabilities
  \begin{equation}
    u(j) = \frac{c}{ j (\log (j+1))^2}, \qquad 
                  j =  1,\,2,\,\ldots \;.
