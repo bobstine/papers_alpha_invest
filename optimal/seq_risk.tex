@@ -327,6 +327,18 @@
  level of subsequent tests.
  
 
+ Focus attention on alpha investing rules that set the level of the next test in
+ a manner solely dependent on the current wealth.  Such Markovian rules are path
+ independent unlike several rules described in \citet{fosterstine08} in which
+ the amount invested depends on both the current wealth as well as the number of
+ tests since the last rejection.  A Markovian rule is defined by a function $f:
+ \R^{+} \rightarrow \R^{+}$ that sets $\al_j = f(W_{j-1})$.  The only
+ requirement on $f$ is that $f(w) \le w$; one cannot invest more wealth than
+ possessed.  It does seem natural, however, for $f(w)$ to be monotone increasing
+ in $w$.
+
+
+
  To motivate other investing rules, we offer a different motivation for the
  geometric rule \eqn{eq:Ageo}.  The geometric rule describes how one spends down
  the available wealth until the next rejection.  If the initial wealth is $W_0$,
