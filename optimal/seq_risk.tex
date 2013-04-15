@@ -312,150 +312,108 @@
  For example, the rule $\cal A$ can set the wealth of the next test higher or
  lower depending upon how long since the last rejection or the number of
  rejections to this point.  Though alpha investing allows this complete
- generality, we focus our attention on a simpler class of investing rules that
- depend only on the current wealth, ${\cal A}(W_0^j) = {\cal A}(W_j)$.  The
- simplest representative of this class of alpha-investing rules are geometric
- rules that invest a fixed percentage of the available wealth on each test:
+ generality, we focus our attention on a simpler class of investing rules with a
+ path independent, Markovian structure.  The amount invested by these rules
+ depends only on the current wealth rather than the full path, ${\cal A}(W_0^j)
+ = \al(W_j)$.  The only requirement is that $0 \le \al(w) \le w$; a rule cannot
+ invest more wealth than the amount possessed.  It does seem natural, however,
+ for $\al(w)$ to be monotone increasing in $w$.
+
+
+ The simplest representatives of this class of alpha investing rules are
+ geometric rules.  These invest a fixed percentage of the available wealth on
+ each test:
  \begin{equation}
-    {\cal A}_g(W_0^j, \psi) = \psi W_j, \quad  0 < \psi \le 1.
+    \al_g(w, \psi) = \psi \, w, \quad  0 < \psi < 1.
  \label{eq:Ageo}
  \end{equation}
- For example, the geometric rule with $\psi = 0.25$ invests one-fourth of the
- its alpha wealth $W_j$ in the test of $H_{j+1}$.  Generally speaking, since the
- alpha wealth increases after a rejection, the rule ${\cal A}_g$ spends more
- following a rejection and then gradually -- depending on $\psi$ -- reduces the
- level of subsequent tests.
- 
-
- Focus attention on alpha investing rules that set the level of the next test in
- a manner solely dependent on the current wealth.  Such Markovian rules are path
- independent unlike several rules described in \citet{fosterstine08} in which
- the amount invested depends on both the current wealth as well as the number of
- tests since the last rejection.  A Markovian rule is defined by a function $f:
- \R^{+} \rightarrow \R^{+}$ that sets $\al_j = f(W_{j-1})$.  The only
- requirement on $f$ is that $f(w) \le w$; one cannot invest more wealth than
- possessed.  It does seem natural, however, for $f(w)$ to be monotone increasing
- in $w$.
+ Though independent of the rejection path, geometric rules invest more heavily
+ following a rejection.  Since the alpha wealth increases after a rejection, a
+ geometric rule $\al_g$ invests more following a rejection and then gradually --
+ depending on $\psi$ -- reduces the level of subsequent tests.
 
 
+ The following investing rule varies the invested share.  Rather than investing
+ a fixed share of the available wealth, it invests a progressively smaller share
+ of the available wealth as the wealth drops.  The rule is defined by
+ \begin{equation}
+   \al_u(w) = w - \frac{\log 2}{\log(1+2^{1/w})} \;.   
+ \label{eq:Auniv}
+ \end{equation}
+ Because this investing rule is related to the universal prior for integers
+ defined by \citet{rissanen83}, we call this a universal investing rule and
+ identify it by a subscript $u$.  (See the following remark.)  For very large
+ wealth, $\al_u(w)$ approaches $w$ (the limit of the second term in
+ \eqn{eq:Auniv} is $w-1$ as $w \rightarrow \infty$), and $\al_u(w)
+ \rightarrow 0$ as $w \rightarrow 0$.
 
- To motivate other investing rules, we offer a different motivation for the
- geometric rule \eqn{eq:Ageo}.  The geometric rule describes how one spends down
- the available wealth until the next rejection.  If the initial wealth is $W_0$,
- then the alpha wealth invested in the $j$th test (assuming no intervening test
- rejects) is
+
+ Figure \ref{fig:rules} graphs several alpha investing rules on a log-log scale.
+  Graphs of $\al_g(w,\psi)$ appear as straight lines in these coordinates.  The
+ figure highlights the changing character of universal investing.  The share of
+ wealth invested by $\al_u(w)$ is quite large for $w \approx 1$ at the right of
+ the plot, but this diminishes rapids as the wealth falls.  The graph also shows
+ the amount of alpha wealth spent by the rules.  The points shown along the
+ graph of each function locate the pairs $(w_j, \,\al(w_j)\}$ for $j = 1,2,
+ \ldots,100$.  The wide spacing of these points at the top of the graph of
+ $\al_u$ confirms the large amounts invested.  In contrast, the corresponding
+ points for geometric rule with $\psi= 0.00001$ barely move.
+
+
+ \begin{figure}
+ \caption{ \label{fig:rules} Geometric and universal alpha investing rules. }
+ \centerline{    \includegraphics[width=3.5in]{figures/rules}  }
+ \end{figure}
+
+
+
+ \vspace*{0.2in}
+ \noindent
+ {\it Remark A. }  We obtained the universal rule by the following construction
+ that links a spending rule to a probabilty distribution that allocates the
+ current wealth over subsequent tests.   
+
+We illustrate the construction for the geometric rule.  If the initial wealth
+ is $W_0$, then the alpha wealth invested in the $j$th test (assuming no
+ intervening test rejects) is
  \begin{equation}
     \al_j = W_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
  \label{eq:alj1}
  \end{equation}
- It will be useful in our computations to define an investing rule for any value
- $0 < x$ rather than integers that represent test indices.  In particular, we
- want the bid to be only a function of the available wealth and not require
- other information, such as an index counting the tests since the last
- rejection.  We illustrate this representation for the geometric and then
- provide other examples.  
-
-
- To this end, consider the following alternative description of geometric
- investing.  Rather than define the investing rule using a discrete distribution
- on $j=1,\,2,\ldots$ as in \eqn{eq:alj1}, use a continuous density.  In place of
- the discrete distribution, define the density function on $[1,\infty]$:
+  Rather than define the investing rule using a discrete distribution on
+ $j=1,\,2,\ldots$ as in \eqn{eq:alj1}, use the continuous density
  \begin{equation}
-   \al_{g}(x,\psi) = \smfrac{1}{c_g} \; \psi\,(1-\psi)^{x-1}, \quad 1 \le x\;,
+   A_g(x,\psi) = c_g \; \psi\,(1-\psi)^{x-1}, \quad 1 \le x\;,
  \label{eq:alg}
  \end{equation}
- where the normalizing constant $c_g$ is
- \begin{displaymath}
-   \quad c_g = \int_1^\infty \psi(1-\psi)^{x-1} = -\psi/\log (1-\psi)\;.     
- \end{displaymath}
- The wealth invested in the $j$th subsequent test is defined by the integral of
- $\al_g(x)$ from $x=j$ to $x=j+1$,
+ where the normalizing constant $c_g = -\log (1-\psi)/\psi$.  Notice that the
+ wealth invested in the $j$th test \eqn{eq:alj1} matches the integral of
+ $A_g(x)$ from $x=j$ to $x=j+1$,
  \begin{equation}
-    \al_j = W_0 \int_j^{j+1} \al_g(x,\psi) dx = W_0 \, \psi\; (1-\psi)^{j-1} \;,
+    \al_j = W_0 \int_j^{j+1} A_g(x,\psi) dx = W_0 \, \psi\; (1-\psi)^{j-1} \;.
  \label{eq:alj2}
  \end{equation}
- matching the investment given by the discrete rule \eqn{eq:alj1}.  Now define
- the tail integral that shows the amount of wealth that remains,
+ To move away from this discrete indexing, note that the following tail integral
+ shows the amount of wealth that remains,
  \begin{equation}
-    W_g(x) = W_0 \int_x^\infty \al_g(t,\psi) dt = W_0 (1-\psi)^{x-1}\;.
+    W_g(x) = W_0 \int_x^\infty A_g(t,\psi) dt = W_0 (1-\psi)^{x-1}\;.
  \label{eq:Wg}
  \end{equation}
  For integers $j$, $W_g(j)$ is the wealth remaining after $j$ tests that fail to
- reject.  By inverting this tail integral, we obtain the alpha wealth to invest
- from the available wealth,
+ reject.  By inverting this tail integral, we obtain an investing rule that
+ requires only the available wealth,
  \begin{equation}
-   {\cal A}_g(w,\psi) = \al_g(W_g^{-1}(w),\psi) = \psi\,w \;,
+   \al_g(w,\psi) = A_g(W_g^{-1}(w),\psi) = \psi\,w \;,
  \label{eq:Ag}
  \end{equation}
- as in the description of geometric investing given in \eqn{eq:Ageo}.  This
- construction uses the inverse of the tail wealth to determine a `test index'
- $W_g^{-1}(w)$ that corresponds to the current input wealth $w$.  The rule then
- invests as if bidding down from the initial wealth, but no longer tracks a
- discrete index.  Note that this rule works for any wealth $0 < W < \infty$; the
-`index' $W_g^{-1}(w)$ might be negative, but that is okay because the function
-$\al_g$ is monotone decreasing from $\infty$ to  \ras{how to say this clearly}.
-
-
- Geometric rules invest a fixed share of the available wealth to each test.  The
- following rule varies the invested share, investing a smaller share as the
- wealth drops.  The form of the density used in the construction of this rule is
- similar to the universal prior for integers defined by \citet{rissanen83}, and
- hence we call this a universal investing rule and identify the related terms by
- a subscript $u$.  The density representing this rule is
- \begin{equation}
-   \al_u(x) = \frac{\log 2}{(x+1) \, (\log (x+1))^2}, \quad 1 \le x,
- \label{eq:alu}
- \end{equation}
- where it is easily checked that $\int_1^\infty \al_u(x) dx = 1$.  The
- corresponding investing rule is
- \begin{equation}
-   {\cal A}_u(w) = \al_u(W_u^{-1}(w))  
- \label{eq:Auniv}
- \end{equation} 
- with the tail wealth $W_u(x) = W_0 \int_x^\infty \al_u(t) dt = W_0\, (\log
- 2)/\log(x+1)$ so that $W^{-1}(w) = 2^{W_0/w}-1$.
-
-
-
-Rather than invest at a
- fixed rate, a universal rule invests a higher percentage of the available
- wealth in the test of $H_{j+1}$ when the wealth $W_j$ is large than when the
- available wealth is small.  The universal rule is based upon the discrete
- distribution with probabilities
- \begin{equation}
-   u(j) = \frac{c}{ j (\log (j+1))^2}, \qquad 
-                 j =  1,\,2,\,\ldots \;.
- \label{eq:univ}
- \end{equation}
- The consant $c \approx 3.388$ normalizes the sum so that $\sum_j u(j) = 1$.
-  More elaborate forms of the universal distribution use the so-called log-star
- function, defined as $\log^* x = \log x + \log \log x + \cdots$, where the sum
- accumulates only positive terms.  (For example, $\log^{*} 8 = \log 8 + \log
- \log 8$.)  The disribution in \eqn{eq:univ} simply uses the first two summands
- of the $\log^{*}$ function.
- 
- 
- To obtain an alpha-investing rule that is dependent only upon the current
- wealth requires a few adjustments.  First, assume that the maximum alpha wealth
- attainable by the procedure is bounded by $M$.  (This constraint can be
- enforced by requiring ${\cal A}(M) = \omega$.)  Next, define the tail sum
- \begin{equation}
-   \ol{U}(k) = \sum_{j=k}^{\infty} u(j) \;.
- \label{eq:Ubar}
- \end{equation}
- $\ol{U}(k)$ is proportional to the alpha wealth remaining if the first $k-1$
- tests fail to reject any hypothesis.  The alpha level of the test of a
- hypothesis can then be defined as the following function of the wealth,
- \begin{equation}
-   {\cal A}_u(W_0^j) = {\cal A}_u(W_j) 
-                     = M \; u \left(\ol{U}^{-1}(W_j/M) \right) \;.
- \label{eq:Auniv}
- \end{equation}
- If there does not exist a $k$ such that $U(k)=W_j/M$ (that is,
- $\ol{U}^{-1}(W_j/M)$) is not an integer) then we will use an interpolation
- scheme.  We defer those details until we discuss details of the calculations in
- Section XX.
-
+ as in \eqn{eq:Ageo}.  This construction uses the inverse of the tail wealth to
+ determine a `test index' $W_g^{-1}(w)$ that corresponds to the current input
+ wealth $w$.  The universal rule $\al_u(w)$ follows from the same
+ contruction, using the discrete density
+ \begin{displaymath}
+    A_u(x) = \frac{\log 2}{(x+1) (\log(x+1))^2} \;, \quad 1 < x,
+ \end{displaymath}
+ in place of $A_g$.
 
 %--------------------------------------------------------------------------
 \section{ Risk Analysis}
