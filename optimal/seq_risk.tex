@@ -810,7 +810,7 @@ Improve the estimator by shrinkage.
 
 
 
-One might also use accumulated alpha wealth as a measure of the performance, and
+ One might also use accumulated alpha wealth as a measure of the performance, and
  this provides a more useful metric of performance, particularly when competing
  against the oracle.  If maximizing alpha wealth, then the oracle loses the
  amount bid and chooses $\mu_j$ to maximize $r_{\mu_j}(\al)-\al$ rather than
@@ -821,13 +821,20 @@ One might also use accumulated alpha wealth as a measure of the performance, and
 
  \ras{ Things left to do:
  \begin{enumerate}
+
  \item Graphs of envelope that suggest that alpha wealth is a decent proxy for
  risk, at least better than something like FDR, number rejects - constant times
  number false rejects.
+
  \item What does the steady state look like.  If take the envelope for 250 and
  double to get for 500, is that close to correct for the risk?
+
  \item Comment on the value of saving if hope to compete with a universal
  bidder.
+ 
+\item {\bf Stationarity} of the associated wealth process, perhaps using results from
+\citet{chanTong94} for the ergodicity of the process in the universal case.
+
 \end{enumerate}
 }
 
