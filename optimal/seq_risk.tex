@@ -46,7 +46,8 @@
 
 \title{ Risk of Sequential Testing with Alpha Investing }
 \author{
-        Dean P. Foster and Robert A. Stine\thanks{Research supported by NSF grant DMS-1106743 }  \\
+        Dean P. Foster and Robert A. Stine
+        \thanks{Research supported by NSF grant DMS-1106743 }  \\
         Department of Statistics            \\
         The Wharton School of the University of Pennsylvania \\
         Philadelphia, PA 19104-6340                          \\
@@ -159,71 +160,10 @@
  a parameter $\mu$ is zero unless a test of the null hypothesis that claims $\mu
  = 0$ is rejected.  The estimation problem we consider is a simplified version
  of the variable selection problem that avoids issues related to the
- collinearities among the explanatory variables.  Rather than observe a sequence
+ collinearities among the explanatory variables.  
+ Rather than observe a sequence
  of slope estimates, we assume that the observed data are a finite sequence of
- $p$ random variables $Y_j \sim N(\mu_j,1)$.  We obtain a testimator from a
- sequence of two-sided tests.  For coordinate $j$, the level of the test is
- $\al_j$.  The test rejects $H_j: \mu_j = 0$ if $z_{\alpha_j}^2 \le Y_j^2$,
- where $z_{\al_j}$ denotes the corresponding two-sided critical value $z_{\al_j}
- = \Phi^{-1}(1-\al_j/2)$.  The resulting estimator has $j$th element
- \begin{equation}
-    \hat\mu_j = \left\{
-      \begin{array}{cc}
-            Y_j  & z_{\al_j}^2 \le Y_j^2 \cr
-            0  & \mbox{ otherwise. }
-      \end{array} \right.
- \label{eq:muhat}
- \end{equation}
- We collect these estimates in the vector $\hat\mu = (\hat\mu_1, \ldots,
- \hat\mu_p)'$ and similarly write $\mu = (\mu_1, \ldots, \mu_p)'$ and $Y = (Y_1,
- \ldots, Y_p)'$.  The risk of $\hat\mu$ is
- \begin{equation}
-    R(\hat\mu, \mu) 
-      = \ev_\mu \normsq{\hat\mu - \mu} \;,
- \label{eq:risk}
- \end{equation}
- where $\normsq{x} = x'x$ for vectors $x$.
-
-
- Minimax bounds for the risk $R(\hat\mu,\mu)$ are well-understood in the
- classical context of model selection that simultaneously fixes the level $\al_j
- = \al$ of all of the tests.  Let $\hat\mu(\al)$ denote the testimator with
- fixed level $\al$ for all $p$ tests.  \citet{fostergeorge94} define a ratio
- known as the risk inflation of $\hat\mu(\al)$. \citep[][obtain similar
- results.]{donohojohnstone94} The risk inflation of $\hat\mu(\al)$ is the
- supremum of the ratio of the risk of the testimator with level $\al$ the risk
- of a testimator that consults an oracle for the best possible level.  Their
- results imply that the risk inflation of $\hat\mu(\al)$ is asymptotically $2
- \log p$,
- \begin{equation}
-    2 \log p - o(\log p) 
-    \le
-    \sup_\mu  \frac{1 + R(\hat\mu(\al), \mu)}
-                   {1 + \inf_\eta{R(\hat\mu(\eta), \mu)}}  
-    \le 
-    2 \log p + 1 \;.
- \label{eq:ri}
- \end{equation}
- Foster and George also show that the testimator $\hat\mu(1/p)$ -- essentially
- the Bonferoni estimator -- obtains the risk inflation threshold.  The constant
- 1 in the ratio arises in the setting of regression models in which one always
- estimates the intercept.  As a practical device, the constant also avoids
- dividing by zero if every $\mu_j = zero$.
-
-
- Though suggestive, these results do not apply directly to the estimator derived
- from alpha investing because they describe multivariate estimates produced
- simultaneously rather than sequentially.  This change in the timing of
- information affects both the estimator and the competing oracle.  As described
- in the following section, sequential testing with alpha investing allows the
- $\al$-level to vary over the sequence of tests.  In general, the level of the
- $j$th test, $\al_j$, is free to depend on whether prior tests reject $H_k$, $k
- < j$.  Classical risk inflation has a fixed rule for selecting coordinates that
- is set prior to observing data.  The dynamic aspect of sequential testing also
- impacts the choice of a relevant oracle.  In \eqn{eq:ri}, the oracle picks a
- fixed level that minimizes its risk.  For sequential testing, the oracle too is
- free to vary its level depending on the behavior of the competing data-driven
- estimator.
+ $p$ random variables $Y_j \sim N(\mu_j,1)$.  
 
 
  \ras{ Revise roadmap paragraph }
@@ -254,20 +194,20 @@
  $H_j$ based on its alpha wealth, a limit on the maximum level that depends on
  the results of prior tests.  The procedure is most easily described by
  explaining the first few steps.  The process begins with an initial allocation
- $W_0$ \marginpar{$W_0$} of alpha wealth.  The choice of this initial alpha
+ $w_0$ \marginpar{$w_0$} of alpha wealth.  The choice of this initial alpha
  wealth is an important aspect of our analysis of the risk of $\hat\mu$.  An
  alpha-investing rule can test $H_1$ at any level up to the total available
- alpha wealth, $0 \le \alpha_1 \le W_0$.  The level $\al_1$ is `invested' and
+ alpha wealth, $0 \le \alpha_1 \le w_0$.  The level $\al_1$ is `invested' and
  cannot be used for subsequent tests.  We say that $\al_1$ is invested rather
  than spent because of the way in which the outcome of the test of $H_1$
  influences the subsequent wealth.  Let $p_1$ denote the p-value of the test of
  $H_1$.  If $p_1 \le \alpha_1$, the test rejects $H_1$.  In this case, the
  alpha-investing rule earns a contribution $\omega > 0$ \marginpar{$\omega$} to
  its alpha wealth; otherwise, the alpha wealth available to test $H_1$ falls to
- $W_1 = W_0 - \alpha_1$.  In general, the alpha wealth available for the test of
- $H_{j+1}$ is \marginpar{$W_j$}
+ $W_1 = w_0 - \alpha_1$.  In general, the alpha wealth available for the test of
+ $H_{j+1}$ is given by the stochastic process \marginpar{$W_j$}
  \begin{equation}
-    W_{j} = W_{j-1} - \alpha_j + \omega \, I_{\{p_j < \al_j\}}
+    W_j = W_{j-1} - \alpha_j + \omega \, I_{\{p_j < \al_j\}}, \; j = 1,\,2,\ldots.
  \label{eq:Wj}
  \end{equation}
  Alpha investing thus resembles alpha spending used in clinical trials, with the
@@ -289,7 +229,7 @@
  The similar false discovery rate is essentiallyt the expected value of the
  ratio rather than the ratio of expected values.  The constant $\eta$ in the
  denominator of mFDR avoids dividing by zero under the complete null hypothesis
- in which all $\mu_j = 0$.  If $W_0 \le \omega$, then alpha-investing rules
+ in which all $\mu_j = 0$.  If $w_0 \le \omega$, then alpha-investing rules
  control $\mbox{mFDR}_\eta(p) \le \omega$, and this result implies weak control
  of the family wide error rate.  Furthermore, the index $j$ in \eqn{eq:mFDR} is
  allowed to be an arbitrary stopping time, such as the occurrence of the $k$th
@@ -302,11 +242,11 @@
  outcomes of prior tests.  Otherwise, an alpha-investing rule is allowed to use
  the pattern of prior rejections as captured by the sequence of wealths.  We can
  capture this dependence by thinking of the investing rule ${\cal A}$ as a
- function of the sequence of prior wealths $W_0^j = \{W_0, W_1, \ldots, W_j\}$.
+ function of the sequence of prior wealths $w_0^j = \{w_0, W_1, \ldots, W_j\}$.
   A rule is then a map from the sequence of wealths to a number on the interval
  0 to the current wealth:
  \begin{equation}
-    {\cal A}: W_0^j \mapsto [0, \min(W_j,1)]    
+    {\cal A}: w_0^j \mapsto [0, \min(W_j,1)]    
  \label{eq:A}
  \end{equation}
  For example, the rule $\cal A$ can set the wealth of the next test higher or
@@ -314,7 +254,7 @@
  rejections to this point.  Though alpha investing allows this complete
  generality, we focus our attention on a simpler class of investing rules with a
  path independent, Markovian structure.  The amount invested by these rules
- depends only on the current wealth rather than the full path, ${\cal A}(W_0^j)
+ depends only on the current wealth rather than the full path, ${\cal A}(w_0^j)
  = \al(W_j)$.  The only requirement is that $0 \le \al(w) \le w$; a rule cannot
  invest more wealth than the amount possessed.  It does seem natural, however,
  for $\al(w)$ to be monotone increasing in $w$.
@@ -374,10 +314,10 @@
  current wealth over subsequent tests.   
 
 We illustrate the construction for the geometric rule.  If the initial wealth
- is $W_0$, then the alpha wealth invested in the $j$th test (assuming no
+ is $w_0$, then the alpha wealth invested in the $j$th test (assuming no
  intervening test rejects) is
  \begin{equation}
-    \al_j = W_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
+    \al_j = w_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
  \label{eq:alj1}
  \end{equation}
   Rather than define the investing rule using a discrete distribution on
@@ -390,13 +330,13 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  wealth invested in the $j$th test \eqn{eq:alj1} matches the integral of
  $A_g(x)$ from $x=j$ to $x=j+1$,
  \begin{equation}
-    \al_j = W_0 \int_j^{j+1} A_g(x,\psi) dx = W_0 \, \psi\; (1-\psi)^{j-1} \;.
+    \al_j = w_0 \int_j^{j+1} A_g(x,\psi) dx = w_0 \, \psi\; (1-\psi)^{j-1} \;.
  \label{eq:alj2}
  \end{equation}
  To move away from this discrete indexing, note that the following tail integral
  shows the amount of wealth that remains,
  \begin{equation}
-    W_g(x) = W_0 \int_x^\infty A_g(t,\psi) dt = W_0 (1-\psi)^{x-1}\;.
+    W_g(x) = w_0 \int_x^\infty A_g(t,\psi) dt = w_0 (1-\psi)^{x-1}\;.
  \label{eq:Wg}
  \end{equation}
  For integers $j$, $W_g(j)$ is the wealth remaining after $j$ tests that fail to
@@ -409,46 +349,53 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  as in \eqn{eq:Ageo}.  This construction uses the inverse of the tail wealth to
  determine a `test index' $W_g^{-1}(w)$ that corresponds to the current input
  wealth $w$.  The universal rule $\al_u(w)$ follows from the same
- contruction, using the discrete density
+ contruction, with the density
  \begin{displaymath}
     A_u(x) = \frac{\log 2}{(x+1) (\log(x+1))^2} \;, \quad 1 < x,
  \end{displaymath}
- in place of $A_g$.
+ used in place of $A_g$.
 
 %--------------------------------------------------------------------------
 \section{ Risk Analysis}
 %--------------------------------------------------------------------------
 
-We start by considering the risk of testimators in the more familiar case of a
-single test or simultaneous tests.  This context allows us to introduce the
-approach that we take when studying the risk of alpha investing procedures in
-the sequential context.
+ We start by considering the risk of testimators in the more familiar case of a
+ single test or simultaneous tests.  This context allows us to introduce the
+ approach that we take when studying the risk of alpha investing procedures in
+ the sequential context.
 
 
-
-%--------------------------------------------------------------------------
-\subsection{ Scalar Risk }
-%--------------------------------------------------------------------------
-
-We first consider the squared error risk of testimators for a single parameter.
-  Denote the scalar testimator based on the test with level $\al$ as
- $\hat\mu_\al(Y)$ where $Y \sim N(\mu,1)$.
-
-The risk of $\hat\mu_\al$ is
+ We first consider the squared error risk of testimators for a single parameter.
+  Let $Y \sim N(0,1)$.  The scalar testimator defined by the two-sided test of
+ $H_0: \mu=0$ at level $\al$ is
+ \begin{equation}
+   \hat\mu_\al(Y) = \left\{
+     \begin{array}{cc}
+        Y & \mbox{ if } z_\al^2 \le Y^2, \cr
+        0 & \mbox{ otherwise, }
+      \end{array} \right.
+ \label{eq:muHat}
+ \end{equation}
+ where $z_{a}$ denotes the two-sided critical value 
+ \begin{equation}
+   z_{a} = \Phi^{-1}(1-a/2) \;.
+ \label{eq:zAlpha}
+ \end{equation}
+ The risk of $\hat\mu_\al$ is
  \begin{eqnarray}
-   R(\hat\mu_\al,\mu) 
+   R(\hat\mu_\al, \mu) 
      &=& \ev(\hat\mu_\al(Y) - \mu)^2  \cr
      &=& \mu^2 \pr(Y^2 \le z_\al) 
          + \int_{y^2>z_\al} (y-\mu)^2 \phi(y) dy \;.
  \label{eq:risk_mu_al}
  \end{eqnarray}
  The first summand is the squared bias that arises if the test does not reject
- when $\mu \ne 0$.  The second is the variance of the estimator.  Figure
- \ref{fig:risk}(a) shows a graph of the risk of two testimators with $\al=0.05$
+ when $\mu \ne 0$; the second summand is the variance of the estimator.  Figure
+ \ref{fig:risk}(a) shows a graph of the risk of testimators with $\al=0.05$
  and $\al = 0.20$.  Figure \ref{fig:risk}(b) shows the decomposition of the risk
  of $\hat\mu_{0.05}$ into bias and variance terms.  Because the variance
  component of the risk is bounded by one, the bias dominates the risk unless
- $\al$ is unusually large.
+ $\al$ is unusually large or $\mu$ is near zero.
 
 
  \begin{figure}
@@ -460,28 +407,126 @@ $\al$ = 0.05, 0.20 versus $\mu$. (b) Components of the risk of $\hat\mu_{0.05}$.
  \end{figure}
 
  
+ The analysis of the risk of testimators is typically done in the context of
+ estimation a vector of $p$ means, $\bmu \equiv \mu_{1:p} =
+ (\mu_1,\ldots,\mu_p)'$.  The available data is the vector $\YY \equiv Y_{1:p} =
+ (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  The estimator
+ of $\bmu$ combines testimators at a common level in each coordinate,
+ $\hat{\bmu}_\al = (\hat\mu_\al(Y_1), \ldots, \hat\mu_\al(Y_p))'$.  The estimator
+ $\hat{\bmu}_\al$ consists of zeros except for those coordiantes where $z_\al^2
+ \le Y_j^2$.  The risk of $\hat{\bmu}_\al$ is the sum of the risks of the
+ coordinate testimators,
+ \begin{equation}
+    R(\hat{\bmu}_\al, \bmu) 
+      = \ev\; \normsq{\hat{\bmu}_\al - \bmu} \;,
+ \label{eq:risk}
+ \end{equation}
+ where $\normsq{x} = x'x$ for vectors $x$.  We note that our notation suppresses
+ the dependence of the estimator $\hat{\bmu}_\al(\YY)$ on the data.  The full
+ vector $\YY$ is available for setting the level as well.
 
 
-% RAS
+ Minimax bounds for the risk $R(\hat{\bmu},\bmu)$ are well-understood.  We briefly
+ review the results of \citet{fostergeorge94} who introduced the concept of the
+ risk inflation of an estimator. \citep[][obtain similar results.]
+  {donohojohnstone94} The risk inflation of $\hat{\bmu}_\al$ is the supremum of
+ the ratio of the risk of the testimator $\hat{\bmu}_\al$ at level $\al$ to the
+ risk of a testimator that obtains the optimal level from an oracle. 
+  Their results imply that the risk inflation of $\hat{\bmu}_\al$ is
+ asymptotically $2 \log p$,
+ \begin{equation}
+    2 \log p - o(\log p) 
+    \le
+    \sup_\mu  \frac{1 + R(\hat{\bmu}_\al,\bmu)}
+                   {1 + \inf_\eta{R(\hat{\bmu}_\eta,\bmu)}}  
+    \le 
+    2 \log p + 1 \;.
+ \label{eq:ri}
+ \end{equation}
+ Foster and George further show that the testimator $\hat{\bmu}_{1/p}$ --
+ essentially the Bonferoni estimator -- obtains the risk inflation threshold.
+  The constant 1 in added to the risks arises in the context of regression
+ models in which one always estimates the intercept.  As a practical device, its
+ presence in the denominator avoids dividing by zero under the complete null
+ model in which $\mu_j = 0$ for all $j$.
 
+
+ Though suggestive, these results do not reveal the risk of the estimator
+ derived from alpha investing.  The key difference lies in the choice of the
+ test levels.  The testimator studied in risk inflation $\hat{\bmu}_\al$ uses a
+ fixed level $\al$ for all $p$ coordinates, and all of the elements of \YY are
+ available simultaneously.  In sequential testing, the $Y_j$ are observed
+ sequentially so that the elements of the estimator form a stochastic process
+ \begin{equation}
+   \hat\mu(\al,w_0) = (\hat\mu_{\al(w_0)}, \hat\mu_{\al(W_1)}, \ldots, 
+                       \hat\mu_{\al(W_{p-1})})',
+ \label{eq:muHatAlphaInv}
+ \end{equation}
+ which is defined by the random variables $W_j$ given in \eqn{eq:Wj}.  Not only
+ does alpha investing allow the levels to vary over the testimators, but the
+ levels form a Markov process so that the level of the $j$ testimator depends on
+ whether prior tests reject $H_k$, $k < j$.  Classical risk inflation fixes a
+ common level for all of the coordinates.  For convenience, let
+ \begin{equation}
+   r_\mu(a) = \Phi(\mu-z_a)+\Phi(-\mu-z_a)   
+ \label{eq:rMu}
+ \end{equation}
+ denote the probability of rejecting $H_0: \mu=0$ using a two-sided $z$-test at
+ level $a$ (the power of the test).  The risk of the testimator given by alpha
+ investing can then be written as
+ \begin{eqnarray}
+   R(\hat\mu(\al,w_0),\mu_{1:p}) 
+    &=& R(\hat\mu_{\al(w_0)},\mu_1)
+           + \ev_W \sum_{j=2}^p R(\hat\mu_{\al(W_{j-1})},\mu_j)  \cr
+    &=& R(\hat\mu_{\al_1},\mu_1)
+           + r_{\mu_1}(\al_1)\; \ev R(\hat\mu(\al,w_0-\al_1+\omega),\mu_{2:p})\cr
+    & & \qquad + (1-r_{\mu_1}(\al_1))\; \ev R(\hat\mu(\al,w_0-\al_1),\mu_{2:p}) \;,
+ \label{eq:riskTestAI}
+ \end{eqnarray}
+ where $\al_1 = \al(w_0)$.  The second expression for the risk emphasizes the
+ recursive nature of the risk and hints at our approach to its maximization
+ using Bellman equations.
+
+
+ The challenge of maximizing the risk obtained by the testimator produced by an
+ alpha investing rule $\al(w)$ similarly introduces a second stochastic process
+ determined by the random wealth process.  The stochastic process picks the mean
+ $\mu_j$ of $Y_j$ in such a way as to maximize the cumulative risk ultimately
+ obtained by the alpha investing rule over a sequence of $p$ tests.
+  For the test of $H_1$, the alpha investing rule defines the testimator
+ $\hat\mu_{\al(w_0)}(Y_1)$. Suppose that the initial level is $\al_1 =
+ \al(w_0)=0.05$ so that the graph in Figure \ref{fig:risk}(a) shows the risk of
+ testimator $\hat\mu_{\al_1}(Y_1)$.  The choice of $\mu_1$ is not so simple,
+ however, as setting $\mu_1$ to $\tilde\mu = \arg \max R(\hat\mu_{0.05},\mu)
+ \approx \pm 2.16$.  Doing so ignores the wealth obtained if $H_1$ is rejected.
+   Although setting $\mu_1 = \tilde\mu$
+ maximizes the risk for the first test, the probability that the first test
+ rejects is $r_{\tilde\mu}(0.05) \approx 0.58$.  By rejecting the first test,
+ the alpha investing rule obtains the additional contribution $\omega$ to its
+ alpha wealth, allowing it to increase the level -- and so reduce its risk -- in
+ subsequent tests.  Instead, the problem to be solved at the first test is to
+ choose 
+ \begin{displaymath}
+    \mu_1 = \arg \max_{m} R(\hat\mu_{\al_1}(Y_1),m)
+               + r_m(\al_1) \; {\cal R}(\hat{\bmu}_2^p, w_0-\al_1+\omega)
+               + (1-r_m(\al(w_0))) \; {\cal R}(\hat{\bmu}_2^p, w_0-\al_1)
+ \end{displaymath}
+ where
+ \begin{equation}
+   {\cal R}(\hat{\bmu},w) = \max_\mu R(
+ \label{eq:calR}
+ \end{equation}
 %--------------------------------------------------------------------------
-\section{ Computation }
+\section{ Feasible Risk Set }
 %--------------------------------------------------------------------------
 
- 
- Convexity. A simple randomization argument shows that any linear combination of
- the mean points that we found is attainable.  That's not the same, however, as
- showing that the actual set is convex.  Each calculation we do (for some gamma
- or direction angle) finds the maximum value of the function in that direction.
-  Hence, you cannot get further out in that direction. That removes half of the
- space; a collection of these leaves a convex interior.  That convex interior
- holds the collection of solutions.  The smaller the angle between direction
- vectors, the closer we approximate the feasible set.  Rather than get the
- intersection of {\em all} half-spaces that hold the feasible region, we git a
- finite number of them.
+
+ The feasible risk set compares the risks of two alpha investing rules.  Figure
+\ref{fig:feasibleSet} shows an example.  
 
 
-
+ defined
+by wealth functions $W_\al$ and $W_\beta$.  
 
  We identify the boundary of the performance envelope by solving a collection of
  one-dimensional optimizations.  Figure \eqn{fi:tangent} illustrates the method
@@ -564,6 +609,23 @@ only need a one-dimensional optimization at each test,
  earned by a rejection.  Hence, the testing does not increment the wealth beyond
  this boundary.
  
+
+ 
+ Convexity. A simple randomization argument shows that any linear combination of
+ the mean points that we found is attainable.  That's not the same, however, as
+ showing that the actual set is convex.  Each calculation we do (for some gamma
+ or direction angle) finds the maximum value of the function in that direction.
+  Hence, you cannot get further out in that direction. That removes half of the
+ space; a collection of these leaves a convex interior.  That convex interior
+ holds the collection of solutions.  The smaller the angle between direction
+ vectors, the closer we approximate the feasible set.  Rather than get the
+ intersection of {\em all} half-spaces that hold the feasible region, we git a
+ finite number of them.
+
+
+ Mean processes
+
+
 
  We obtain a performance envelope by varying the competitive factor $\gamma$.
   To find the boundary points below the diagonal, we reverse the roles of the
@@ -819,7 +881,7 @@ Improve the estimator by shrinkage.
  hypotheses.  Such consideration is appropriate, however, only in the context of
  testing a larger collection of hypotheses than considered here.
 
- \ras{ Things left to do:
+ \ras{ Things left to do:}
  \begin{enumerate}
 
  \item Graphs of envelope that suggest that alpha wealth is a decent proxy for
@@ -832,11 +894,12 @@ Improve the estimator by shrinkage.
  \item Comment on the value of saving if hope to compete with a universal
  bidder.
  
-\item {\bf Stationarity} of the associated wealth process, perhaps using results from
-\citet{chanTong94} for the ergodicity of the process in the universal case.
+\item {\bf Stationarity} of the associated wealth process, perhaps using results
+ from \citet{chanTong94} for the geometric ergodicity of the process in the
+ universal case.
 
 \end{enumerate}
-}
+
 
 
 %--------------------------------------------------------------------------
