@@ -301,10 +301,15 @@
 
 
  \begin{figure}
- \caption{ \label{fig:rules} Geometric and universal alpha investing rules. }
- \centerline{    \includegraphics[width=3.5in]{figures/rules}  }
- \end{figure}
+ \caption{ \label{fig:rules} \sl Investment functions for two geometric and the
+ universal alpha investing rules. Points show the invested amounts for 100 tests
+ that do not reject $H_0$. }
 
+ \centerline{
+ \vspace{0.1in}
+ \includegraphics[width=3.5in]{figures/rules} }
+ \vspace{0.2in}
+ \end{figure}
 
 
  \vspace*{0.2in}
@@ -355,14 +360,25 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \end{displaymath}
  used in place of $A_g$.
 
+ \vspace*{0.2in}
+ \noindent
+ {\it Remark B. } To avoid adding notation, we overload the symbol $\al$.  By
+ itself, we use $\al$ to represent the generic level of a test.  When given an
+ integer subscript, $\al_j$ is the level of the $j$th test in sequence of tests,
+ as in \eqn{eq:alj1}.  Finally, when denoting a function, $\al(w)$ is the level
+ invested in a test by a procedure that has available wealth $w$, as in
+ \eqn{eq:Ageo} or \eqn{eq:Auniv}.  Throughout these uses, the symbol $\alpha$
+ consistently gives the level of a test; only the context of the test changes.
+
+
 %--------------------------------------------------------------------------
 \section{ Risk Analysis}
 %--------------------------------------------------------------------------
 
- We start by considering the risk of testimators in the more familiar case of a
- single test or simultaneous tests.  This context allows us to introduce the
- approach that we take when studying the risk of alpha investing procedures in
- the sequential context.
+ We start by considering the risk of testimators in the case of a single test or
+ multiple simultaneous tests.  This foundation allows us to introduce the
+ approach that we take when studying the risk produced by alpha investing
+ procedures in the sequential context.
 
 
  We first consider the squared error risk of testimators for a single parameter.
@@ -376,44 +392,51 @@ We illustrate the construction for the geometric rule.  If the initial wealth
       \end{array} \right.
  \label{eq:muHat}
  \end{equation}
- where $z_{a}$ denotes the two-sided critical value 
+ where $z_\al$ denotes the positive, two-sided critical value
  \begin{equation}
-   z_{a} = \Phi^{-1}(1-a/2) \;.
+   z_\al = \Phi^{-1}(1-\al/2) \;.
  \label{eq:zAlpha}
  \end{equation}
  The risk of $\hat\mu_\al$ is
  \begin{eqnarray}
-   R(\hat\mu_\al, \mu) 
+   R(\hat\mu_\al(Y), \mu) 
      &=& \ev(\hat\mu_\al(Y) - \mu)^2  \cr
-     &=& \mu^2 \pr(Y^2 \le z_\al) 
-         + \int_{y^2>z_\al} (y-\mu)^2 \phi(y) dy \;.
+     &=& \mu^2 \pr(Y^2 \le z_\al^2) 
+         + \int_{y^2>z_\al^2} (y-\mu)^2 \phi(y) dy \cr
+     &=& B_\al(\mu) + V_\al(\mu)
  \label{eq:risk_mu_al}
  \end{eqnarray}
- The first summand is the squared bias that arises if the test does not reject
- when $\mu \ne 0$; the second summand is the variance of the estimator.  Figure
- \ref{fig:risk}(a) shows a graph of the risk of testimators with $\al=0.05$
- and $\al = 0.20$.  Figure \ref{fig:risk}(b) shows the decomposition of the risk
- of $\hat\mu_{0.05}$ into bias and variance terms.  Because the variance
- component of the risk is bounded by one, the bias dominates the risk unless
- $\al$ is unusually large or $\mu$ is near zero.
+ The first summand $B_\al(\mu)$ is the squared bias that arises if the test of
+ $H_0: \mu=0$ does not reject when $\mu \ne 0$; the second summand is the
+ variance of the estimator.  Figure \ref{fig:risk}(a) shows a graph of the risk
+ of testimators with $\al=0.05$ and $\al = 0.20$.  The maximum risk that occurs
+ near $z_\al$ grows as the level $\al$ shrinks.  Figure \ref{fig:risk}(b) shows
+ the decomposition of the risk of $\hat\mu_\al$ into $B_\al(\mu)$ and
+ $V_\al(\mu)$ for $\al = 0.05$.  Because the variance component $V_\al(\mu)$
+ increases smoothly to its maximum 1 for large $|\mu|$, it is the bias that
+ produces the noticeable peak that identifies the maximum risk just outside
+ $z_\al$.
 
 
  \begin{figure}
- \caption{ \label{fig:risk} Risk of testimators. (a) Risk of testimators with
-$\al$ = 0.05, 0.20 versus $\mu$. (b) Components of the risk of $\hat\mu_{0.05}$. }
- \centerline{ 
-   \includegraphics[width=2.5in]{figures/risk_a}
-   \includegraphics[width=2.5in]{figures/risk_b} }
+ \caption{ \label{fig:risk} \sl Risk of testimators. (a) Risk of testimators with
+ $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance omponents of the
+ risk of $\hat\mu_{0.05}$. } 
+ \vspace{0.1in}
+\centerline{
+ \includegraphics[width=3.0in]{figures/risk_a}
+ \includegraphics[width=3.0in]{figures/risk_b} }
+ \vspace{0.2in}
  \end{figure}
-
  
+
  The analysis of the risk of testimators is typically done in the context of
  estimation a vector of $p$ means, $\bmu \equiv \mu_{1:p} =
  (\mu_1,\ldots,\mu_p)'$.  The available data is the vector $\YY \equiv Y_{1:p} =
  (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  The estimator
  of $\bmu$ combines testimators at a common level in each coordinate,
  $\hat{\bmu}_\al = (\hat\mu_\al(Y_1), \ldots, \hat\mu_\al(Y_p))'$.  The estimator
- $\hat{\bmu}_\al$ consists of zeros except for those coordiantes where $z_\al^2
+ $\hat{\bmu}_\al$ consists of zeros except for those coordinates where $z_\al^2
  \le Y_j^2$.  The risk of $\hat{\bmu}_\al$ is the sum of the risks of the
  coordinate testimators,
  \begin{equation}
@@ -426,7 +449,7 @@ $\al$ = 0.05, 0.20 versus $\mu$. (b) Components of the risk of $\hat\mu_{0.05}$.
  vector $\YY$ is available for setting the level as well.
 
 
- Minimax bounds for the risk $R(\hat{\bmu},\bmu)$ are well-understood.  We briefly
+ Minimax bounds for the risk $R(\hat{\bmu}_\al,\bmu)$ are well-understood.  We briefly
  review the results of \citet{fostergeorge94} who introduced the concept of the
  risk inflation of an estimator. \citep[][obtain similar results.]
   {donohojohnstone94} The risk inflation of $\hat{\bmu}_\al$ is the supremum of
@@ -445,81 +468,86 @@ $\al$ = 0.05, 0.20 versus $\mu$. (b) Components of the risk of $\hat\mu_{0.05}$.
  \end{equation}
  Foster and George further show that the testimator $\hat{\bmu}_{1/p}$ --
  essentially the Bonferoni estimator -- obtains the risk inflation threshold.
-  The constant 1 in added to the risks arises in the context of regression
- models in which one always estimates the intercept.  As a practical device, its
- presence in the denominator avoids dividing by zero under the complete null
- model in which $\mu_j = 0$ for all $j$.
+  The constant 1 added to the risks in the ratio of \eqn{eq:ri} arises in the
+ context of regression models in which one always estimates the intercept.  As a
+ practical device, its presence in the denominator avoids dividing by zero under
+ the complete null model in which $\mu_j = 0$ for all $j$.
 
 
- Though suggestive, these results do not reveal the risk of the estimator
- derived from alpha investing.  The key difference lies in the choice of the
- test levels.  The testimator studied in risk inflation $\hat{\bmu}_\al$ uses a
- fixed level $\al$ for all $p$ coordinates, and all of the elements of \YY are
- available simultaneously.  In sequential testing, the $Y_j$ are observed
- sequentially so that the elements of the estimator form a stochastic process
+ Though suggestive, these results do not reveal the risk of the testimator
+ derived from alpha investing.  The key difference lies in the timing of the
+ choice of the test levels.  The testimator studied in risk inflation
+ $\hat{\bmu}_\al$ uses a fixed level $\al$ for all $p$ coordinates, and all of
+ the elements of \YY are used to set this common level.  In sequential testing,
+ the $Y_j$ are observed sequentially so that the elements of the estimator form
+ a stochastic process, which we collect in a $p$-element vector as
  \begin{equation}
-   \hat\mu(\al,w_0) = (\hat\mu_{\al(w_0)}, \hat\mu_{\al(W_1)}, \ldots, 
+   \hat\mu(\al(\cdot),w_0) = (\hat\mu_{\al(w_0)}, \hat\mu_{\al(W_1)}, \ldots, 
                        \hat\mu_{\al(W_{p-1})})',
  \label{eq:muHatAlphaInv}
  \end{equation}
- which is defined by the random variables $W_j$ given in \eqn{eq:Wj}.  Not only
- does alpha investing allow the levels to vary over the testimators, but the
- levels form a Markov process so that the level of the $j$ testimator depends on
- whether prior tests reject $H_k$, $k < j$.  Classical risk inflation fixes a
- common level for all of the coordinates.  For convenience, let
+ where $\al(\cdot)$ denotes the defining investing rule, and the wealth random
+ variables $W_j$ given in \eqn{eq:Wj} contribute the randomness.  Not only does
+ alpha investing allow the levels to vary over the testimators, but the levels
+ form a Markov process; the level of the $j$th testimator depends on whether
+ prior tests reject $H_k$, $k < j$.
+
+
+ The most convenient expression for the risk of $\hat\mu(\al(\cdot),w_0)$ relies
+ on a recurrence.  For convenience, let
  \begin{equation}
-   r_\mu(a) = \Phi(\mu-z_a)+\Phi(-\mu-z_a)   
+   r_\mu(\al) = \Phi(\mu-z_\al)+\Phi(-\mu-z_\al)   
  \label{eq:rMu}
  \end{equation}
  denote the probability of rejecting $H_0: \mu=0$ using a two-sided $z$-test at
- level $a$ (the power of the test).  The risk of the testimator given by alpha
+ level $\al$ (the power of the test).  The risk of the testimator given by alpha
  investing can then be written as
  \begin{eqnarray}
-   R(\hat\mu(\al,w_0),\mu_{1:p}) 
+   {\cal R}(\hat\mu(\al(\cdot),w_0),\mu_{1:p}) 
     &=& R(\hat\mu_{\al(w_0)},\mu_1)
-           + \ev_W \sum_{j=2}^p R(\hat\mu_{\al(W_{j-1})},\mu_j)  \cr
+           + \ev \sum_{j=2}^p R(\hat\mu_{\al(W_{j-1})},\mu_j)  \cr
     &=& R(\hat\mu_{\al_1},\mu_1)
-           + r_{\mu_1}(\al_1)\; \ev R(\hat\mu(\al,w_0-\al_1+\omega),\mu_{2:p})\cr
-    & & \qquad + (1-r_{\mu_1}(\al_1))\; \ev R(\hat\mu(\al,w_0-\al_1),\mu_{2:p}) \;,
+           + r_{\mu_1}(\al_1)\; 
+             {\cal R}(\hat\mu(\al(\cdot),w_0-\al_1+\omega),\mu_{2:p})\cr
+    & & \qquad + (1-r_{\mu_1}(\al_1))\; 
+             {\cal R}(\hat\mu(\al(\cdot),w_0-\al_1),\mu_{2:p}) \;,
  \label{eq:riskTestAI}
  \end{eqnarray}
- where $\al_1 = \al(w_0)$.  The second expression for the risk emphasizes the
- recursive nature of the risk and hints at our approach to its maximization
- using Bellman equations.
+ where $\al_1 = \al(w_0)$ and we have suppressed the dependence of the estimator
+ on the data.  The second expression for the risk emphasizes the recursive
+ nature of the risk and hints at our approach to its maximization using Bellman
+ equations.
 
 
- The challenge of maximizing the risk obtained by the testimator produced by an
- alpha investing rule $\al(w)$ similarly introduces a second stochastic process
- determined by the random wealth process.  The stochastic process picks the mean
- $\mu_j$ of $Y_j$ in such a way as to maximize the cumulative risk ultimately
- obtained by the alpha investing rule over a sequence of $p$ tests.
-  For the test of $H_1$, the alpha investing rule defines the testimator
- $\hat\mu_{\al(w_0)}(Y_1)$. Suppose that the initial level is $\al_1 =
- \al(w_0)=0.05$ so that the graph in Figure \ref{fig:risk}(a) shows the risk of
- testimator $\hat\mu_{\al_1}(Y_1)$.  The choice of $\mu_1$ is not so simple,
- however, as setting $\mu_1$ to $\tilde\mu = \arg \max R(\hat\mu_{0.05},\mu)
- \approx \pm 2.16$.  Doing so ignores the wealth obtained if $H_1$ is rejected.
-   Although setting $\mu_1 = \tilde\mu$
- maximizes the risk for the first test, the probability that the first test
- rejects is $r_{\tilde\mu}(0.05) \approx 0.58$.  By rejecting the first test,
- the alpha investing rule obtains the additional contribution $\omega$ to its
- alpha wealth, allowing it to increase the level -- and so reduce its risk -- in
- subsequent tests.  Instead, the problem to be solved at the first test is to
- choose 
- \begin{displaymath}
-    \mu_1 = \arg \max_{m} R(\hat\mu_{\al_1}(Y_1),m)
-               + r_m(\al_1) \; {\cal R}(\hat{\bmu}_2^p, w_0-\al_1+\omega)
-               + (1-r_m(\al(w_0))) \; {\cal R}(\hat{\bmu}_2^p, w_0-\al_1)
- \end{displaymath}
- where
- \begin{equation}
-   {\cal R}(\hat{\bmu},w) = \max_\mu R(
- \label{eq:calR}
- \end{equation}
 %--------------------------------------------------------------------------
 \section{ Feasible Risk Set }
 %--------------------------------------------------------------------------
 
+
+ The analysis and calculation of the maximum risk obtained by the testimator
+ $\hat\mu(\al(\cdot),w)$ requires a similar recursive perspective.  Suppose that
+ the initial level $\al_1 = \al(w_0)=0.05$; the graph in Figure
+ \ref{fig:risk}(b) shows the components of the risk of this testimator.  The
+ choice of $\mu_1$ is not so simple, however, as setting $\mu_1$ to $\tilde\mu =
+ \arg \max R(\hat\mu_{0.05},\mu) \approx \pm 2.16$.  Doing so ignores the payoff
+ $\omega$ obtained if $H_1$ is rejected and its impact on the subsequent wealths
+ $W_j$.  Although setting $\mu_1 = \tilde\mu$ maximizes the risk for the first
+ test, it leaves a good chance for the estimator to gain wealth by rejecting the
+ first null hypothesis.  The probability that the first test rejects is
+ $r_{\tilde\mu}(0.05) \approx 0.58$.  By rejecting the first test, the alpha
+ investing rule obtains the additional contribution $\omega$ to its alpha
+ wealth, allowing it to increase the level -- and so potentially reduce its risk
+ -- in subsequent tests.  Instead, the problem to be solved at the first test is
+ to choose
+ \begin{eqnarray*}
+    \mu_1 = \arg \max_{m} & \Bigl\{ & R(\hat\mu_{\al_1},m) \Bigr. 
+        + r_{m}(\al_1)\; 
+             \max_{\mu_{1:p}} {\cal R}(\hat\mu(\al,w_0-\al_1+\omega),\mu_{2:p})\cr
+    & & + \Bigl. (1-r_{m}(\al_1)) \max_{\mu_{1:p}} \; 
+             {\cal R}(\hat\mu(\al,w_0-\al_1),\mu_{2:p}) \Bigr\} \;.
+ \end{eqnarray*}
+ The best choice for $\mu_1$ depends on the risk produced by subsequent
+ components of the sequence of testimators.
 
  The feasible risk set compares the risks of two alpha investing rules.  Figure
 \ref{fig:feasibleSet} shows an example.  
