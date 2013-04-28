@@ -211,13 +211,13 @@
  $W_1 = w_0 - \alpha_1$.  In general, the alpha wealth available for the test of
  $H_{j+1}$ is given by the stochastic process \marginpar{$W_j$}
  \begin{equation}
-    W_j = W_{j-1} - \alpha_j + \omega \, I_{\{p_j < \al_j\}}, \; j = 1,\,2,\ldots.
+    W_j = W_{j-1} - \alpha_j + \omega \, I_{\{p_j < \al_j\}}, \; j = 1,\,2,\ldots,
  \label{eq:Wj}
  \end{equation}
- Alpha investing thus resembles alpha spending used in clinical trials, with the
- key distinction that rejecting a hypothesis earns an additional allocation
- $\omega$ of alpha-wealth for subsequent testing.  \ras{reference to QPD and
- enhanced alpha investing}
+ with the initial condition $W_0 \equiv w_0$.  Alpha investing thus resembles
+ alpha spending used in clinical trials, with the key distinction that rejecting
+ a hypothesis earns an additional allocation $\omega$ of alpha-wealth for
+ subsequent testing.  \ras{reference to QPD and enhanced alpha investing}
 
 
  Because rejecting a null hypothesis makes it easier to reject other null
@@ -246,11 +246,11 @@
  outcomes of prior tests.  Otherwise, an alpha-investing rule is allowed to use
  the pattern of prior rejections as captured by the sequence of wealths.  We can
  capture this dependence by thinking of the investing rule ${\cal A}$ as a
- function of the sequence of prior wealths $w_0^j = \{w_0, W_1, \ldots, W_j\}$.
+ function of the sequence of prior wealths $W_0^j = \{W_0, W_1, \ldots, W_j\}$.
   A rule is then a map from the sequence of wealths to a number on the interval
  0 to the current wealth:
  \begin{equation}
-    {\cal A}: w_0^j \mapsto [0, \min(W_j,1)]    
+    {\cal A}: W_0^j \mapsto [0, \min(W_j,1)]    
  \label{eq:A}
  \end{equation}
  For example, the rule $\cal A$ can set the wealth of the next test higher or
@@ -291,23 +291,29 @@
  \eqn{eq:Auniv} is $w-1$ as $w \rightarrow \infty$), and $\al_u(w)
  \rightarrow 0$ as $w \rightarrow 0$.
 
-
- Figure \ref{fig:rules} graphs several alpha investing rules on a log-log scale.
-  Graphs of $\al_g(w,\psi)$ appear as straight lines in these coordinates.  The
- figure highlights the changing character of universal investing.  The share of
- wealth invested by $\al_u(w)$ is quite large for $w \approx 1$ at the right of
- the plot, but this diminishes rapids as the wealth falls.  The graph also shows
- the amount of alpha wealth spent by the rules.  The points shown along the
- graph of each function locate the pairs $(w_j, \,\al(w_j)\}$ for $j = 1,2,
- \ldots,100$.  The wide spacing of these points at the top of the graph of
- $\al_u$ confirms the large amounts invested.  In contrast, the corresponding
- points for geometric rule with $\psi= 0.00001$ barely move.
+ 
+ Figure \ref{fig:rules} contrasts the investments produced by the universal and
+ several alpha investing rules on a log-log scale.  The initial wealth for all
+ rules is set to $w_0 = 1$.  With this scaling, the amounts invested by the
+ universal rule falls off approximately linearly.  The amounts invested by the
+ universal rule are initially larger than those of any of these geometric rules.
+  With $w_0=1$, the universal rule invests about $0.369$, $0.131$, $0.0693$,
+ $0.0438$, and $0.0306$ in the first five tests before its spending gradually
+ slows. After this initial period, each geometric rule has a range of tests over
+ which the geometric rule provides a larger alpha level for testing $H_j$ than
+ the universal rule.  Ultimately, however, each geometric rule invests smaller
+ amounts than the geometric rule as the testing continues.  For example, the
+ geometric rule that invests 1\% of its current wealth at each test
+ ($\psi=0.01$) invests more than the universal rule when testing $H_{11}$
+ through $H_{581}$. \ras{ Say more here about why this 'blending' of the
+ geometric rates is a good thing; too bad we don't have that 'habitation' idea
+ worked out where the universal finds a steady rate appropriate for the rate of
+ false nulls. }
 
 
  \begin{figure}
- \caption{ \label{fig:rules} \sl Investment functions for two geometric and the
- universal alpha investing rules. Points show the invested amounts for 100 tests
- that do not reject $H_0$. }
+ \caption{ \label{fig:rules} \sl Investments for the universal and several
+ geometric alpha investing rules if no intervening test rejects. }
 
  \centerline{
  \vspace{0.1in}
@@ -424,7 +430,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
 
  \begin{figure}
  \caption{ \label{fig:risk} \sl Risk of testimators. (a) Risk of testimators with
- $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance omponents of the
+ $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance components of the
  risk of $\hat\mu_{0.05}$. } 
  \vspace{0.1in}
 \centerline{
@@ -610,20 +616,23 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  frame on the left of Figure \ref{fig:riFeasibleSet} shows the feasible set on
  the scale of risks; the frame on the right shows the same data on log scales.
   (The feasible risk set is not convex on a log scale but the approximation is
- quite close in practice.)  Points along the boundary of the feasible set
- identify the locations at which we computed the risks using the method
- described in the following section.  The entire feasible set lies above the
- diagonal; by construction, no testimator can have smaller risk than obtained by
- this oracle estimator.  The plot on the risk scale emphasizes the performance
- in models with substantial signal; the risk of the oracle reaches $p$ in the
- saturated model in which every $1 < \mu_i$.  The plot on the log scale
- emphasizes sparse models, the so-called nearly black context in which most
- $\mu_i = 0$.  In this frame, the line parallel to and above the diagonal is the
- risk-inflation boundary that obtains for non-sequential estimators.  The bounds
- in \eqn{eq:ri} imply that the worst case risk for the testimator should be
- about $1 + 2 \log p$ times the risk of the oracle.  These calculations show
- that the risk of \uTest\ does indeed fall below this boundary.  \ras{ Say more
- about the cool shape of the risk as the risk of the oracle goes to zero? }
+ quite close in practice.) To graph the risk on the log-log scale, we added 1 to
+ the risks of both estimators, in the fashion of risk inflation, in order to be
+ able to show the feasible risk set near 0 on a log-log scale.  Points along the
+ boundary of the feasible set identify the locations at which we computed the
+ risks using the method described in the following section.  The entire feasible
+ set lies above the diagonal; by construction, no testimator can have smaller
+ risk than obtained by this oracle estimator.  The plot on the risk scale
+ emphasizes the performance in models with substantial signal; the risk of the
+ oracle reaches $p$ in the saturated model in which every $1 < \mu_i$.  The plot
+ on the log scale emphasizes sparse models, the so-called nearly black context
+ in which most $\mu_i = 0$.  In this frame, the line parallel to and above the
+ diagonal is the risk-inflation boundary that obtains for non-sequential
+ estimators.  The bounds in \eqn{eq:ri} imply that the worst case risk for the
+ testimator should be about $1 + 2 \log p$ times the risk of the oracle.  These
+ calculations show that the risk of \uTest\ does indeed fall below this
+ boundary.  \ras{ Say more about the cool shape of the risk as the risk of the
+ oracle goes to zero? }
 
 
  \begin{figure}
@@ -641,33 +650,91 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \end{figure}
 
 
- Curves within the feasible set show the risks of the two testimators when the
- means of the tests are determined by a two-point Bayesian model.  Suppose that
- the means $\mu_{1:p}$ are set at random to some value $\mu^{*} \ne 0$, so that
+ Curves within the feasible set show the risks of the two testimators that
+ results if the means $\mu_{1:p}$ are determined by a two-point Bayesian model.
+  Suppose that the stochastic process $\{\bmu\}$ that determines the means sets
+ $\mu_j$ at random to some non-zero value $\mu^{*}$:
  \begin{equation}
     \mu_j = B_j \; \mu^{*}, \quad B_j  \iid \mbox{ Bernoulli}(\pi)  \;.
  \label{eq:muj}
  \end{equation}
- The smooth curves within the feasible set show the risks under this model, with
- $\mu^{*}$ = 0.75 (red), 1.5 (magenta), or 3 (blue), and the probability of a
- non-zero mean varying over the range $0.001 \le \pi \le 0.99$.  With $\mu^{*} =
- 0.75$, the risks nearly trace out the lower boundary of the feasible set.  That
- the curves do not reach into the origin on the log scale shows just how sparse
- these models are that define the lower corner of the feasible risk set.
+ The smooth curves within the feasible set show the risks under this
+ probabilistic model, with $\mu^{*}$ = 1.0 (red), 1.5 (magenta), or 3 (blue),
+ and the probability of a non-zero mean varying over the range $10^{-6} \le \pi
+ \le 1-10^{-6}$.  With $\mu^{*} = 1.0$, the risks nearly trace out the lower
+ boundary of the feasible set. 
 
 
 
- \ras{ Also talk about the Mean processes; or save for another day? }
-
+ \ras{ Talk about simulating the mean processes; or save for another day? }
 
 
 
 
- \clearpage
 
 %--------------------------------------------------------------------------
 \section{ Computation }
 %--------------------------------------------------------------------------
+
+
+  Because the risk-inflation estimator $\tilde{\bmu}$ has no wealth constraint,
+ we describe first the calculation of the feasible set ${\cal R}_p(\hat\mu(
+ \al(\cdot), w_0, \omega), \tilde{\bmu})$.  For convenience, we abbreviate the
+ alpha investing estimator as $\hat{\bmu}$ with the understanding that it
+ depends on the choice of the investing function $\al(\cdot)$, $w_0$, and
+ $\omega$ throughout this section.  The feasible set is two-dimensional, so we
+ simplify the optimization task by finding the maximum of a mixture of the
+ risks.  Let
+ \begin{equation}
+   U_\theta(\{\bmu\}) = \ev_\mu 
+       \cos(\theta) R(\hat{\bmu}, \bmu) + \sin(\theta) R(\tilde{\bmu},\bmu) 
+ \label{eq:bTheta}
+ \end{equation}
+ for some $ 0 \le \theta \le 2 \pi$.  The maximum utility defines a point on the
+boundary of the feasible set,
+ \begin{equation}
+   b(\theta) = \max_{\{\bmu\}} U_\theta(\{\bmu\})  \;.
+ \label{eq:bTheta}
+ \end{equation}
+ If we let $\{\bmu\}_\theta$ denote the stochastic mean process that maximizes
+ $b(\theta)$, then the point $(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies
+ of the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$.  These are the points
+ shown in plots of the feasible set, such as Figure \ref{fig:riFeasibleSet}.  By
+ varying $\theta$ over the circle, we identify the feasible set as the
+ intersection of the resulting half-planes.
+
+ 
+ We solve the maximization \eqn{eq:bTheta} via backward induction.  The
+ calculation begins with preliminary steps that build a data structure that
+ tracks the wealth of the alpha investing estimator.  Building this structure
+ requires identifying a grid of wealths $g$ and a jump table that caches indices
+ that speed later calculations.  The wealth grid spans the minimal attainable
+ wealth ($w_0 - \sum_{j=1}^p \al_j$) to a maximum allowed wealth, which we set
+ to $w_{\max} = 5$.  (Our results have not been sensitive to the choice so long
+ as it is substantially larger than $w_0 + \omega$.)  The wealth grid is
+ `logarithmically' spaced, with a finer grid at spaced at increments 0.001 for
+ small wealths below 0.02 and gradually increased.  The number of elements in
+ the wealth grid determines the number of columns in a matrix $M$ that holds the
+ intermediate wealths when solving the Bellman equation; the rows in this matrix
+ identify the specific test.  During the calculations, $M_{jk}$ holds the
+expected risk after the test of $H_j$ for an estimator with wealth $g_k$
+ associated with $\hat{\bmu}$ in row $j$ of $M$ refer to the test of
+ $H_j$, and a final extra row $M_{p+1,\cdot}$ defines the initial conditions for
+ the recursion. (The full matrix $M$ is not necessary, but its use simplifies the
+ description of the algorithm.)
+
+
+ This set is more easy to find than others
+ because the The wealths of the investing rules induction
+
+a backward induction \begin{eqnarray*}
+    \mu_1 = \arg \max_{m} & \Bigl\{ & R(\hat\mu_{\al_1},m) \Bigr. 
+        + r_{m}(\al_1) \; \max_{\mu_{2:p}} 
+              R(\hat\mu(\al,w_0-\al_1+\omega,\omega),\mu_{2:p})\cr
+    & & + \Bigl. (1-r_{m}(\al_1)) \max_{\mu_{2:p}} \; 
+              R(\hat\mu(\al,w_0-\al_1,\omega),\mu_{2:p}) \Bigr\} \;.
+ \end{eqnarray*}
+
 
  
  Now consider the general case of the test of $H_j$.  Assume that the alpha
