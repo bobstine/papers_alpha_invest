@@ -322,11 +322,9 @@
  \end{figure}
 
 
- \vspace*{0.2in}
- \noindent
- {\it Remark A. }  We obtained the universal rule by the following construction
+ \remark{ We obtained the universal rule by the following construction
  that links a spending rule to a probabilty distribution that allocates the
- current wealth over subsequent tests.   
+ current wealth over subsequent tests.  }
 
 We illustrate the construction for the geometric rule.  If the initial wealth
  is $w_0$, then the alpha wealth invested in the $j$th test (assuming no
@@ -370,15 +368,13 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \end{displaymath}
  used in place of $A_g$.
 
- \vspace*{0.2in}
- \noindent
- {\it Remark B. } To avoid adding notation, we overload the symbol $\al$.  By
+ \remark{ To avoid adding notation, we overload the symbol $\al$.  By
  itself, we use $\al$ to represent the generic level of a test.  When given an
  integer subscript, $\al_j$ is the level of the $j$th test in sequence of tests,
  as in \eqn{eq:alj1}.  Finally, when denoting a function, $\al(w)$ is the level
  invested in a test by a procedure that has available wealth $w$, as in
  \eqn{eq:Ageo} or \eqn{eq:Auniv}.  Throughout these uses, the symbol $\alpha$
- consistently gives the level of a test; only the context of the test changes.
+ consistently gives the level of a test; only the context of the test changes.}
 
 
 %--------------------------------------------------------------------------
@@ -677,128 +673,110 @@ We illustrate the construction for the geometric rule.  If the initial wealth
 %--------------------------------------------------------------------------
 
 
-  Because the risk-inflation estimator $\tilde{\bmu}$ has no wealth constraint,
- we describe first the calculation of the feasible set ${\cal R}_p(\hat\mu(
- \al(\cdot), w_0, \omega), \tilde{\bmu})$.  For convenience, we abbreviate the
- alpha investing estimator as $\hat{\bmu}$ with the understanding that it
- depends on the choice of the investing function $\al(\cdot)$, $w_0$, and
- $\omega$ throughout this section.  The feasible set is two-dimensional, so we
- simplify the optimization task by finding the maximum of a mixture of the
- risks.  Let
+ We describe first the calculation of the feasible set ${\cal R}_p(\hat\mu(
+ \al(\cdot), w_0, \omega), \tilde{\bmu})$ that contrasts an alpha investing
+ estimator with the risk-inflation estimator $\tilde{\bmu}$.  The risk-inflation
+ estimator has no wealth constraint; calculations need only track the wealth of
+ the alpha investing estimator, which we abbreviate as $\hat{\bmu}$ with the
+ understanding that it depends on the choice of the investing function
+ $\al(\cdot)$, $w_0$, and $\omega$ throughout this section.  Let
  \begin{equation}
-   U_\theta(\{\bmu\}) = \ev_\mu 
+   {\cal U}^\theta(\hat{\bmu},\tilde{\bmu}) = 
+       \max \evsub{\{\bmu\}} 
        \cos(\theta) R(\hat{\bmu}, \bmu) + \sin(\theta) R(\tilde{\bmu},\bmu) 
- \label{eq:bTheta}
+ \label{eq:U}
  \end{equation}
- for some $ 0 \le \theta \le 2 \pi$.  The maximum utility defines a point on the
-boundary of the feasible set,
- \begin{equation}
-   b(\theta) = \max_{\{\bmu\}} U_\theta(\{\bmu\})  \;.
- \label{eq:bTheta}
- \end{equation}
- If we let $\{\bmu\}_\theta$ denote the stochastic mean process that maximizes
- $b(\theta)$, then the point $(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies
- of the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$.  These are the points
- shown in plots of the feasible set, such as Figure \ref{fig:riFeasibleSet}.  By
- varying $\theta$ over the circle, we identify the feasible set as the
- intersection of the resulting half-planes.
+ denote the maximum expected value over stochastic processes $\{\bmu\}$ of a
+ weighted sum of risks defined by the angle $ 0 \le \theta \le 2 \pi$.  Let
+ $\{\bmu\}^\theta$ denote the stochastic process of means that maximizes
+ $U^\theta$.  The point $\evsub{\{\bmu\}^\theta}(R(\hat{\bmu}, \bmu),
+ R(\tilde{\bmu}, \bmu))$ lies on the boundary of ${\cal
+ R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible set is tangent to the line
+ defined by the mixture weights in \eqn{eq:U}.  Plots that show the feasible
+ set, such as Figure \ref{fig:riFeasibleSet}, highlight the boundary points that
+ are explicitly computed.  By varying $\theta$ over the circle, we approximate
+ the feasible set as the intersection of the resulting half-planes.
 
  
- We solve the maximization \eqn{eq:bTheta} via backward induction.  The
- calculation begins with preliminary steps that build a data structure that
- tracks the wealth of the alpha investing estimator.  Building this structure
- requires identifying a grid of wealths $g$ and a jump table that caches indices
- that speed later calculations.  The wealth grid spans the minimal attainable
- wealth ($w_0 - \sum_{j=1}^p \al_j$) to a maximum allowed wealth, which we set
- to $w_{\max} = 5$.  (Our results have not been sensitive to the choice so long
- as it is substantially larger than $w_0 + \omega$.)  The wealth grid is
- `logarithmically' spaced, with a finer grid at spaced at increments 0.001 for
- small wealths below 0.02 and gradually increased.  The number of elements in
- the wealth grid determines the number of columns in a matrix $M$ that holds the
- intermediate wealths when solving the Bellman equation; the rows in this matrix
- identify the specific test.  During the calculations, $M_{jk}$ holds the
-expected risk after the test of $H_j$ for an estimator with wealth $g_k$
- associated with $\hat{\bmu}$ in row $j$ of $M$ refer to the test of
- $H_j$, and a final extra row $M_{p+1,\cdot}$ defines the initial conditions for
- the recursion. (The full matrix $M$ is not necessary, but its use simplifies the
- description of the algorithm.)
+ We compute ${\cal U}^\theta$ via backward induction.  This induction
+ approximates the wealth of the alpha investing estimator along a grid.  The
+ wealth grid $G$ spans the minimal attainable wealth ($w_0 - \sum_{j=1}^p
+ \al_j$) to a maximum allowed wealth, which we set to $w_{\max} = 5$.  (Our
+ results have not been sensitive to the choice of $w_max$ so long as it is
+ substantially larger than $w_0 + \omega$.)  The wealth grid holds is
+ `logarithmically' spaced at $N$ points, placing a finer grid with increments
+ 0.001 for small wealths below 0.02 and gradually wider grid as the wealth
+ increases.  We insure that the grid includes an element $G_{k_0} = w_0$.  
 
 
- This set is more easy to find than others
- because the The wealths of the investing rules induction
-
-a backward induction \begin{eqnarray*}
-    \mu_1 = \arg \max_{m} & \Bigl\{ & R(\hat\mu_{\al_1},m) \Bigr. 
-        + r_{m}(\al_1) \; \max_{\mu_{2:p}} 
-              R(\hat\mu(\al,w_0-\al_1+\omega,\omega),\mu_{2:p})\cr
-    & & + \Bigl. (1-r_{m}(\al_1)) \max_{\mu_{2:p}} \; 
-              R(\hat\mu(\al,w_0-\al_1,\omega),\mu_{2:p}) \Bigr\} \;.
- \end{eqnarray*}
-
-
- 
- Now consider the general case of the test of $H_j$.  Assume that the alpha
- wealth available to the two investing rules is $A_j$ and $B_j$, respectively,
- at this stage, and that it has been $\ell \le j$ tests since the last rejection
- by the first rule and $m \le j$ tests since the last rejection by the second.
-  Assume also for ease of presentation that the level $\al_j = A_j f(\ell)$
- invested in the test of $H_j$ by the first investing rule is less than the
- level $\beta_j = B_j g(m)$ invested by the second ($\al_j < \beta_j$). It
- follows that, when utility is measured by the number of rejections, that we
-only need a one-dimensional optimization at each test,
+ The $p \times N$ matrix $U^{\theta}$ holds intermediate calculations of the
+ expected value $\cal U$.  The rows in this matrix identify the hypothesis $H_j$
+ and the columns index the position in the wealth grid $G$.  We fill $U^\theta$
+ from the `bottom up' in a tail recursion.  At the completion of the
+ calculations,
  \begin{eqnarray}
-   C^\gamma_j(A_j,\ell;B_j,m) 
-    &=& \max_{\mu \in \R } \left[ r^{}_{\mu}(\al_j) - \gamma \, r_{\mu}(\beta_j)\right. \cr
-    && \;+ \quad r_{\mu}(\al_j) \qquad \quad
-              C^\gamma_{j+1}(A_j+\omega-\alpha_j,0;\,B_j+\omega-\beta_j,0)  \cr
-    && \;+ (r_\mu(\beta_j)-r_\mu(\al_j)) \; 
-              C_{j+1}^\gamma(A_j-\alpha_j,\ell+1;\,B_j+\omega-\beta_j,0) \cr
-    && \;+ \left.  (1-r_\mu(\beta_j)) \; 
-              C_{j+1}^\gamma(A_j-\alpha_j,\ell+1;\,B_j-\beta_j,m+1) \right] \;,
- \label{eq:util}
+   U^\theta_{jk} &=&  \max_\mu \;\Bigl\{
+     \cos(\theta) R(\hat\mu_{\al(G_k)}, \mu) + \sin(\theta) R(\tilde{\mu},\mu) \cr
+     & &+ r_\mu\left(\al(G_k)\right) \;
+          \left(c \,U^{\theta}_{j+1,k_c+1} + (1-c) U^{\theta}_{j+1,k_c}\right) \cr
+     & & + (1- r_\mu\left(\al(G_k)\right) \; 
+          \left(d \,U^{\theta}_{j+1,k_d+1} + (1-d) U^{\theta}_{j+1,k_d}\right)   
+     \Bigr\}
+ \label{eq:Ujk}
  \end{eqnarray}
- with the boundary condition $C_{T+1}^\gamma = 0$.  The successive lines
- identify the expected differential in the number of rejections produced by the
- test of $H_j$, and following summands denote the subsequent expected values if
+ for the indices spanning $j=p, p-1,\ldots,1$ and $k = 1,\ldots,N$ and the
+ boundary condition $U^\theta_{p+1,k} = 0$.  At the completion of the
+ computation, ${\cal U}^\theta = U^{\theta}_{1,k_0}$.  The first line of
+ \eqn{eq:Ujk} adds the contribution to the weighted risk from testing $H_j$ at
+ the alpha level $\al(G_k)$.  The second line adds the expected subsequent risk
+ if the test rejects $H_j$, which occurs with probability $r_\mu(\al(G_k))$.  If
+ the test rejects, the alpha wealth increases to $G_k + \omega$.  This wealth is
+ unlikely to match any $G_k$, so we linearly interpolate in the grid between
+ positions $k_r$ and $k_r+1$ defined so that $G_{k_r} \le G_k + \omega \le
+ G_{k_r+1}$ and $c = (\omega+G_k)/(G_{k_c+1}-G_{k_c})$.  Similarly, the third
+ line of \eqn{eq:Ujk} adds the expected contribution if the testimator does not
+ reject $H_j$ and its wealth falls to $G_k - \al(G_k)$.  
+
+ \remark{ One need not store the full matrix $U^\theta$, but its use simplifies
+ the description of the algorithm.  One only needs $U^\theta_{j+1,\cdot}$ when
+ computing $U_{j,\cdot}$.  Such space saving becomes essential in problems that
+ must track a larger state space.  Note also that one can cache the indices and
+ weights ($k_c, c$ and $k_d, d$) prior to the recursion because these can be
+ determined from the grid positions and $\omega$ and remain fixed throughout the
+ backward recursion.}
+
+
+ The feasible set that compares the testimators defined by two alpha investing
+ rules $\al(\cdot)$ and $\beta(\cdot)$ requires a more complex recursion that
+ must track the wealths of both.  The linear grid $G$ remains, but the matrix
+ $U^\theta$ defined in \eqn{eq:Ujk} becomes a three dimensional tensor of size
+ $p \times N \times N$.  The calculation is essentially a more messy version of
+ \eqn{eq:Ujk} but for one nuance that we want to emphasize.  To simplify the
+ presentation, we suppress the linear interpolation and pretend that all of the
+ concerned wealths are represented in the wealth grid.  If the alpha investing
+ rule $\al(\cdot)$ with wealth $G_k$ rejects $H_j$, its wealth goes from $G_k$
+ to $G_{k+}$; if it fails to reject, its wealth falls to $G_{k-}$.
+  Similarly, we use $\ell+$ and $\ell-$ for the positions for the rule defined
+ by $\beta(\cdot)$.  The recursion then can be written as recursion as
+ \begin{eqnarray}
+   U^\theta_{jk\ell} &=&  \max_\mu \;\Bigl\{
+     \cos(\theta) R(\hat\mu_{\al(G_k)}, \mu) 
+       + \sin(\theta) R(\hat\mu_{\beta(G_\ell)},\mu) \cr
+     & & + r_\mu\left(\al(G_k)\right) \; U_{j+1,k+,\ell+} 
+         + \left[ r_\mu(\beta(G_\ell)) - r_\mu(\al(G_k)) \right] \, U_{j+1,k-,\ell+} \cr
+     & & + \left[1-r_\mu(\beta(G_\ell))\right] \, U_{j+1,k-,\ell-} \, \Bigr\}\;,
+ \label{eq:Ujkl}
+ \end{eqnarray}
+ where we assume for convenience that $\al(G_k) < \beta(G_\ell)$ and the
+ boundary condition $U_{p+1,\cdot,\cdot}^\theta= 0$.  The first line in
+ \eqn{eq:Ujkl} is the expected risk produced by the test of $H_j$, and following
+ summands denote the subsequent maximum expected contributions to the risk if
  both reject, if only the rule with the larger alpha level rejects, and if
- neither rejects.  
-
-
- Practical solution of the recursion for $C_1^\gamma$ requires a discrete
- approximation.  Notice in \eqn{eq:util} that the state of the recursion depends
- on the wealths of the two investing rules. Feasible calculation requires that
- we restrict the possible wealths to a discrete grid.  If the wealths are
- allowed to vary over any $W \ge 0$, then solving this recursion for any sizable
- $T$ is intractable.  Our approach discretizes the wealth functions so that the
- optimization occurs over a grid for each test $j$ rather than the positive
- quadrant of $\R^2$.  For each investing rule, we initialize a grid of $T+M+1$
- wealth values $w_j$, indexed from $j=M, M-1, \ldots, 1, 0, -1, \ldots, -T+1,
- -T$.  This grid holds the state of the wealth at each test, and the differences
- in adjacent wealths determine the amounts used to test the next hypothesis.
-  For the rule defined by the distribution $f \in {\cal F}$, we set $w_0 = W_1$,
- $w_{-1} = w_0(1-f(0))$, $w_{-2} = w_{-1}(1-f(1)), \ldots$.  If the investing
- rule does not reject any hypotheses, these wealths are exact.  If the rule does
- reject, we accumulate the utility as though performing a randomized test that
- tosses a biased coin to decide which of the nearby wealths to spend.  Suppose
- that the alpha wealth when rejecting is $X = w_j + \omega$.  It is unlikely
- that $X$ lies at one of the grid of wealth values, so assume that $x = c \, w_k
- + (1-c) w_{k+1}$ for some $0 < c < 1$.  In this case, we treat the next test as
- a randomized test.  The test earns the expected utility from wealth $w_k$ with
- probability $(1-c)$ and from wealth $w_{k+1}$ with probability $c$. Basically,
- this approximation adds a second expectation to the sum in \eqn{eq:util}. We
- set $w_j$ for $j > 0$ somewhat arbitrarily in a manner that prevents the
- accumulation of excess wealth.  In our examples, $M=5$ with $w_i = W_1 + i
- \,\omega/3$, $i=1,2,3$, and $w_i = w_{i-1} + \omega$ for $i=4,\,5$.  Should the
- wealth reach $w_4$, then the bid for the next test is $\omega$, the amount
- earned by a rejection.  Hence, the testing does not increment the wealth beyond
- this boundary.
- 
-
- We obtain a performance envelope by varying the competitive factor $\gamma$.
-  To find the boundary points below the diagonal, we reverse the roles of the
- alpha investing rules and repeat the optimization.  As the optimization
- proceeds, we accumulate the component utilities that identify the boundary
- point.
+ neither rejects.  The point of writing this out is to emphasize these
+ testimators see the same data, not independent samples.  Hence, $\al(G_k) <
+ \beta(G_\ell)$ implies that if the first rule $\al(\cdot)$ rejects $H_j$, then
+ the second rule must also reject $H_j$ because it tests the same hypothesis
+ with a larger alpha level.  
 
 
 %--------------------------------------------------------------------------
