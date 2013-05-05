@@ -108,11 +108,11 @@
  an exogenous source.  Think of forward stepwise regression, but without
  knowledge of the full domain of explanatory variables.  Rather than evaluate
  these possible explanatory variables simultaneously, streaming selection
- evalutes them one-at-a-time.  Greedy searches like stepwise regression consider
+ evaluates them one-at-a-time.  Greedy searches like stepwise regression consider
  the full batch of, say, $p$ potential explanatory variables together, choosing
  at the first step the predictor $X_{(1)}$ that obtains the best fitting model.
   In contrast, streaming selection evaluates the offered predictors sequentially
- as $X_1, \, X_2, \ldots$, performing the evalation of $X_j$ in the context of
+ as $X_1, \, X_2, \ldots$, performing the evaluation of $X_j$ in the context of
  the model produced by picking features from $X_1, \ldots, X_{j-1}$.  Hence,
  streaming selection does not require the full set of explanatory variables at
  the start of the search and is free to use the results of evaluating initial
@@ -181,7 +181,7 @@
  this context, our computations identify the collection of possible risks
  produced by a testimator for {\em any} choice of parameters.  We accomplish
  this task by adopting the idea of risk inflation, and we compare the
- competitive perfomance of two sequential estimators.  For any pair, we provide
+ competitive performance of two sequential estimators.  For any pair, we provide
  what we call the feasible set of risks produced by any choice for the
  underlying mean parameters.  Given the sequential nature of the problem, it
  should not be surprising that our approach relies on stochastic dynamic
@@ -197,10 +197,11 @@
  define two types of alpha investing strategies derived from continuous
  probability distributions.  Our construction of these strategies in Section 2
  is novel and allows us to minimize the state space required in the dynamic
- program.  Section 3 then defines the feasible set of risks and offers examples
- of these that compare testimators to an oracle and to each other.  Section 4
- describes the computations in more detail.  We conclude in Section 5 with a
- brief discussion of the results and related, unsolved problems.
+ program.  Section 3 describes the risk of a sequence of testimators.  Section 4
+ defines the feasible set of risks and offers examples of these that compare
+ testimators to an oracle and to each other.  Section 5 describes the
+ computations in more detail.  We conclude in Section 6 with a brief discussion
+ of the results and related, unsolved problems.
 
 
 
@@ -209,71 +210,71 @@
 % ---------------------------------------------------------------------------
 
  An alpha-investing rule \citep{fosterstine08} determines the level for testing
- $H_j$ based on its alpha wealth, a limit on the maximum level that depends on
- the results of prior tests.  The procedure is most easily described by
- explaining the first few steps.  The process begins with an initial allocation
- $w_0$ \marginpar{$w_0$} of alpha wealth.  The choice of this initial alpha
- wealth is an important aspect of our analysis of the risk of $\hat\mu$.  An
- alpha-investing rule can test $H_1$ at any level up to the total available
- alpha wealth, $0 \le \alpha_1 \le w_0$.  The level $\al_1$ is `invested' and
- cannot be used for subsequent tests.  We say that $\al_1$ is invested rather
- than spent because of the way in which the outcome of the test of $H_1$
- influences the subsequent wealth.  Let $p_1$ denote the p-value of the test of
- $H_1$.  If $p_1 \le \alpha_1$, the test rejects $H_1$.  In this case, the
- alpha-investing rule earns a contribution $\omega > 0$ \marginpar{$\omega$} to
- its alpha wealth; otherwise, the alpha wealth available to test $H_1$ falls to
- $W_1 = w_0 - \alpha_1$.  In general, the alpha wealth available for the test of
- $H_{j+1}$ is given by the stochastic process \marginpar{$W_j$}
+ a sequence of hypotheses $H_1, \,H_2, \dots,$ based on its alpha wealth, a
+ limit on the maximum level for a test.  The procedure is most easily described
+ by explaining the first few steps.  The process begins with an initial
+ allocation $w_0$ of alpha wealth.  The choice of this initial alpha wealth is
+ an important aspect of our analysis of the risk.  An alpha-investing rule can
+ test $H_1$ at any level $\al_1$ up to the total available alpha wealth, $0 \le
+ \alpha_1 \le w_0$.  The level $\al_1$ is `invested' and cannot be used for
+ subsequent tests.  We say that $\al_1$ is invested rather than spent because of
+ the way in which the outcome of the test of $H_1$ influences subsequent wealth.
+  Let $p_1$ denote the p-value of the test of $H_1$.  If $p_1 \le \alpha_1$, the
+ test rejects $H_1$.  In this case, the alpha-investing rule earns a
+ contribution $\omega \ge 0$ to its alpha wealth; otherwise, the alpha wealth
+ available to test $H_1$ falls to $W_1 = w_0 - \alpha_1$.   In general, the
+ alpha wealth available for the test of $H_{j+1}$ is given by the stochastic
+ process
  \begin{equation}
     W_j = W_{j-1} - \alpha_j + \omega \, I_{\{p_j < \al_j\}}, \; j = 1,\,2,\ldots,
  \label{eq:Wj}
  \end{equation}
- with the initial condition $W_0 \equiv w_0$.  Alpha investing thus resembles
- alpha spending used in clinical trials, with the key distinction that rejecting
- a hypothesis earns an additional allocation $\omega$ of alpha-wealth for
- subsequent testing.  \ras{reference to QPD and enhanced alpha investing}
+ with the initial condition $W_0 \equiv w_0$.  Alpha spending rules are a
+ special case of alpha investing which set $\omega = 0$.  \ras{reference to QPD
+ and enhanced alpha investing}
 
 
  Because rejecting a null hypothesis makes it easier to reject other null
- hypotheses, it is important that alpha investing controls the rate of false
+ hypotheses, it is essential for alpha investing to control the rate of false
  rejections.  To this end, \citet{fosterstine08} show that alpha investing
- controls a sequential version of mFDR.  Let $D(j)$ count the number of
- hypothesis rejected in the first $j$ tests, and let $V(j) \le D(j)$ denote the
- number of {\em false} rejections through the first $j$ tests.  The sequential mFDR is
+ controls a sequential version of the expected false discovery rate, mFDR.  Let
+ $T(j)$ count the number of hypothesis rejected in the first $j$ tests, and let
+ $V(j) \le T(j)$ denote the number of {\em false} rejections among the first $j$
+ tests.  The sequential mFDR is
  \begin{equation}
-    \mbox{mFDR}_\eta(j) = \frac{\ev V(j)}{\eta + \ev R(j)} \;, \eta > 0.
+    \mbox{mFDR}_\eta(j) = \frac{\ev V(j)}{\eta + \ev T(j)} \;, \eta > 0.
  \label{eq:mFDR}
  \end{equation}
- The similar false discovery rate is essentiallyt the expected value of the
- ratio rather than the ratio of expected values.  The constant $\eta$ in the
+ In contrast, FDR is the expected value of the ratio $V(j)/T(j)$ conditional on
+ $T(j)>0$ rather than the ratio of expected values.  The constant $\eta$ in the
  denominator of mFDR avoids dividing by zero under the complete null hypothesis
  in which all $\mu_j = 0$.  If $w_0 \le \omega$, then alpha-investing rules
  control $\mbox{mFDR}_\eta(p) \le \omega$, and this result implies weak control
- of the family wide error rate.  Furthermore, the index $j$ in \eqn{eq:mFDR} is
- allowed to be an arbitrary stopping time, such as the occurrence of the $k$th
- rejection.
+ of the family wide error rate.  Because these properties of alpha investing
+ originate in a martingale, the index $j$ in \eqn{eq:mFDR} is allowed to be an
+ arbitrary stopping time, such as the occurrence of the $k$th rejection.
 
  
  Alpha-investing rules are quite general.  The underlying theory requires only
  that the level of the test of $H_j$ is bounded by the available wealth
  $W_{j-1}$ and that the test indeed have level $\al_j$, conditional on the
- outcomes of prior tests.  Otherwise, an alpha-investing rule is allowed to use
+ outcomes of prior tests.  Otherwise, an alpha investing rule is allowed to use
  the pattern of prior rejections as captured by the sequence of wealths.  We can
- capture this dependence by thinking of the investing rule ${\cal A}$ as a
- function of the sequence of prior wealths $W_0^j = \{W_0, W_1, \ldots, W_j\}$.
-  A rule is then a map from the sequence of wealths to a number on the interval
- 0 to the current wealth:
+ capture this dependence by thinking of an investing rule ${\cal A}$ as a
+ function of the sequence of prior wealths $W_{0:j} = \{W_0, W_1, \ldots,
+ W_j\}$.  $\cal A$ maps this history to a number on the interval 0 to the
+ current wealth:
  \begin{equation}
     {\cal A}: W_0^j \mapsto [0, \min(W_j,1)]    
  \label{eq:A}
  \end{equation}
  For example, the rule $\cal A$ can set the wealth of the next test higher or
  lower depending upon how long since the last rejection or the number of
- rejections to this point.  Though alpha investing allows this complete
- generality, we focus our attention on a simpler class of investing rules with a
- path independent, Markovian structure.  The amount invested by these rules
- depends only on the current wealth rather than the full path, ${\cal A}(w_0^j)
- = \al(W_j)$.  The only requirement is that $0 \le \al(w) \le w$; a rule cannot
+ rejections to this point.  Although alpha investing allows this generality, we
+ focus our attention on a simpler class of investing rules with a path
+ independent, Markovian structure.  The amount invested by these rules depends
+ only on the current wealth rather than the full path, ${\cal A}(W_{0:j}) =
+ \al(W_j)$.  The only requirement is that $0 \le \al(w) \le w$; a rule cannot
  invest more wealth than the amount possessed.  It does seem natural, however,
  for $\al(w)$ to be monotone increasing in $w$.
 
@@ -285,49 +286,49 @@
     \al_g(w, \psi) = \psi \, w, \quad  0 < \psi < 1.
  \label{eq:Ageo}
  \end{equation}
- Though independent of the rejection path, geometric rules invest more heavily
- following a rejection.  Since the alpha wealth increases after a rejection, a
- geometric rule $\al_g$ invests more following a rejection and then gradually --
- depending on $\psi$ -- reduces the level of subsequent tests.
+ Since the alpha wealth increases after a rejection, a geometric rule $\al_g$
+ invests more following a rejection and then gradually -- at the rate determined
+ by $\psi$ -- reduces the level of subsequent tests.
 
 
- The following investing rule varies the invested share.  Rather than investing
- a fixed share of the available wealth, it invests a progressively smaller share
- of the available wealth as the wealth drops.  The rule is defined by
+ Alternatively an alpha investing rule can vary the share of the current wealth
+ to invest in the next test.  Rather than investing a fixed share of the
+ available wealth, the following rule invests a progressively smaller share of
+ the available wealth as the wealth drops.  The rule is defined by
  \begin{equation}
    \al_u(w) = w - \frac{\log 2}{\log(1+2^{1/w})} \;.   
  \label{eq:Auniv}
  \end{equation}
- Because this investing rule is related to the universal prior for integers
- defined by \citet{rissanen83}, we call this a universal investing rule and
- identify it by a subscript $u$.  (See the following remark.)  For very large
- wealth, $\al_u(w)$ approaches $w$ (the limit of the second term in
- \eqn{eq:Auniv} is $w-1$ as $w \rightarrow \infty$), and $\al_u(w)
- \rightarrow 0$ as $w \rightarrow 0$.
+ Because this investing rule is derived from the so-called universal prior for
+ integers defined by \citet{rissanen83}, we call this a universal investing rule
+ and identify it by a subscript $u$.  (See the following remark.) 
 
  
  Figure \ref{fig:rules} contrasts the investments produced by the universal and
- several alpha investing rules on a log-log scale.  The initial wealth for all
- rules is set to $w_0 = 1$.  With this scaling, the amounts invested by the
+ several geometric alpha investing rules on a log-log scale.  The figure conveys
+ the sense in which $\al_u$ is universal in the way that it has properties that
+ mimic a collection of geometric rules.  For convenience, the initial wealth for
+ all rules is set to $w_0 = 1$.  With this scaling, the amounts invested by the
  universal rule falls off approximately linearly.  The amounts invested by the
  universal rule are initially larger than those of any of these geometric rules.
-  With $w_0=1$, the universal rule invests about $0.369$, $0.131$, $0.0693$,
- $0.0438$, and $0.0306$ in the first five tests before its spending gradually
- slows. After this initial period, each geometric rule has a range of tests over
- which the geometric rule provides a larger alpha level for testing $H_j$ than
- the universal rule.  Ultimately, however, each geometric rule invests smaller
- amounts than the geometric rule as the testing continues.  For example, the
- geometric rule that invests 1\% of its current wealth at each test
+  Starting from $w_0=1$, the universal rule invests about $0.369$, $0.131$,
+ $0.0693$, $0.0438$, and $0.0306$ in the first five tests before its spending
+ gradually slows.  After this initial period, each geometric rule has a range of
+ tests over which the geometric rule provides a larger alpha level for testing
+ $H_j$ than the universal rule.  Ultimately, however, each geometric rule
+ invests smaller amounts than the geometric rule as the testing continues.  For
+ example, the geometric rule that invests 1\% of its current wealth at each test
  ($\psi=0.01$) invests more than the universal rule when testing $H_{11}$
- through $H_{581}$. \ras{ Say more here about why this 'blending' of the
- geometric rates is a good thing; too bad we don't have that 'habitation' idea
- worked out where the universal finds a steady rate appropriate for the rate of
- false nulls. }
+ through $H_{581}$; otherwise it invests less. \ras{ Say more here about why
+ this 'blending' of the geometric rates is a good thing; too bad we don't have
+ that 'habitation' idea worked out where the universal finds a steady rate
+ appropriate for the rate of false nulls. }
 
 
  \begin{figure}
- \caption{ \label{fig:rules} \sl Investments for the universal and several
- geometric alpha investing rules if no intervening test rejects. }
+ \caption{ \label{fig:rules} { \sl Investments for the universal and several
+ geometric alpha investing rules if no intervening test rejects. } The initial
+ wealth $w_0$=1. }
 
  \centerline{
  \vspace{0.1in}
@@ -336,19 +337,17 @@
  \end{figure}
 
 
- \remark{ We obtained the universal rule by the following construction
- that links a spending rule to a probabilty distribution that allocates the
- current wealth over subsequent tests.  }
-
-We illustrate the construction for the geometric rule.  If the initial wealth
- is $w_0$, then the alpha wealth invested in the $j$th test (assuming no
- intervening test rejects) is
+ \remark{ We obtained the universal rule by the following construction that
+ links a spending rule to a probability distribution that allocates the current
+ wealth over subsequent tests.  We illustrate the construction for the geometric
+ rule.  If the initial wealth is $w_0$, then the alpha wealth invested in the
+ $j$th test (assuming no intervening test rejects) is
  \begin{equation}
     \al_j = w_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
  \label{eq:alj1}
  \end{equation}
   Rather than define the investing rule using a discrete distribution on
- $j=1,\,2,\ldots$ as in \eqn{eq:alj1}, use the continuous density
+ $j=1,\,2,\ldots$ as in \eqn{eq:alj1}, consider the continuous density
  \begin{equation}
    A_g(x,\psi) = c_g \; \psi\,(1-\psi)^{x-1}, \quad 1 \le x\;,
  \label{eq:alg}
@@ -375,35 +374,36 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \end{equation}
  as in \eqn{eq:Ageo}.  This construction uses the inverse of the tail wealth to
  determine a `test index' $W_g^{-1}(w)$ that corresponds to the current input
- wealth $w$.  The universal rule $\al_u(w)$ follows from the same
- contruction, with the density
+ wealth $w$.  The universal rule $\al_u(w)$ follows from the same construction,
+ but starting with the density
  \begin{displaymath}
     A_u(x) = \frac{\log 2}{(x+1) (\log(x+1))^2} \;, \quad 1 < x,
  \end{displaymath}
- used in place of $A_g$.
+ in place of $A_g$.  $A_u(x)$ is a continuous version of the penultimate code
+ defined in \citet{elias75}.  The universal code of \citet{rissanen83} is a more
+ elaborate version of this density. }
 
- \remark{ To avoid adding notation, we overload the symbol $\al$.  By
- itself, we use $\al$ to represent the generic level of a test.  When given an
- integer subscript, $\al_j$ is the level of the $j$th test in sequence of tests,
- as in \eqn{eq:alj1}.  Finally, when denoting a function, $\al(w)$ is the level
- invested in a test by a procedure that has available wealth $w$, as in
- \eqn{eq:Ageo} or \eqn{eq:Auniv}.  Throughout these uses, the symbol $\alpha$
- consistently gives the level of a test; only the context of the test changes.}
+
+ \remark{ To avoid adding notation, we overload the symbol $\al$.  Throughout
+ these uses, the symbol $\alpha$ consistently gives the level of a test; only
+ the context of the test changes.  By itself, we use $\al$ to represent the
+ generic level of a test.  When given an integer subscript, $\al_j$ is the level
+ of the $j$th test in sequence of tests, as in \eqn{eq:alj1}.  Finally, when
+ denoting a function, $\al(w)$ is the level invested in a test by an alpha
+ investing rule that has available wealth $w$, as in \eqn{eq:Ageo} or
+ \eqn{eq:Auniv}.  }
+
 
 
 %--------------------------------------------------------------------------
 \section{ Risk Analysis}
 %--------------------------------------------------------------------------
 
- We start by considering the risk of testimators in the case of a single test or
- multiple simultaneous tests.  This foundation allows us to introduce the
- approach that we take when studying the risk produced by alpha investing
- procedures in the sequential context.
 
-
- We first consider the squared error risk of testimators for a single parameter.
-  Let $Y \sim N(0,1)$.  The scalar testimator defined by the two-sided test of
- $H_0: \mu=0$ at level $\al$ is
+ Before turning to the risk of sequential estimators, we briefly review the
+ quadratic risk of testimators.  We begin with the scalar case.  Let $Y \sim
+ N(0,1)$.  The scalar testimator defined by the two-sided test of $H_0: \mu=0$
+ at level $\al$ is
  \begin{equation}
    \hat\mu_\al(Y) = \left\{
      \begin{array}{cc}
@@ -469,14 +469,14 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  vector $\YY$ is available for setting the level as well.
 
 
- Minimax bounds for the risk $R(\hat{\bmu}_\al,\bmu)$ are well-understood.  We briefly
+ Minimax bounds for the risk $R(\hat{\bmu}_\al,\bmu)$ are well-understood.  We
  review the results of \citet{fostergeorge94} who introduced the concept of the
  risk inflation of an estimator. \citep[][obtain similar results.]
   {donohojohnstone94} The risk inflation of $\hat{\bmu}_\al$ is the supremum of
  the ratio of the risk of the testimator $\hat{\bmu}_\al$ at level $\al$ to the
- risk of a testimator that obtains the optimal level from an oracle. 
-  Their results imply that the risk inflation of $\hat{\bmu}_\al$ is
- asymptotically $2 \log p$,
+ risk of a testimator that obtains the optimal level from an oracle.  Their
+ results imply that the risk inflation of $\hat{\bmu}_\al$ is asymptotically $2
+ \log p$,
  \begin{equation}
     2 \log p - o(\log p) 
     \le
@@ -487,7 +487,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \label{eq:ri}
  \end{equation}
  Foster and George further show that the testimator $\hat{\bmu}_{1/p}$ --
- essentially the Bonferoni estimator -- obtains the risk inflation threshold.
+ essentially the Bonferroni estimator -- obtains the risk inflation threshold.
   The constant 1 added to the risks in the ratio of \eqn{eq:ri} arises in the
  context of regression models in which one always estimates the intercept.  As a
  practical device, its presence in the denominator avoids dividing by zero under
@@ -495,12 +495,13 @@ We illustrate the construction for the geometric rule.  If the initial wealth
 
 
  Though suggestive, these results do not reveal the risk of the testimator
- derived from alpha investing.  The key difference lies in the timing of the
- choice of the test levels.  The testimator studied in risk inflation
+ derived from alpha investing.  The key distinction lies in the timing of the
+ information revealed in $\YY$.  The testimator studied in risk inflation
  $\hat{\bmu}_\al$ uses a fixed level $\al$ for all $p$ coordinates, and all of
- the elements of \YY are used to set this common level.  In sequential testing,
- the $Y_j$ are observed sequentially so that the elements of the estimator form
- a stochastic process, which we collect in a $p$-element vector as
+ the elements of \YY are available for choosing $\al$.  In sequential testing
+ controlled by alpha investing, the $Y_j$ are observed sequentially.  The
+ elements of the estimator form a stochastic process, which we collect in a
+ $p$-element vector as
  \begin{equation}
    \hat\mu(\al(\cdot),w_0,\omega) = (\hat\mu_{\al(w_0)}, \hat\mu_{\al(W_1)}, \ldots, 
                        \hat\mu_{\al(W_{p-1})})',
@@ -508,6 +509,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \end{equation}
  where $\al(\cdot)$ denotes the defining investing rule, $w_0$ is the initial
  alpha wealth, and $\omega$ is the payout earned when rejecting a hypothesis.
+  We drop $w_0$ and $\omega$ from this notation when convenient and unambiguous.
   The wealth random variables $W_j$ given in \eqn{eq:Wj} contribute the
  randomness.  Not only does alpha investing allow the levels to vary over the
  testimators, but the levels form a Markov process; the level of the $j$th
@@ -545,7 +547,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
 
 
  The calculation of the maximum risk obtained by the testimator \test\ is
- similarlyu recursive.  Suppose that the initial level $\al_1 = \al(w_0)=0.05$;
+ similarly recursive.  Suppose that the initial level $\al_1 = \al(w_0)=0.05$;
  the graph in Figure \ref{fig:risk}(b) shows the components of the risk of this
  testimator.  The choice of $\mu_1$ is not so simple, however, as setting $\mu_1
  = \arg \max R(\hat\mu_{0.05},\mu) \approx \pm 2.16$.  Doing so ignores the
@@ -752,7 +754,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  wealth.  There are clearly mean vectors for which either choice, universal or
  geometric, dominate the other.  That said, this figure clarifies the relative
  advantages of universal investing over geometric investing at several rates.
-  Again, setting a fastering investing rate $\psi$ for geometric investing
+  Again, setting a fostering investing rate $\psi$ for geometric investing
  reduces risk for models with more signal, but that doing so necessarily leads
  to higher risks in nearly black models.  For instance, the feasible set in
  Figure \ref{fi:univGeo} associated with $\psi = 0.005$ reduces the bulge toward
@@ -809,7 +811,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \al_j$) to a maximum allowed wealth, which we set to $w_{\max} = 5$.  (Our
  results have not been sensitive to the choice of $w_max$ so long as it is
  substantially larger than $w_0 + \omega$.)  The wealth grid holds is
- `logarithmically' spaced at $N$ points, placing a finer grid with increments
+ `logarithmic ally' spaced at $N$ points, placing a finer grid with increments
  0.001 for small wealths below 0.02 and gradually wider grid as the wealth
  increases.  We insure that the grid includes an element $G_{k_0} = w_0$.
 
@@ -964,3 +966,5 @@ The authors thank ...
 \bibliographystyle{../../bst/asa}
 
 \end{document} %==========================================================
+
+% LocalWords:  jk
