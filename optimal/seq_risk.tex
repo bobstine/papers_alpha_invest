@@ -75,11 +75,14 @@
  consider large collections of features.  It also produces novel challenges for
  variable selection.  Methods such as alpha investing can be used to control the
  rate of false discoveries, but little is known about the risk of the resulting
- estimator.  We provide a computational framework that determines the
- nonasymptotic minimax risk of a sequential estimator relative to an
- alternative.  The alternative can be data driven or supported by an oracle.
-  Our findings demonstrate that in all but very sparse models, estimators
- allowed to have larger rates of false discoveries produce smaller risk.
+ estimator.  We provide a computational framework based on stochastic dynamic
+ programming that determines the nonasymptotic minimax risk of a sequential
+ estimator relative to an alternative.  The alternative can be data driven or
+ derived from an oracle.  We illustrate the power of this framework by finding
+ the risk inflation of sequential estimators derived from several alpha
+ investing rules.  We find that a universal investing rule performs well and
+ that estimators allowed to have larger than conventional rates of false
+ discoveries produce generally smaller risk.
 
 }
 
@@ -87,8 +90,8 @@
 \vspace{0.05in}
 
 \noindent
-{\it Key Phrases: Bellman equations, dynamic programming, streaming feature
- selection, testimator, variable selection}
+{\it Key Phrases: Bellman equations, stochastic dynamic programming, streaming
+ feature selection, testimator, variable selection}
 
 \clearpage
 
@@ -97,39 +100,35 @@
 \section{ Introduction }
 % ----------------------------------------------------------------------
 
-This paper shows one of the powerful advantages of using a streaming
-feature selection approach.  If we consider figure 1 (where figure 1
-is one of the convex set) we can see how two estimators compare based
-on their risk performance.  Such graphs are common (cite...) but
-typically can only be generated for very specific pairs of estimators.
-Using a Bellman approach, we can easilly generate such figures for
-any pair of streaming feature selection methods.   These are finite
-sample figures which are exact in the sense that every point in the
-convex set can be achieved by some probabilistic mode
-
- Streaming feature selection constructs a predictive model by choosing
- explanatory variables from a sequence offered by an exogenous source.  Rather
- than evaluate these variables simultaneously, streaming selection evalutes them
- one-at-a-time.  Greedy searches like stepwise regression consider the full
- batch of, say, $p$ potential explanatory variables together, choosing at the
- first step the predictor $X_{(1)}$ that obtains the best fitting model.  In
- contrast, streaming selection evaluates the offered predictors sequentially as
- $X_1, \, X_2, \ldots$, performing the evalation of $X_j$ in the context of the
- model produced by picking from $X_1, \ldots, X_{j-1}$.  Hence, streaming
- selection does not require the full set of explanatory variables at the start
- of the search and is free to use the results of evaluating initial variables to
- guide the search for those to add subsequently.  For example, if it adds $X_j$
- to the model, the streaming search might then be expand add interactions $X_j
- \, X_k$ to the queue of possible variables to consider.  Streaming selection
- can thus rapidly explore collections of explanatory variables that are larger
- than typically considered with conventional methods; the slowest step in
- forward stepwise regression is the calculation of the $X'X$ matrix.
-  \citet{fosterlin10} show examples selecting from up to $p$=100,000 explanatory
- variables.
+ Our analysis concerns the risk of sequential estimators in which
+ characteristics of later estimates depend on the outcomes produced by earlier
+ estimates.  Our interest in the risk of such estimators arises from their use
+ in streaming feature selection.  Streaming feature selection constructs a
+ predictive model by choosing explanatory variables from a sequence offered by
+ an exogenous source.  Think of forward stepwise regression, but without
+ knowledge of the full domain of explanatory variables.  Rather than evaluate
+ these possible explanatory variables simultaneously, streaming selection
+ evalutes them one-at-a-time.  Greedy searches like stepwise regression consider
+ the full batch of, say, $p$ potential explanatory variables together, choosing
+ at the first step the predictor $X_{(1)}$ that obtains the best fitting model.
+  In contrast, streaming selection evaluates the offered predictors sequentially
+ as $X_1, \, X_2, \ldots$, performing the evalation of $X_j$ in the context of
+ the model produced by picking features from $X_1, \ldots, X_{j-1}$.  Hence,
+ streaming selection does not require the full set of explanatory variables at
+ the start of the search and is free to use the results of evaluating initial
+ variables to guide the search for those to consider subsequently.  For example,
+ a streaming search might add the interaction $X_j \, X_k$ to the queue of
+ possible features after finding significant effects for $X_j$ and $X_k$.
+  Streaming selection can thus adaptively explore collections of explanatory
+ variables that are larger than typically considered with conventional methods;
+ for large samples, the slowest step in forward stepwise regression is the
+ calculation of the $X'X$ matrix.  \citet{fosterlin10} demonstrate the speed
+ attained by sequential selection when picking a regression from up to
+ $p$=100,000 explanatory variables.
 
 
  Streaming selection poses a challenge, however, for variable selection.
-  Although it is advantageous to avoid simultaneously evaluating every
+  Although one gains advantages by avoiding simultaneously evaluating every
  predictor, the absence of a fixed set of features in streaming selection
  requires a different type of selection criterion from those commonly used.  For
  example, suppose the search begins with a list of $p$ possible features $X_1,
@@ -139,68 +138,70 @@ convex set can be achieved by some probabilistic mode
  then the maximum number of possible explanatory variables is $m = p(p+1)/2$
  variables.  Since few of these would be considered, it would be very
  conservative to combine $m$ with a criterion such as AIC, BIC, or RIC.
-  Similarly, selection using FDR requires the full set of marginal $p$-values.
+  Similarly, selection using FDR requires the complete set of $p$-values at the
+ start of the search.
 
 
- Alpha investing \citep{fosterstine08} is a sequential testing procedure
- designed to support streaming feature selection.  Because alpha investing can
- test an infinite sequence of hypotheses, it is well-matched to a search of an
- unbounded collection of features that is too large to manipulate
+ Alpha investing \citep{fosterstine08} is a sequential testing procedure that we
+ designed to work with streaming feature selection.  Because alpha investing can
+ test an infinite sequence of hypotheses, it is well-matched to a search of a
+ possibly unbounded collection of features that is too large to manipulate
  simultaneously.  Rather than test multiple hypotheses at once, alpha investing
  tests hypotheses one-at-a-time in a specified order.  Alpha investing begins
  with an initial allowance for Type I error that is called its alpha wealth.
-  Each test consumes some of the available alpha wealth, as in the alpha
- spending rules used in clinical trials.  Alpha investing differs from these and
- overcomes the conservatism of alpha spending rules, which include the
- Bonferroni method, by earning a contribution to the alpha wealth available for
- subsequent tests for each rejected null hypothesis.  Thus rejections beget more
- rejections.  Alpha investing further allows one to test an infinite stream of
- hypotheses, accommodate dependent tests, and incorporate domain knowledge.
+  Each test consumes some of the available alpha wealth, as in alpha spending
+ rules used in clinical trials.  Alpha investing overcomes the conservatism of
+ alpha spending rules, which include the Bonferroni method, by earning a
+ contribution to the alpha wealth for each rejected null hypothesis.  Thus
+ rejections beget more rejections.  Alpha investing further allows one to test
+ an infinite stream of hypotheses, accommodate dependent tests, and incorporate
+ domain knowledge.
  
 
- Though flexible, alpha investing controls the expected number of false
- rejections.  Controlling the false discovery rate with alpha investing guards
- against overfitting in variable selection.  With alpha inveseting, one can
- guarantee that on average not more than, say, 5\% of the rejected hypotheses
- spuriously add a predictor to the model.  When building a predictive model,
- however, controlling the false discovery rate is frequently secondary to
- obtaining a more predictive model.  Control of the false discovery rate does
- not imply that one will find the most predictive model possible.  It only
- guarantees that a high percentage of chosen features are in fact useful.  The
- risk of the implied estimator is more relevant.
+ Like other procedures for multiple testing, alpha investing controls the
+ expected number of false rejections.  Controlling the false discovery rate
+ protects against overfitting in variable selection.  One can guarantee that on
+ average not more than, say, 5\% of the rejected hypotheses spuriously add a
+ predictor to the model.  When building a predictive model, however, we find
+ that controlling the false discovery rate is secondary to obtaining a more
+ predictive model.  Control of the false discovery rate does not imply that one
+ finds the most predictive model possible.  It only guarantees that a high
+ percentage of chosen features are in fact useful.  The quadratic risk of the
+ implied estimator is more relevant.
 
 
- Our analysis considers the cumulative risk of a sequence of testimators implied
- by testing a sequence of null hypotheses.  A testimator is also known as a
- keep-or-kill estimator or a hard thresholding estimator.  The estimator of a
- parameter $\mu$ is zero unless a test of the null hypothesis that claims $\mu =
- 0$ is rejected.  The estimation problem we consider is a simplified version of
- the variable selection problem that avoids issues related to the collinearities
- among the explanatory variables.  Rather than observe a sequence of slope
- estimates, we assume that the observed data are a finite sequence of $p$ random
- variables $Y_j \sim N(\mu_j,1)$.
+ Our analysis finds the cumulative risk of a sequence of testimators implied by
+ testing a sequence of null hypotheses.  A testimator is also known as a
+ keep-or-kill estimator or a hard thresholding estimator.  The estimator of the
+ parameter $\mu$ is zero unless a test of $H_0: \; \mu = 0$ is rejected.  For
+ this paper, we consider a simplified version of the variable selection problem
+ that avoids issues related to collinearity among explanatory variables.  Rather
+ than observe a sequence of slope estimates, we assume that the observed data
+ are a finite sequence of $p$ random variables $Y_j \sim N(\mu_j,1)$.  Within
+ this context, our computations identify the collection of possible risks
+ produced by a testimator for {\em any} choice of parameters.  We accomplish
+ this task by adopting the idea of risk inflation, and we compare the
+ competitive perfomance of two sequential estimators.  For any pair, we provide
+ what we call the feasible set of risks produced by any choice for the
+ underlying mean parameters.  Given the sequential nature of the problem, it
+ should not be surprising that our approach relies on stochastic dynamic
+ programming.  The risks so obtained are exact (up to computational accuracy)
+ rather than asymptotic.  For any point in the feasible set of risks, we can
+ show a probabilistic model for the underlying parameters that attains those
+ risks.  Although we consider a sequential estimators, we find that bounds for
+ the risk inflation of conventional testimators are suggestive of the finite
+ sample performance of these testimators.
 
- Mention: stochastic dynamic programming, no discounting because of the finite
-horizon, 
 
- \ras{ Revise roadmap paragraph }
- The following section describes the use of alpha-investing for setting the
- levels $\al_j$ of the tests that determine the testimator $\hat\mu$.  Section 3
- describes the computations that solve a set of Bellman equations.  Our
- methodology bounds the risk of any sequential testimator.  In the spirit of
- risk inflation and oracle bounds, we compute the convex set of attainable
- risks:
- \begin{equation}
-   \CC(\hat\gamma) 
-      = \{(x,y): \exists \mu \mbox{ for which }
-                 x=R(\tilde\mu,\mu), \, y = R(\hat\mu_{\hat\gamma},\mu)\} \;,
- \label{eq:C}
- \end{equation}
- where $\tilde\mu$ identifies an oracle estimator of $\mu$ that is defined in
- Section 3.  The boundary of $\CC$ produces exact results that are comparable to
- those obtained in asymptotic multivariate setting.  Section 4 displays the risk
- of these procedures, and we conclude with a summary and discussion of open
- issues in Section 5.
+ The following section provides a further introduction to alpha investing.  We
+ define two types of alpha investing strategies derived from continuous
+ probability distributions.  Our construction of these strategies in Section 2
+ is novel and allows us to minimize the state space required in the dynamic
+ program.  Section 3 then defines the feasible set of risks and offers examples
+ of these that compare testimators to an oracle and to each other.  Section 4
+ describes the computations in more detail.  We conclude in Section 5 with a
+ brief discussion of the results and related, unsolved problems.
+
 
 
 % ---------------------------------------------------------------------------
