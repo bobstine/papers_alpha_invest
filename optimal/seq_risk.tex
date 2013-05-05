@@ -70,13 +70,16 @@
 \abstract{ 
 
  Streaming feature selection evaluates potential explanatory variables
- sequentially rather than all at once.  This approach produces novel challenges
- for variable selection.  Spending rules such as alpha investing control the
+ sequentially rather than all at once.  This approach provides adaptive control
+ of the scope of a search for predictive features and makes it possible to
+ consider large collections of features.  It also produces novel challenges for
+ variable selection.  Methods such as alpha investing can be used to control the
  rate of false discoveries, but little is known about the risk of the resulting
- estimator.  We provide here a computational framework for finding and comparing
- the finite-sample, worst-case risk of streaming selection.  Our findings
- demonstrate that in all but very sparse models, estimators allowed to have
- larger rates of false discoveries produce smaller risk.  
+ estimator.  We provide a computational framework that determines the
+ nonasymptotic minimax risk of a sequential estimator relative to an
+ alternative.  The alternative can be data driven or supported by an oracle.
+  Our findings demonstrate that in all but very sparse models, estimators
+ allowed to have larger rates of false discoveries produce smaller risk.
 
 }
 
@@ -84,7 +87,7 @@
 \vspace{0.05in}
 
 \noindent
-{\it Key Phrases: Bellman equations, hard thresholding, streaming feature
+{\it Key Phrases: Bellman equations, dynamic programming, streaming feature
  selection, testimator, variable selection}
 
 \clearpage
@@ -94,6 +97,15 @@
 \section{ Introduction }
 % ----------------------------------------------------------------------
 
+This paper shows one of the powerful advantages of using a streaming
+feature selection approach.  If we consider figure 1 (where figure 1
+is one of the convex set) we can see how two estimators compare based
+on their risk performance.  Such graphs are common (cite...) but
+typically can only be generated for very specific pairs of estimators.
+Using a Bellman approach, we can easilly generate such figures for
+any pair of streaming feature selection methods.   These are finite
+sample figures which are exact in the sense that every point in the
+convex set can be achieved by some probabilistic mode
 
  Streaming feature selection constructs a predictive model by choosing
  explanatory variables from a sequence offered by an exogenous source.  Rather
@@ -158,17 +170,18 @@
  risk of the implied estimator is more relevant.
 
 
- Our analysis here considers the cumulative risk of a sequence of testimators
- implied by testing a sequence of null hypotheses.  A testimator is also known
- as a keep-or-kill estimator or a hard thresholding estimator.  The estimator of
- a parameter $\mu$ is zero unless a test of the null hypothesis that claims $\mu
- = 0$ is rejected.  The estimation problem we consider is a simplified version
- of the variable selection problem that avoids issues related to the
- collinearities among the explanatory variables.  
- Rather than observe a sequence
- of slope estimates, we assume that the observed data are a finite sequence of
- $p$ random variables $Y_j \sim N(\mu_j,1)$.  
+ Our analysis considers the cumulative risk of a sequence of testimators implied
+ by testing a sequence of null hypotheses.  A testimator is also known as a
+ keep-or-kill estimator or a hard thresholding estimator.  The estimator of a
+ parameter $\mu$ is zero unless a test of the null hypothesis that claims $\mu =
+ 0$ is rejected.  The estimation problem we consider is a simplified version of
+ the variable selection problem that avoids issues related to the collinearities
+ among the explanatory variables.  Rather than observe a sequence of slope
+ estimates, we assume that the observed data are a finite sequence of $p$ random
+ variables $Y_j \sim N(\mu_j,1)$.
 
+ Mention: stochastic dynamic programming, no discounting because of the finite
+horizon, 
 
  \ras{ Revise roadmap paragraph }
  The following section describes the use of alpha-investing for setting the
@@ -510,20 +523,19 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  level $\al$ (the power of the test).  The risk of the testimator given by alpha
  investing can then be decomposed as
  \begin{eqnarray}
-   R(\hat\mu(\al(\cdot),w_0),\mu_{1:p}, \omega) 
+   R(\hat\mu(\al(\cdot),w_0,\omega),\mu_{1:p}) 
     &=& R(\hat\mu_{\al(w_0)},\mu_1)
-           + \ev \sum_{j=2}^p R(\hat\mu_{\al(W_{j-1})},\mu_j)  \cr
+        + \ev \sum_{j=2}^p R\Bigl(\hat\mu_{\al(W_{j-1})},\mu_j\Bigr)  \cr
     &=& R(\hat\mu_{\al_1},\mu_1)
-           + r_{\mu_1}(\al_1)\; 
-               R(\hat\mu(\al(\cdot),w_0-\al_1+\omega,\omega),\mu_{2:p})\cr
+        + r_{\mu_1}(\al_1)\; 
+          R\Bigl(\hat\mu(\al(\cdot),w_0-\al_1+\omega,\omega),\mu_{2:p}\Bigr)\cr
     & & \qquad + (1-r_{\mu_1}(\al_1))\; 
-               R(\hat\mu(\al(\cdot),w_0-\al_1,\omega),\mu_{2:p}) \;,
+          R\Bigl(\hat\mu(\al(\cdot),w_0-\al_1,\omega),\mu_{2:p}\Bigr) \;,
  \label{eq:riskTestAI}
  \end{eqnarray}
  where $\al_1 = \al(w_0)$ and we have suppressed the dependence of the estimator
  on the data.  The second expression for the risk emphasizes the recursive
- nature of the risk and hints at our approach to its maximization using Bellman
- equations.
+ nature of the risk and motivates our method of computation.
 
 
 %--------------------------------------------------------------------------
@@ -531,21 +543,20 @@ We illustrate the construction for the geometric rule.  If the initial wealth
 %--------------------------------------------------------------------------
 
 
- The analysis and calculation of the maximum risk obtained by the testimator
- \test\ requires a similar recursive perspective.  Suppose that the initial
- level $\al_1 = \al(w_0)=0.05$; the graph in Figure \ref{fig:risk}(b) shows the
- components of the risk of this testimator.  The choice of $\mu_1$ is not so
- simple, however, as setting $\mu_1 = \arg \max R(\hat\mu_{0.05},\mu) \approx
- \pm 2.16$.  Doing so ignores the payoff $\omega$ obtained if $H_1$ is rejected
- and its impact on the subsequent wealths $W_j$.  This choice for $\mu_1$
- maximizes the risk for the first test, but leaves a good chance for the
- estimator to gain wealth for subsequent tests by rejecting the first null
- hypothesis.  The probability that the first test rejects is
- $r_{\tilde\mu}(0.05) \approx 0.58$.  By rejecting the first test, the alpha
- investing rule obtains the additional contribution $\omega$ to its alpha
- wealth, allowing it to increase the level -- and so potentially reduce its risk
- -- in subsequent tests.  Instead, the problem to be solved at the first test is
- to choose
+ The calculation of the maximum risk obtained by the testimator \test\ is
+ similarlyu recursive.  Suppose that the initial level $\al_1 = \al(w_0)=0.05$;
+ the graph in Figure \ref{fig:risk}(b) shows the components of the risk of this
+ testimator.  The choice of $\mu_1$ is not so simple, however, as setting $\mu_1
+ = \arg \max R(\hat\mu_{0.05},\mu) \approx \pm 2.16$.  Doing so ignores the
+ payoff $\omega$ obtained if $H_1$ is rejected and its impact on the subsequent
+ wealths $W_j$.  This choice for $\mu_1$ maximizes the risk for the first test,
+ but leaves a good chance for the estimator to gain wealth for subsequent tests
+ by rejecting the first null hypothesis.  The probability that the first test
+ rejects is $r_{\tilde\mu}(0.05) \approx 0.58$.  By rejecting the first test,
+ the alpha investing rule obtains the additional contribution $\omega$ to its
+ alpha wealth, allowing it to increase the level -- and so potentially reduce
+ its risk -- in subsequent tests.  Instead, the problem to be solved at the
+ first test is to choose
  \begin{eqnarray*}
     \mu_1 = \arg \max_{m} & \Bigl\{ & R(\hat\mu_{\al_1},m) \Bigr. 
         + r_{m}(\al_1) \; \max_{\mu_{2:p}} 
@@ -587,56 +598,45 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  for two estimators is defined as
  \begin{equation}
      {\cal R}_p(\hat{\bmu}_1,\hat{\bmu}_2) = 
-      \{(x_1,x_2): \exists \{\bmu\} \mbox{ s.t. }
-          x_1 = \evsub{\{\bmu\}} R(\hat{\bmu}_1,\bmu),
-          x_2 = \evsub{\{\bmu\}} R(\hat{\bmu}_2,\bmu)  \} \;.           
+      \{(x_1,x_2): \exists \bmu \mbox{ s.t. }
+          x_1 = \evsub{\bmu} R(\hat{\bmu}_1,\bmu),
+          x_2 = \evsub{\bmu} R(\hat{\bmu}_2,\bmu)  \} \;.           
  \label{eq:feasibleSet}
  \end{equation}
  In words, a point $(x,y)$ lies in the feasible set ${\cal R}_p$ if there exists
- a mean process $\{\bmu\}$ of length $p$ for which the expected value with
- respect to the mean process of the risk of $\hat{\bmu}_1$ is $x$ and the
- expected risk of $\hat{\bmu}_2$ is $y$.  A simple randomization argument proves
- that the feasible set must be convex.  If $x$ and $y$ are two points within
- ${\cal R}$, then there exist stochastic processes $\{\bmu\}_x$ and
- $\{\bmu\}_y$, say, that produce these risks.  The risk produced by the
- randomized process that picks $\{\bmu\}_x$ with probability $0 \le a \le 1$ and
- picks process $\{\bmu\}_y$ with probability $1-a$ is then $a\,x+(1-a)\,y$.
+ a mean vector $\bmu$ of length $p$ for which the expected value of the risk of
+ $\hat{\bmu}_1$ is $x$ and the expected risk of $\hat{\bmu}_2$ is $y$.  A simple
+ randomization argument proves that the feasible set must be convex.  If $x$ and
+ $y$ are two points within ${\cal R}_p$, then there exist stochastic processes
+ $\bmu_x$ and $\bmu_y$, say, that produce these risks.  The risk produced by the
+ randomized process that picks $\bmu_x$ with probability $0 \le a \le 1$ and
+ picks process $\bmu_y$ with probability $1-a$ is then $a\,x+(1-a)\,y$.
 
 
- Figure \ref{fig:riFeasibleSet} shows two views of the the feasible set for the
- oracle testimator versus the universal testimator \uTest\ defined by the wealth
- function $\al_u(\cdot)$ defined in \eqn{eq:Auniv}.  For this figure $p$=1,000
- tests and the initial wealth and payout $w_0 = \omega = 0.5$.  The risk of the
- oracle testimator define the x-axis and those of the universal testimator lie
- on the y-axis.  The feasible risk set is the shaded region in each frame.  The
- frame on the left of Figure \ref{fig:riFeasibleSet} shows the feasible set on
- the scale of risks; the frame on the right shows the same data on log scales.
-  (The feasible risk set is not convex on a log scale but the approximation is
- quite close in practice.) To graph the risk on the log-log scale, we added 1 to
- the risks of both estimators, in the fashion of risk inflation, in order to be
- able to show the feasible risk set near 0 on a log-log scale.  Points along the
- boundary of the feasible set identify the locations at which we computed the
- risks using the method described in the following section.  The entire feasible
- set lies above the diagonal; by construction, no testimator can have smaller
- risk than obtained by this oracle estimator.  The plot on the risk scale
- emphasizes the performance in models with substantial signal; the risk of the
- oracle reaches $p$ in the saturated model in which every $1 < \mu_i$.  The plot
- on the log scale emphasizes sparse models, the so-called nearly black context
- in which most $\mu_i = 0$.  In this frame, the line parallel to and above the
- diagonal is the risk-inflation boundary that obtains for non-sequential
- estimators.  The bounds in \eqn{eq:ri} imply that the worst case risk for the
- testimator should be about $1 + 2 \log p$ times the risk of the oracle.  These
- calculations show that the risk of \uTest\ does indeed fall below this
- boundary.  \ras{ Say more about the cool shape of the risk as the risk of the
- oracle goes to zero? }
+ Figure \ref{fig:riFeasibleSet} shows two views of the the feasible set defined
+ by the risk of oracle testimator ($x$-axis) versus the universal testimator
+ \uTest\ defined by the wealth function $\al_u(\cdot)$ defined in \eqn{eq:Auniv}
+ ($y$-axis).  For this figure $p$=1,000 tests and the initial wealth and payout
+ $w_0 = \omega = 0.5$.  The feasible risk set is the shaded region in each
+ frame.  The frame on the left of Figure \ref{fig:riFeasibleSet} shows the
+ feasible set on the scale of risks; the frame on the right shows the same data
+ on log scales.  (The feasible risk set is not convex on a log scale but the
+ approximation is quite close in practice.) To graph the risk on the log-log
+ scale, we added 1 to the risks of both estimators, in the fashion of risk
+ inflation, in order to be able to show the feasible risk set near 0 on a
+ log-log scale.  Points along the boundary of the feasible set identify the
+ locations at which we computed the risks using the method described in the
+ following section.  The entire feasible set lies above the diagonal; by
+ construction, no testimator can have smaller risk than obtained by this oracle
+ estimator.  
 
 
  \begin{figure}
- \caption{ \label{fig:riFeasibleSet} \sl Feasible set comparing the risk
+ \caption{ \label{fig:riFeasibleSet} {\sl Feasible set comparing the risk
  inflation oracle to the risk of the universal estimator \uTest with
  $w_0=\omega=0.5$ with $p$=1,000 tests on the scale of risks (left) or log risks
- (right).  Curves within the feasible set show the risks for varying signal
- levels defined in \eqn{eq:muj}}
+ (right).}  Curves within the feasible set show the risks for varying signal
+ levels defined in \eqn{eq:muj}. }
 
  \vspace{0.1in}
 \centerline{
@@ -644,6 +644,21 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \includegraphics[width=3.0in]{figures/riFeasSetLog} }
  \vspace{0.2in}
  \end{figure}
+
+ The two frames in Figure \ref{fig:riFeasibleSet} emphasize models with
+ substantial signal (non-zero means) and those that are nearly black (most
+ $\mu_j=0$).  The plot on the risk scale itself emphasizes the performance in
+ models with substantial signal.  The vertical left edge of the feasible set
+ shows the risk for saturated models in which $|\mu_j| > 1$; in this case, the
+ risk of the oracle testimator is ${\cal R}_p(\tilde{\bmu}, \bmu) = p$.  The
+ plot on the log scale emphasizes sparse models, the so-called nearly black
+ context in which most $\mu_i = 0$.  In this frame, the line parallel to and
+ above the diagonal is the risk-inflation boundary \eqn{eq:ri} that obtains for
+ non-sequential estimators.  These bounds suggest that the worst case risk for
+ the testimator should be about $1 + 2 \log p$ times the risk of the oracle.
+  The feasible set calculations show that the risk of \uTest\ does indeed fall
+ below this boundary, but that is not true of all estimators.  \ras{ Say more
+ about the cool shape of the risk as the risk of the oracle goes to zero? }
 
 
  Curves within the feasible set show the risks of the two testimators that
@@ -661,11 +676,67 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  boundary of the feasible set. 
 
 
+ Displays of several feasible sets within the same plot allow one to compare the
+ effects of various choices.  As an example, Figure \ref{fig:univVsRI} considers
+ the effect of lowering the initial wealth $w_0$ and payoff $\omega$ from 0.50
+ down to smaller values, here 0.25 and 0.05.  The left frame on the scale of
+ risks emphasizes the comparison in problems with greater levels of signal; the
+ right frame on the log scale emphasizes sparse, nearly black models.  Within
+ the context of testing, choosing $\al=0.05$ is the virtual default and an
+ intuitive choice would be to similarly choose to control the false discovery
+ rate at 0.05.  Unless one is very convinced that nature will play a nearly
+ black strategy, however, this choice of $w_0 = \omega$ generates far greater
+ risk than $w_0=0.25$ or 0.50.  With $w_0=0.05$, the risks even escape the
+ bounds suggested by risk inflation in the non-sequential setting, shown here by
+ points in the feasible set above the bound provided in \eqn{eq:ri}.  Because
+ these plots show several feasible sets together, one can no longer interpret a
+ point in the graph as representing a specific mean vector $\bmu$ that produces
+ the shown risks.  Points within each feasible set indicate that there exists
+ for that pair of estimators a mean vector that generates the shown risks, but
+ at a given $(x,y)$ location, the mean vectors that produce the risks for the
+ several feasible sets differ.
 
- \ras{ Talk about simulating the mean processes; or save for another day? }
+\begin{figure}
+ \caption{ \label{fig:univVsRI} {\sl Feasible sets comparing the risk inflation
+ oracle to the risk of the universal estimator \uTest with $w_0=0.05$, 0.25, and
+ 0.50 with $p$=1,000 tests on the scale of risks (left) or log risks (right).}
+  }
+
+ \vspace{0.1in}
+ \centerline{
+ \includegraphics[width=3.5in]{figures/univVsRI}
+ \includegraphics[width=3.0in]{figures/univVsRILog}    }
+ \vspace{0.2in}
+\end{figure}
 
 
+ We have emphasized universal investing as defined by $\al_u(\cdot)$, and Figure
+ \ref{fig:geom} offers a partial explanation for our choice.  Figure
+ \ref{fig:geom} superimposes the feasible sets obtained by geometric investing
+ $\al_g(\psi)$ defined in \eqn{eq:Ageo} versus the risk inflation testimator
+ $\hat{\bmu}$.  The results are for a sequence of $p = 500$ tests.  In general,
+ increasing the spending rate $\psi$ from 0.001 up to 0.01 improves the
+ comparison, reducing the risk and shrinking the feasible set back toward the
+ diagonal.  The feasible sets for $\psi=0.001$, 0.005, and 0.01 progressively
+ move toward the diagonal, better competing with the risk-inflation testimator.
+  The move to $\psi = 0.05$, however, goes too far.  The estimator essentially
+ exhausts its alpha wealth before the testing is completed, and consequently its
+ risk soars.  Because this geometric estimator must set $\hat\mu_j = 0$ when it
+ has no remaining alpha wealth, its risk easily passes above the risk inflation
+ boundary \eqn{eq:ri}.
 
+
+\begin{figure}
+ \caption{ \label{fig:geom} {\sl Comparison of the feasible sets for geometric
+ investing rules defined by \eqn{eq:Ageo} with $p=500$ and rates $\psi=$ 0.001,
+ 0.005, 0.01, and 0.05.}  Spending down the wealth too quickly with $\psi=0.05$
+ leads to excessive risk.  }
+
+ \vspace{0.1in}
+ \centerline{
+   \includegraphics[width=3.5in]{figures/geom}     }
+ \vspace{0.2in}
+\end{figure}
 
 
 %--------------------------------------------------------------------------
@@ -682,23 +753,23 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  $\al(\cdot)$, $w_0$, and $\omega$ throughout this section.  Let
  \begin{equation}
    {\cal U}^\theta(\hat{\bmu},\tilde{\bmu}) = 
-       \max \evsub{\{\bmu\}} 
+       \max \evsub{\bmu} 
        \cos(\theta) R(\hat{\bmu}, \bmu) + \sin(\theta) R(\tilde{\bmu},\bmu) 
  \label{eq:U}
  \end{equation}
- denote the maximum expected value over stochastic processes $\{\bmu\}$ of a
- weighted sum of risks defined by the angle $ 0 \le \theta \le 2 \pi$.  Let
- $\{\bmu\}^\theta$ denote the stochastic process of means that maximizes
- $U^\theta$.  The point $\evsub{\{\bmu\}^\theta}(R(\hat{\bmu}, \bmu),
- R(\tilde{\bmu}, \bmu))$ lies on the boundary of ${\cal
- R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible set is tangent to the line
- defined by the mixture weights in \eqn{eq:U}.  Plots that show the feasible
- set, such as Figure \ref{fig:riFeasibleSet}, highlight the boundary points that
- are explicitly computed.  By varying $\theta$ over the circle, we approximate
- the feasible set as the intersection of the resulting half-planes.
+ denote the maximum expected value with respect to $\bmu$ of the weighted sum of
+ risks defined by the angle $ 0 \le \theta \le 2 \pi$.  Let $\bmu^\theta$ denote
+ the mean process that maximizes $U^\theta$.  The point
+ $\evsub{\bmu^\theta}(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies on
+ the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible set is
+ tangent to the line defined by the mixture weights in \eqn{eq:U}.  Plots that
+ show the feasible set, such as Figure \ref{fig:riFeasibleSet}, highlight the
+ boundary points that are explicitly computed.  By varying $\theta$ over the
+ circle, we approximate the feasible set as the intersection of the resulting
+ half-planes.
 
  
- We compute ${\cal U}^\theta$ via backward induction.  This induction
+ We compute ${\cal U}^\theta$ via numerical backward induction.  This induction
  approximates the wealth of the alpha investing estimator along a grid.  The
  wealth grid $G$ spans the minimal attainable wealth ($w_0 - \sum_{j=1}^p
  \al_j$) to a maximum allowed wealth, which we set to $w_{\max} = 5$.  (Our
@@ -706,7 +777,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  substantially larger than $w_0 + \omega$.)  The wealth grid holds is
  `logarithmically' spaced at $N$ points, placing a finer grid with increments
  0.001 for small wealths below 0.02 and gradually wider grid as the wealth
- increases.  We insure that the grid includes an element $G_{k_0} = w_0$.  
+ increases.  We insure that the grid includes an element $G_{k_0} = w_0$.
 
 
  The $p \times N$ matrix $U^{\theta}$ holds intermediate calculations of the
@@ -780,99 +851,6 @@ We illustrate the construction for the geometric rule.  If the initial wealth
 
 
 %--------------------------------------------------------------------------
-\section{ Examples }
-%--------------------------------------------------------------------------
- 
- The examples in this section compute the feasible risks produced by the alpha
- investing rules just described.  We also consider several choice for the payoff
- $\omega$ that controls mFDR.  The choices span from the conventional Type I
- error rate with $\omega=0.05$ to $\omega = 0.5$ and larger.  Setting
- $\omega=0.5$ implies that we allow up to half of the rejected hypotheses to be
- Type I errors.  Such a large error rate would not be used in testing, but is
- natural when trying to minimize worst case risk.  
-
-
-
- A simple approximation suggests that alpha investing procedures should allow
- larger values for mFDR than typical in testing.  Consider the risk produced by
- a testimator defined by a test of simple hypotheses for a mean.  Suppose that a
- test of the hypotheses $H_0: \mu=0$ versus $H_a: \mu=\eta$ has level $\alpha$.
-  The test rejects $H_0$ if $Y^2 > z_{\al/2}^2$ for $Y \sim
- N(\mu,1)$.  Our approximations decompose the risk of the testimator
- $\hat\mu_\al = Y\,\one{Y^2>z_{\al/2}^2}$ as shown in the following table. Note that we treat $\mu$ as a
- r.v. with probability $\pi$ on $\eta$ and 0 otherwise.
-
-\begin{center}
-\begin{tabular}{c|cc}
-            &   $\hat\mu=0$            & $\hat\mu\ne 0$               \cr \hline
- $\mu=0$    &  0                       & $\al (1-\pi) (2 \log 1/\al)$ \cr
- $\mu=\eta$ &  $(\pi/2)(2 \log 1/\al)$ & $\pi/2 \cdot 1$              \cr
-\end{tabular}
-\end{center}
-
- \noindent
- These approximations use $z_\al \approx \sqrt{2 \log 1/\al}$ and estimate the
- risk at this threshold by $2 \log \al$.  The components in this table are
- summands in the decomposition
- \begin{equation}
-   \ev (\hat\mu_\al - \mu)^2 
-     = \sum_{C} \ev \left((\hat\mu_\al-\mu)^2 | C\right) \pr(C),
- \label{eq:decomp}
- \end{equation}
- where the conditions are $\{\mu=0, Y^2 < z_{\al/2}^2\}, \{\mu=0, Y^2 \ge
- z_{\al/2}^2\},\{\mu=\eta, Y^2 < z_{\al/2}^2\},\,\mbox{ and
- },\{\mu=\eta, Y^2 \ge z_{\al/2}^2\}$.
-
-
- Now consider the mFDR for this table:
- \begin{equation}
-     mFDR = \frac{\al(1-\pi)}
-                 {\al(1-\pi) + \pi/2} \;.
- \label{eq:mfdrtable}
- \end{equation}
- To perform well, the testimator should balance the risk associated with the two
- types of errors, so that \ras{Should this balance refer to {\bf both} of terms
- from the second column or just to the Type I and Type II errors? It would not
- make much difference here, but it does in the more accurate calculations. }
- \begin{equation}
-   \al(1-\pi) 2 \log (1/\al) \approx (\pi/2) (2 \log(1/\al) \Rightarrow   
-         \pi/2 \approx \al(1-\pi) \;.
- \label{eq:balance}
- \end{equation}
- Plugging this back in \eqn{eq:mfdrtable} gives mFDR$=\half$.
-
- \clearpage
-
- To make the problem hard, suppose that the mean
- under the alternative has been chosen to produce maximum risk for the
- testimator,
- \begin{equation}
-    \mu_\al = \arg \max_\mu R(\hat\mu,\mu) \approx \mbox{[add this]}
- \label{eq:Malpha}
- \end{equation}
- Figure \ref{fi:risk} shows a plot of the risk with $\alpha=0.05$ and
- $\alpha=0.0005$, a more typical value in, say, model selection.
-  \citet{fostergeorge94} show that as $\alpha \rightarrow 0$, $\mu_\al = \sqrt{2
- \log 1/\al} + o(something) \approx z_{\al/2}.$ Assume, as in a Bayesian model,
- $H_a$ holds with small probability $\pi$; in other words, we are in the 'nearly
- black' setting in which most parameters are zero.  The major contributions to
- the risk in this setting come from Type I and Type II errors.  The risk from a
- Type I error is large because the test rejects $H_0$ only if $Y$ is far from
- zero: $\alpha (1-\pi) 2 \log(1/\al).$ The risk from a Type II error is also
- large because of the size of $\mu_\al$; this risk is approximately $(\pi/2) 2
- \log(1/\al)$. (The $\pi/2$ comes from the distribution of $Y$ under $H_a$ being
- located on the rejection boundary.)  Setting mFDR equal to 1/2 balances these
-two risks.  In this context,
- \begin{equation}
-    mFDR = \frac{\al(1-\pi)}
-                {\al(1-\pi) + \pi/2} \;.   
- \label{eq:mfdrexample}
- \end{equation}
- Balancing the risks of Type I and Type II errors implies that we set
-$\pi/2=\al(1-\pi)$ and hence that we want $mFDR = 1/2$.
-
-
-%--------------------------------------------------------------------------
 \section{ Discussion }
 %--------------------------------------------------------------------------
 
@@ -925,6 +903,8 @@ Improve the estimator by shrinkage.
 
  \item Comment on the value of saving if hope to compete with a universal
  bidder.
+
+ \item  Talk about simulating the mean processes; or save for another day? 
  
 \item {\bf Stationarity} of the associated wealth process, perhaps using results
  from \citet{chanTong94} for the geometric ergodicity of the process in the
