@@ -697,7 +697,7 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  several feasible sets differ.
 
 \begin{figure}
- \caption{ \label{fig:univVsRI} {\sl Feasible sets comparing the risk inflation
+ \caption{ \label{fig:univRI} {\sl Feasible sets comparing the risk inflation
  oracle to the risk of the universal estimator \uTest with $w_0=0.05$, 0.25, and
  0.50 with $p$=1,000 tests on the scale of risks (left) or log risks (right).}
   }
@@ -738,6 +738,39 @@ We illustrate the construction for the geometric rule.  If the initial wealth
  \vspace{0.2in}
 \end{figure}
 
+
+ We can directly compare two methods of alpha investing by finding the feasible
+ set associated with two testimators.  Figure \ref{fig:univGeo} shows an
+ example.  Rather than compare a realizable testimator to a method relying on an
+ oracle as in Figure \ref{fig:univRI}, the feasible set ${\cal R}_p
+ (\hat\mu(\al_u), \hat\mu(\al_g))$ puts these two against each other in a
+ head-to-head comparison.  The initial value and payout for both are $w_0 =
+ \omega = 0.25$.  The rates of the geometric strategy are set to $\psi=0.001$,
+ 0.002, and 0.005.  Small rates are necessary to avoid the surge in risk
+ illustrated in Figure \ref{fig:geom} when the geometric strategy runs out of
+ wealth.  There are clearly mean vectors for which either choice, universal or
+ geometric, dominate the other.  That said, this figure clarifies the relative
+ advantages of universal investing over geometric investing at several rates.
+  Again, setting a fastering investing rate $\psi$ for geometric investing
+ reduces risk for models with more signal, but that doing so necessarily leads
+ to higher risks in nearly black models.  For instance, the feasible set in
+ Figure \ref{fi:univGeo} associated with $\psi = 0.005$ reduces the bulge toward
+ higher in the left frame, but is soundly dominated by slower spending rates in
+ models with fewer non-zero parameters.  Universal investing avoids the need to
+ set this somewhat arbitrary tuning parameter.
+
+
+ \begin{figure}
+ \caption{ \label{fig:univGeo} {\sl Direct comparison of universal investing
+ (\ref{eq:Auniv}, $y$-axis) with geometric investing (\ref{eq:Ageo}, $x$-axis) at
+ rates $\psi = 0.001$, 0.002, and 0.005 for $p=$ 1,000.}  }
+
+ \vspace{0.1in}
+ \centerline{
+     \includegraphics[width=3.5in]{figures/univGeo}
+     \includegraphics[width=2.9in]{figures/univGeoLog} }
+ \vspace{0.2in}
+ \end{figure}
 
 %--------------------------------------------------------------------------
 \section{ Computation }
