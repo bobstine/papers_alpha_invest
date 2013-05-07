@@ -534,32 +534,28 @@
           R\Bigl(\hat\mu(\al(\cdot),w_0-\al_1+\omega,\omega),\mu_{2:p}\Bigr)\cr
     & & \qquad + (1-r_{\mu_1}(\al_1))\; 
           R\Bigl(\hat\mu(\al(\cdot),w_0-\al_1,\omega),\mu_{2:p}\Bigr) \;,
- \label{eq:riskTestAI}
+ \label{eq:RMuHat}
  \end{eqnarray}
  where $\al_1 = \al(w_0)$ and we have suppressed the dependence of the estimator
  on the data.  The second expression for the risk emphasizes the recursive
- nature of the risk and motivates our method of computation.
+ nature of the risk and motivates our method of computation.  The cumulative
+ risk of the estimator is the risk produced by the testimator for $H_1$ plus the
+ cumulative risk of testing $H_2, \ldots, H_p$.  If the test of $H_1$ rejects,
+ which happens with probability $r_{\mu_1}(\al_1)$), then testing the remaining
+ hypotheses begins with alpha wealth $W_1 = w_0 + -\alpha_1 + \omega$, otherwise
+ with probability $1- r_{\mu_1}(\al_1)$ the remaining testing starts with wealth
+ $w_1 - \al_1$.
 
 
-%--------------------------------------------------------------------------
-\section{ Feasible Risk Set }
-%--------------------------------------------------------------------------
-
-
- The calculation of the maximum risk obtained by the testimator \test\ is
- similarly recursive.  Suppose that the initial level $\al_1 = \al(w_0)=0.05$;
- the graph in Figure \ref{fig:risk}(b) shows the components of the risk of this
- testimator.  The choice of $\mu_1$ is not so simple, however, as setting $\mu_1
- = \arg \max R(\hat\mu_{0.05},\mu) \approx \pm 2.16$.  Doing so ignores the
- payoff $\omega$ obtained if $H_1$ is rejected and its impact on the subsequent
- wealths $W_j$.  This choice for $\mu_1$ maximizes the risk for the first test,
- but leaves a good chance for the estimator to gain wealth for subsequent tests
- by rejecting the first null hypothesis.  The probability that the first test
- rejects is $r_{\tilde\mu}(0.05) \approx 0.58$.  By rejecting the first test,
- the alpha investing rule obtains the additional contribution $\omega$ to its
- alpha wealth, allowing it to increase the level -- and so potentially reduce
- its risk -- in subsequent tests.  Instead, the problem to be solved at the
- first test is to choose
+ The calculation of the maximum risk obtained by \test\ is similarly recursive,
+ and we compute the sum by backward induction.  Because the performance of
+ subsequent tests depends on the outcome of the first, the choice of $\mu_1$ is
+ not so simple as setting $\mu_1 = \arg \max R(\hat\mu_{0.05}, \mu)$.  Doing so
+ ignores the payoff $\omega$ obtained if $H_1$ is rejected.  By rejecting the
+ first test, the alpha investing rule obtains the additional contribution
+ $\omega$ to its alpha wealth, allowing it to increase the level -- and so
+ potentially reduce its risk -- in subsequent tests.  The problem to be solved
+ at the first test is to choose
  \begin{eqnarray*}
     \mu_1 = \arg \max_{m} & \Bigl\{ & R(\hat\mu_{\al_1},m) \Bigr. 
         + r_{m}(\al_1) \; \max_{\mu_{2:p}} 
@@ -567,20 +563,22 @@
     & & + \Bigl. (1-r_{m}(\al_1)) \max_{\mu_{2:p}} \; 
               R(\hat\mu(\al,w_0-\al_1,\omega),\mu_{2:p}) \Bigr\} \;.
  \end{eqnarray*}
- The optimal choice for $\mu_1$ depends on the risk produced by subsequent
- components of the sequence of testimators.  Notice also that the subsequent
- maximizing means are not deterministic; rather this maximization defines a
- stochastic process that maximizes on average the risk.  We identify the process
- that generates means that maximize the risk by adding braces, $\{\bmu\}$, as a
- reminder that the calculation of the risk involves a further layer of
- expectations.  
+ Notice that the means that maximize the risk are not deterministic because of
+ the randomness introduced by the stochastic outcome of each test.  As a result,
+ we obtain a stochastic process that obtains, on average, the maximum risk. 
 
 
- Our interest is not just in the risk of a testimator, however, but in the
- relative risk of the testimator compared to an alternative.  In the style of
- risk inflation \eqn{eq:ri}, we want to contrast the risk of \test\ to that of a
- testimator that has no restrictions on its alpha wealth or an oracle-based
- testimator that `knows' $\mu$.  The oracle-based testimator has elements
+%--------------------------------------------------------------------------
+\section{ Feasible Risk Set }
+%--------------------------------------------------------------------------
+
+
+ Our interest is not simply in the risk of a testimator, however, but in its
+ risk when compared to an alternative.  We want to see how various sequential
+ testimators perform when estimating the same collection of means.  In the style
+ of risk inflation \eqn{eq:ri}, we want to contrast the risk of \test\ to that
+ of another testimator or to a testimator that benefits from an oracle that
+ reveals $\bmu$.  The oracle-based testimator has elements
  \begin{equation}
    \tilde\mu_j(Y_j) = \left\{ \begin{array}{cc} 
                        0    & \mbox{ if } \mu_j^2 \le 1,        \cr
@@ -595,20 +593,21 @@
  \end{equation}
 
 
- We use a feasible set to summarize the comparison of the risk of two estimators
- in the context of sequential tests.  Let $\hat{\bmu}_1$ and $\hat{\bmu}_2$
- denote two estimators for the mean vector $\mu_{1:p}$.  The feasible risk set
- for two estimators is defined as
+ We summarize such comparisons of risks by finding the collection of all
+ possible risks that are obtainable under any mean process.  We call this
+ collection the feasible risk set.  Let $\hat{\bmu}_1$ and $\hat{\bmu}_2$ denote
+ two sequential estimators of $\mu_{1:p}$.  The feasible risk set for these two
+ is defined as
  \begin{equation}
      {\cal R}_p(\hat{\bmu}_1,\hat{\bmu}_2) = 
-      \{(x_1,x_2): \exists \bmu \mbox{ s.t. }
+      \{(x_1,x_2) \in \R^2 \mbox{ s.t. } \exists \bmu  \quad
           x_1 = \evsub{\bmu} R(\hat{\bmu}_1,\bmu),
           x_2 = \evsub{\bmu} R(\hat{\bmu}_2,\bmu)  \} \;.           
  \label{eq:feasibleSet}
  \end{equation}
  In words, a point $(x,y)$ lies in the feasible set ${\cal R}_p$ if there exists
- a mean vector $\bmu$ of length $p$ for which the expected value of the risk of
- $\hat{\bmu}_1$ is $x$ and the expected risk of $\hat{\bmu}_2$ is $y$.  A simple
+ a stochastic process of means $\bmu$ of length $p$ for which the risk of
+ $\hat{\bmu}_1$ is $x$ and the risk of $\hat{\bmu}_2$ is $y$.  A simple
  randomization argument proves that the feasible set must be convex.  If $x$ and
  $y$ are two points within ${\cal R}_p$, then there exist stochastic processes
  $\bmu_x$ and $\bmu_y$, say, that produce these risks.  The risk produced by the
@@ -616,22 +615,23 @@
  picks process $\bmu_y$ with probability $1-a$ is then $a\,x+(1-a)\,y$.
 
 
- Figure \ref{fig:riFeasibleSet} shows two views of the the feasible set defined
- by the risk of oracle testimator ($x$-axis) versus the universal testimator
- \uTest\ defined by the wealth function $\al_u(\cdot)$ defined in \eqn{eq:Auniv}
- ($y$-axis).  For this figure $p$=1,000 tests and the initial wealth and payout
- $w_0 = \omega = 0.5$.  The feasible risk set is the shaded region in each
- frame.  The frame on the left of Figure \ref{fig:riFeasibleSet} shows the
- feasible set on the scale of risks; the frame on the right shows the same data
- on log scales.  (The feasible risk set is not convex on a log scale but the
- approximation is quite close in practice.) To graph the risk on the log-log
- scale, we added 1 to the risks of both estimators, in the fashion of risk
- inflation, in order to be able to show the feasible risk set near 0 on a
- log-log scale.  Points along the boundary of the feasible set identify the
- locations at which we computed the risks using the method described in the
- following section.  The entire feasible set lies above the diagonal; by
- construction, no testimator can have smaller risk than obtained by this oracle
- estimator.  
+ Figure \ref{fig:riFeasibleSet} shows two views of the the feasible set that
+ compares the oracle testimator ($x$-axis) to the universal testimator
+ \uTest\ defined by $\al_u(\cdot)$ ($y$-axis).  For this figure, $p$=1,000 tests
+ and the initial wealth and payout $w_0 = \omega = 0.5$.  The feasible risk set
+ is the shaded region in each frame.  The frame on the left of Figure
+ \ref{fig:riFeasibleSet} shows the feasible set on the scale of risks; the frame
+ on the right shows the same data on log scales.  (The feasible risk set is not
+ convex on a log scale but the approximation is quite close in practice.) To
+ graph the risk on the log-log scale, we added 1 to the risks of both
+ estimators, in the fashion of risk inflation, in order to be able to show the
+ feasible risk set near 0 on a log-log scale.  Points along the boundary of the
+ feasible set identify the locations at which we computed the exact risks using
+ the method described in the following section.  Consequently, the shown region
+ is a convex set lying on the interior of ${\cal R}_p$.  The actual risk set is
+ slightly larger, but only very slightly as the full set is convex.  Notice that
+ the feasible risk set lies above the diagonal in this comparison; by
+ construction, no realizable testimator can have smaller risk $\tilde{\bmu}$.
 
 
  \begin{figure}
@@ -648,25 +648,27 @@
  \vspace{0.2in}
  \end{figure}
 
- The two frames in Figure \ref{fig:riFeasibleSet} emphasize models with
- substantial signal (non-zero means) and those that are nearly black (most
- $\mu_j=0$).  The plot on the risk scale itself emphasizes the performance in
- models with substantial signal.  The vertical left edge of the feasible set
- shows the risk for saturated models in which $|\mu_j| > 1$; in this case, the
- risk of the oracle testimator is ${\cal R}_p(\tilde{\bmu}, \bmu) = p$.  The
- plot on the log scale emphasizes sparse models, the so-called nearly black
- context in which most $\mu_i = 0$.  In this frame, the line parallel to and
- above the diagonal is the risk-inflation boundary \eqn{eq:ri} that obtains for
- non-sequential estimators.  These bounds suggest that the worst case risk for
- the testimator should be about $1 + 2 \log p$ times the risk of the oracle.
-  The feasible set calculations show that the risk of \uTest\ does indeed fall
- below this boundary, but that is not true of all estimators.  \ras{ Say more
- about the cool shape of the risk as the risk of the oracle goes to zero? }
+
+ The two scales of the risk shown in Figure \ref{fig:riFeasibleSet} emphasize
+ models with substantial signal (non-zero means) and those that are nearly black
+ (most $\mu_j=0$).  The frame scaled by the risk itself emphasizes the
+ performance in models with substantial signal.  The vertical right edge of the
+ feasible set shows the risk for saturated models in which $|\mu_j| \ge 1$; for
+ these models, the risk of the oracle testimator is ${\cal R}_p(\tilde{\bmu},
+ \bmu) = p$.  The plot on the log scale emphasizes sparse models, the so-called
+ nearly black context in which most $\mu_i = 0$.  In this frame, the line
+ parallel to and above the diagonal is the risk-inflation boundary \eqn{eq:ri}
+ that obtains for non-sequential estimators.  These bounds suggest that the
+ worst case risk for the testimator should be about $1 + 2 \log p$ times the
+ risk of the oracle.  The feasible set calculations show that the risk of
+ \uTest\ does indeed fall below this boundary, but that is not true of all
+ estimators.  \ras{ Say more about the cool shape of the risk as the risk of the
+ oracle goes to zero? }
 
 
- Curves within the feasible set show the risks of the two testimators that
- results if the means $\mu_{1:p}$ are determined by a two-point Bayesian model.
-  Suppose that the stochastic process $\{\bmu\}$ that determines the means sets
+ Curves within the feasible set shown in Figure \ref{fig:riFeasibleSet}
+ identify the risks that result if the means $\mu_{1:p}$ are determined by a
+ two-point Bayesian model.  Suppose that the stochastic process $\{\bmu\}$ sets
  $\mu_j$ at random to some non-zero value $\mu^{*}$:
  \begin{equation}
     \mu_j = B_j \; \mu^{*}, \quad B_j  \iid \mbox{ Bernoulli}(\pi)  \;.
@@ -676,11 +678,13 @@
  probabilistic model, with $\mu^{*}$ = 1.0 (red), 1.5 (magenta), or 3 (blue),
  and the probability of a non-zero mean varying over the range $10^{-6} \le \pi
  \le 1-10^{-6}$.  With $\mu^{*} = 1.0$, the risks nearly trace out the lower
- boundary of the feasible set. 
+ boundary of the feasible set.  The crossing of the paths for $\mu^{*}=1.5$ and
+ $\mu^{*}=3$ shows, however, that no one value for $\mu^{*}$ can reproduce the
+ upper boundary of ${\cal R}_p$.
 
 
  Displays of several feasible sets within the same plot allow one to compare the
- effects of various choices.  As an example, Figure \ref{fig:univVsRI} considers
+ effects of various choices.  As an example, Figure \ref{fig:univRI} considers
  the effect of lowering the initial wealth $w_0$ and payoff $\omega$ from 0.50
  down to smaller values, here 0.25 and 0.05.  The left frame on the scale of
  risks emphasizes the comparison in problems with greater levels of signal; the
@@ -688,22 +692,22 @@
  the context of testing, choosing $\al=0.05$ is the virtual default and an
  intuitive choice would be to similarly choose to control the false discovery
  rate at 0.05.  Unless one is very convinced that nature will play a nearly
- black strategy, however, this choice of $w_0 = \omega$ generates far greater
- risk than $w_0=0.25$ or 0.50.  With $w_0=0.05$, the risks even escape the
- bounds suggested by risk inflation in the non-sequential setting, shown here by
- points in the feasible set above the bound provided in \eqn{eq:ri}.  Because
- these plots show several feasible sets together, one can no longer interpret a
- point in the graph as representing a specific mean vector $\bmu$ that produces
- the shown risks.  Points within each feasible set indicate that there exists
- for that pair of estimators a mean vector that generates the shown risks, but
- at a given $(x,y)$ location, the mean vectors that produce the risks for the
- several feasible sets differ.
+ black strategy, however, this choice of $w_0$ and $\omega$ generates far
+ greater risk than $w_0=0.25$ or 0.50.  With $w_0=0.05$, the risks even escape
+ the bounds suggested by risk inflation in the non-sequential setting, shown
+ here by points in the feasible set above the bound provided in \eqn{eq:ri}.
+  Because the plots in Figure \ref{fig:univRI} show several feasible sets
+ together, one can no longer interpret a point in the graph as representing a
+ specific mean vector $\bmu$ that produces the shown risks.  Points within each
+ feasible set indicate that there exists for that pair of estimators a mean
+ vector that generates the shown risks, but at a given $(x,y)$ location, the
+ mean vectors that produce the risks for the several feasible sets differ.
 
 \begin{figure}
- \caption{ \label{fig:univRI} {\sl Feasible sets comparing the risk inflation
- oracle to the risk of the universal estimator \uTest with $w_0=0.05$, 0.25, and
- 0.50 with $p$=1,000 tests on the scale of risks (left) or log risks (right).}
-  }
+ \caption{ \label{fig:univRI} {\sl Feasible risk sets comparing the risk
+ inflation oracle to the risk of the universal estimator \uTest with $w_0=0.05$,
+ 0.25, and 0.50 with $p$=1,000 tests on the scale of risks (left) or log risks
+ (right).}  }
 
  \vspace{0.1in}
  \centerline{
@@ -716,24 +720,24 @@
  We have emphasized universal investing as defined by $\al_u(\cdot)$, and Figure
  \ref{fig:geom} offers a partial explanation for our choice.  Figure
  \ref{fig:geom} superimposes the feasible sets obtained by geometric investing
- $\al_g(\psi)$ defined in \eqn{eq:Ageo} versus the risk inflation testimator
- $\hat{\bmu}$.  The results are for a sequence of $p = 500$ tests.  In general,
- increasing the spending rate $\psi$ from 0.001 up to 0.01 improves the
- comparison, reducing the risk and shrinking the feasible set back toward the
+ $\al_g(\cdot, \psi)$ defined in \eqn{eq:Ageo} versus the risk inflation
+ testimator $\tilde{\bmu}$.  The results are for a sequence of $p = 500$ tests.
+  In general, increasing the spending rate $\psi$ from 0.001 up to 0.01 improves
+ the geometric testimator as it shrinks the feasible set back toward the
  diagonal.  The feasible sets for $\psi=0.001$, 0.005, and 0.01 progressively
  move toward the diagonal, better competing with the risk-inflation testimator.
   The move to $\psi = 0.05$, however, goes too far.  The estimator essentially
  exhausts its alpha wealth before the testing is completed, and consequently its
- risk soars.  Because this geometric estimator must set $\hat\mu_j = 0$ when it
- has no remaining alpha wealth, its risk easily passes above the risk inflation
- boundary \eqn{eq:ri}.
+ risk soars.  Because this geometric estimator essentially sets $\hat\mu_j
+ \equiv 0$ as its alpha wealth approaches 0, its risk easily passes above the
+ risk inflation boundary \eqn{eq:ri}.
 
 
 \begin{figure}
- \caption{ \label{fig:geom} {\sl Comparison of the feasible sets for geometric
- investing rules defined by \eqn{eq:Ageo} with $p=500$ and rates $\psi=$ 0.001,
- 0.005, 0.01, and 0.05.}  Spending down the wealth too quickly with $\psi=0.05$
- leads to excessive risk.  }
+ \caption{ \label{fig:univGeo} {\sl Comparison of the feasible risk sets for
+ geometric investing rules defined by \eqn{eq:Ageo} with $p=500$ and rates
+ $\psi=$ 0.001, 0.005, 0.01, and 0.05.}  Spending down the wealth too quickly
+ with $\psi=0.05$ leads to excessive risk.  }
 
  \vspace{0.1in}
  \centerline{
@@ -742,25 +746,26 @@
 \end{figure}
 
 
- We can directly compare two methods of alpha investing by finding the feasible
- set associated with two testimators.  Figure \ref{fig:univGeo} shows an
- example.  Rather than compare a realizable testimator to a method relying on an
- oracle as in Figure \ref{fig:univRI}, the feasible set ${\cal R}_p
- (\hat\mu(\al_u), \hat\mu(\al_g))$ puts these two against each other in a
- head-to-head comparison.  The initial value and payout for both are $w_0 =
- \omega = 0.25$.  The rates of the geometric strategy are set to $\psi=0.001$,
- 0.002, and 0.005.  Small rates are necessary to avoid the surge in risk
- illustrated in Figure \ref{fig:geom} when the geometric strategy runs out of
- wealth.  There are clearly mean vectors for which either choice, universal or
- geometric, dominate the other.  That said, this figure clarifies the relative
- advantages of universal investing over geometric investing at several rates.
-  Again, setting a fostering investing rate $\psi$ for geometric investing
- reduces risk for models with more signal, but that doing so necessarily leads
- to higher risks in nearly black models.  For instance, the feasible set in
- Figure \ref{fi:univGeo} associated with $\psi = 0.005$ reduces the bulge toward
- higher in the left frame, but is soundly dominated by slower spending rates in
- models with fewer non-zero parameters.  Universal investing avoids the need to
- set this somewhat arbitrary tuning parameter.
+ As a final example, feasible risk sets also allow us to directly compare
+ realizable testimators produced by different methods of alpha investing.
+  Rather than compare a realizable testimator to a method relying on an oracle
+ as in Figure \ref{fig:univRI}, the feasible set ${\cal R}_p (\hat\mu(\al_u),
+ \hat\mu(\al_g))$ shown in Figure \ref{fig:univGeo} pits these two against each
+ other in a head-to-head comparison.  The initial value and payout for both are
+ $w_0 = \omega = 0.25$.  The rates of the geometric strategy are set to
+ $\psi=0.001$, 0.002, and 0.005.  Small rates are necessary to avoid the surge
+ in risk illustrated in Figure \ref{fig:geom} when the geometric strategy runs
+ out of wealth.  There are clearly mean vectors for which either choice,
+ universal or geometric, dominate the other.  That said, this figure clarifies
+ the relative advantages of universal investing over geometric investing at
+ several rates.  Again, a higher investing rate $\psi$ for geometric investing
+ reduces risk for models with more signal, but doing so necessarily leads to
+ higher risks in nearly black models.  For instance, the set in Figure
+ \ref{fig:univGeo} associated with $\psi = 0.005$ reduces the bulge toward higher
+ risks in the left frame, but this choice is soundly dominated by slower
+ spending rates in models with fewer non-zero parameters emphasized in the right
+ frame.  Universal investing avoids the need to set this somewhat arbitrary
+ tuning parameter.
 
 
  \begin{figure}
@@ -775,44 +780,46 @@
  \vspace{0.2in}
  \end{figure}
 
+
+
 %--------------------------------------------------------------------------
 \section{ Computation }
 %--------------------------------------------------------------------------
 
-
  We describe first the calculation of the feasible set ${\cal R}_p(\hat\mu(
  \al(\cdot), w_0, \omega), \tilde{\bmu})$ that contrasts an alpha investing
- estimator with the risk-inflation estimator $\tilde{\bmu}$.  The risk-inflation
- estimator has no wealth constraint; calculations need only track the wealth of
- the alpha investing estimator, which we abbreviate as $\hat{\bmu}$ with the
- understanding that it depends on the choice of the investing function
- $\al(\cdot)$, $w_0$, and $\omega$ throughout this section.  Let
+ testimator with the risk-inflation estimator $\tilde{\bmu}$.  The
+ risk-inflation estimator has no wealth constraint; calculations need only track
+ the wealth of the alpha investing estimator, which we abbreviate as
+ $\hat{\bmu}$ with the understanding that it depends on the choice of the
+ investing function $\al(\cdot)$, $w_0$, and $\omega$ throughout this section.
+  Let
  \begin{equation}
    {\cal U}^\theta(\hat{\bmu},\tilde{\bmu}) = 
        \max \evsub{\bmu} 
        \cos(\theta) R(\hat{\bmu}, \bmu) + \sin(\theta) R(\tilde{\bmu},\bmu) 
  \label{eq:U}
  \end{equation}
- denote the maximum expected value with respect to $\bmu$ of the weighted sum of
- risks defined by the angle $ 0 \le \theta \le 2 \pi$.  Let $\bmu^\theta$ denote
- the mean process that maximizes $U^\theta$.  The point
- $\evsub{\bmu^\theta}(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies on
- the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible set is
- tangent to the line defined by the mixture weights in \eqn{eq:U}.  Plots that
- show the feasible set, such as Figure \ref{fig:riFeasibleSet}, highlight the
- boundary points that are explicitly computed.  By varying $\theta$ over the
- circle, we approximate the feasible set as the intersection of the resulting
- half-planes.
+ denote the maximum expected value with respect to a stochastic process $\bmu$
+ of the weighted sum of risks defined by the angle $ 0 \le \theta \le 2 \pi$.
+  Let $\bmu^\theta$ denote the mean process that maximizes $U^\theta$.  The
+ point $\evsub{\bmu^\theta}(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies on
+ the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible risk
+ set is tangent to the line defined by the mixture weights in \eqn{eq:U}.  Plots
+ that show the feasible risk set, such as Figure \ref{fig:riFeasibleSet},
+ highlight the boundary points that are explicitly computed.  By varying
+ $\theta$ over the circle, we approximate the feasible risk set as the
+ intersection of the resulting half-planes.
 
  
  We compute ${\cal U}^\theta$ via numerical backward induction.  This induction
- approximates the wealth of the alpha investing estimator along a grid.  The
+ approximates the wealth of the alpha investing testimator on a grid.  The
  wealth grid $G$ spans the minimal attainable wealth ($w_0 - \sum_{j=1}^p
  \al_j$) to a maximum allowed wealth, which we set to $w_{\max} = 5$.  (Our
- results have not been sensitive to the choice of $w_max$ so long as it is
- substantially larger than $w_0 + \omega$.)  The wealth grid holds is
- `logarithmic ally' spaced at $N$ points, placing a finer grid with increments
- 0.001 for small wealths below 0.02 and gradually wider grid as the wealth
+ results have not been sensitive to the choice of $w_{\max}$ so long as it is
+ substantially larger than $w_0 + \omega$.)  The wealth grid is
+ `logarithmically' spaced at $N$ points, with a finer spacing with increments
+ 0.0001 for small wealths below 0.001 and gradually larger spacing as the wealth
  increases.  We insure that the grid includes an element $G_{k_0} = w_0$.
 
 
@@ -825,32 +832,34 @@
    U^\theta_{jk} &=&  \max_\mu \;\Bigl\{
      \cos(\theta) R(\hat\mu_{\al(G_k)}, \mu) + \sin(\theta) R(\tilde{\mu},\mu) \cr
      & &+ r_\mu\left(\al(G_k)\right) \;
-          \left(c \,U^{\theta}_{j+1,k_c+1} + (1-c) U^{\theta}_{j+1,k_c}\right) \cr
+          \left(c \,U^{\theta}_{j+1,k_r+1} + (1-c) U^{\theta}_{j+1,k_r}\right) \cr
      & & + (1- r_\mu\left(\al(G_k)\right) \; 
           \left(d \,U^{\theta}_{j+1,k_d+1} + (1-d) U^{\theta}_{j+1,k_d}\right)   
      \Bigr\}
  \label{eq:Ujk}
  \end{eqnarray}
- for the indices spanning $j=p, p-1,\ldots,1$ and $k = 1,\ldots,N$ and the
- boundary condition $U^\theta_{p+1,k} = 0$.  At the completion of the
- computation, ${\cal U}^\theta = U^{\theta}_{1,k_0}$.  The first line of
- \eqn{eq:Ujk} adds the contribution to the weighted risk from testing $H_j$ at
- the alpha level $\al(G_k)$.  The second line adds the expected subsequent risk
- if the test rejects $H_j$, which occurs with probability $r_\mu(\al(G_k))$.  If
- the test rejects, the alpha wealth increases to $G_k + \omega$.  This wealth is
- unlikely to match any $G_k$, so we linearly interpolate in the grid between
- positions $k_r$ and $k_r+1$ defined so that $G_{k_r} \le G_k + \omega \le
- G_{k_r+1}$ and $c = (\omega+G_k)/(G_{k_c+1}-G_{k_c})$.  Similarly, the third
- line of \eqn{eq:Ujk} adds the expected contribution if the testimator does not
- reject $H_j$ and its wealth falls to $G_k - \al(G_k)$.  
+ for $j=p, p-1,\ldots,1$ and $k = 1,\ldots,N$ and the boundary condition
+ $U^\theta_{p+1,k} = 0$.  Note the similarlity to the expression
+ \eqn{eq:RMuHat}.  At the completion of the computation, ${\cal U}^\theta =
+ U^{\theta}_{1,k_0}$.  The first line of \eqn{eq:Ujk} adds the contribution to
+ the weighted risk from testing $H_j$ at the alpha level $\al(G_k)$.  The second
+ line adds the expected subsequent risk if the test rejects $H_j$, which occurs
+ with probability $r_\mu(\al(G_k))$.  If the test rejects, the alpha wealth
+ increases to $G_k - \al(G_k) + \omega$.  This wealth is unlikely to match that
+ at any grid position, so we linearly interpolate in the grid between positions
+ $k_r$ and $k_r+1$ defined so that $G_{k_r} \le G_k - \al(G_k) + \omega \le G_{k_r+1}$ and
+ set $c = (G_k - \al(G_k) + \omega)/(G_{k_r+1}-G_{k_r})$.  Similarly, the third line of
+ \eqn{eq:Ujk} adds the expected contribution if the testimator does not reject
+ $H_j$ and its wealth falls to $G_k - \al(G_k)$.
 
  \remark{ One need not store the full matrix $U^\theta$, but its use simplifies
- the description of the algorithm.  One only needs $U^\theta_{j+1,\cdot}$ when
- computing $U_{j,\cdot}$.  Such space saving becomes essential in problems that
- must track a larger state space.  Note also that one can cache the indices and
- weights ($k_c, c$ and $k_d, d$) prior to the recursion because these can be
- determined from the grid positions and $\omega$ and remain fixed throughout the
- backward recursion.}
+ the description of the algorithm.  One only needs the next row $U^\theta_{j+1,
+ \cdot}$ to compute $U_{j,\cdot}$.  Such space saving -- using just two rows
+ rather than the full matrix -- becomes essential in problems that track a
+ larger state space.  Note also that one can cache the indices and weights
+ ($k_r, r$ and $k_d, d$) prior to the recursion because these can be determined
+ from the grid positions and $\omega$ and remain fixed throughout the backward
+ recursion.}
 
 
  The feasible set that compares the testimators defined by two alpha investing
@@ -862,9 +871,10 @@
  presentation, we suppress the linear interpolation and pretend that all of the
  concerned wealths are represented in the wealth grid.  If the alpha investing
  rule $\al(\cdot)$ with wealth $G_k$ rejects $H_j$, its wealth goes from $G_k$
- to $G_{k+}$; if it fails to reject, its wealth falls to $G_{k-}$.
-  Similarly, we use $\ell+$ and $\ell-$ for the positions for the rule defined
- by $\beta(\cdot)$.  The recursion then can be written as recursion as
+ to $G_{k+}$; if it fails to reject, its wealth falls to $G_{k-}$.  Similarly,
+ we use $\ell+$ and $\ell-$ for the positions for the rule defined by
+ $\beta(\cdot)$.  If we assume $\al(G_k) < \beta(G_\ell)$, then the recursion
+ then can be written as recursion as
  \begin{eqnarray}
    U^\theta_{jk\ell} &=&  \max_\mu \;\Bigl\{
      \cos(\theta) R(\hat\mu_{\al(G_k)}, \mu) 
@@ -874,80 +884,41 @@
      & & + \left[1-r_\mu(\beta(G_\ell))\right] \, U_{j+1,k-,\ell-} \, \Bigr\}\;,
  \label{eq:Ujkl}
  \end{eqnarray}
- where we assume for convenience that $\al(G_k) < \beta(G_\ell)$ and the
- boundary condition $U_{p+1,\cdot,\cdot}^\theta= 0$.  The first line in
- \eqn{eq:Ujkl} is the expected risk produced by the test of $H_j$, and following
- summands denote the subsequent maximum expected contributions to the risk if
- both reject, if only the rule with the larger alpha level rejects, and if
- neither rejects.  The point of writing this out is to emphasize these
+ where the boundary condition is $U_{p+1,\cdot,\cdot}^\theta= 0$.  The first
+ line in \eqn{eq:Ujkl} is the expected risk produced by the test of $H_j$, and
+ following summands denote the subsequent maximum expected contributions to the
+ risk if both reject, if only the rule with the larger alpha level rejects, and
+ if neither rejects.  The point of writing this out is to emphasize these
  testimators see the same data, not independent samples.  Hence, $\al(G_k) <
  \beta(G_\ell)$ implies that if the first rule $\al(\cdot)$ rejects $H_j$, then
  the second rule must also reject $H_j$ because it tests the same hypothesis
- with a larger alpha level.  
+ using the same data, but with a larger alpha level.
 
 
 %--------------------------------------------------------------------------
 \section{ Discussion }
 %--------------------------------------------------------------------------
 
+ Feasible risk sets allow us to find possible risks produced by different
+ testimators in sequential problems.  The comparisons shown here suggest that
+ universal alpha investing does well and can compete with the risks attained by
+ any geometric procedure.  It is also of interest to notice that the large
+ initial alpha wealth and payout $w_0 = \omega = 0.25$ produce a noticeable
+ reduction in the risk.  This choice for $\omega$ implies that one is
+ controlling the expected false discovery rate at 25\%, quite a bit larger than
+ would usually be acceptable.
 
- Return to model selection.
-
-  Suppose one has a collection of $p$ variables $X_1, \ldots, X_p$ to consider as
- explanatory variables in the classical linear regression model
- \begin{equation}
-   Y_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip} + \ep_i, 
-     \qquad \ev \ep_i = 0, \Var(\ep_i)=\sigma^2,  \quad i = 1,\ldots,n\;.
- \label{eq:regr}
- \end{equation}
- As a method for picking a model, subset selection (sometimes called $L_0$
- selection) in effect tests the hypotheses $H_j: \beta_j = 0, \; j = 0, 1, \ldots, p$.
-  Let $\gamma_j = \pm 1$ denote those $\beta_j \ne 0$, and let $\hat\gamma_j =
- \pm 1$ identify the rejected hypotheses.  The explanatory variable $X_j$
- appears in the fitted model if $\hat\gamma_j = 1$ and is excluded otherwise
- (hence estimating $\beta_j$ = 0).  We insert an intercept in all models (as
- needed by risk inflation below) and so set $\gamma_0=\hat\gamma_0 = 1$.  The
- vectors $\gamma = (1, \gamma_1, \ldots, \gamma_p)'$ and $\hat\gamma = (1,
- \hat\gamma_1, \ldots, \hat\gamma_p)'$ collect these indicators.
-
-
-Alpha investing can mimic regular testing procedure by revisiting the test of
-prior hypotheses. 
-
-Improve the estimator by shrinkage.
-
-
-
- One might also use accumulated alpha wealth as a measure of the performance, and
- this provides a more useful metric of performance, particularly when competing
- against the oracle.  If maximizing alpha wealth, then the oracle loses the
- amount bid and chooses $\mu_j$ to maximize $r_{\mu_j}(\al)-\al$ rather than
- $r_{\mu_j}(\al)$ alone.  This perspective would not only capture aspects of
- rejecting hypotheses, it also anticipates having resources to test future
- hypotheses.  Such consideration is appropriate, however, only in the context of
- testing a larger collection of hypotheses than considered here.
-
- \ras{ Things left to do:}
- \begin{enumerate}
-
- \item Graphs of envelope that suggest that alpha wealth is a decent proxy for
- risk, at least better than something like FDR, number rejects - constant times
- number false rejects.
-
- \item What does the steady state look like.  If take the envelope for 250 and
- double to get for 500, is that close to correct for the risk?
-
- \item Comment on the value of saving if hope to compete with a universal
- bidder.
-
- \item  Talk about simulating the mean processes; or save for another day? 
  
-\item {\bf Stationarity} of the associated wealth process, perhaps using results
- from \citet{chanTong94} for the geometric ergodicity of the process in the
- universal case.
-
-\end{enumerate}
-
+ We have explored, but not fully characterized, the asymptotic feasible risk
+ set.  In particular, we conjecture that an alpha investing rule such as the
+ universal rule is adaptive in the sense that its wealth settle into a
+ recurrence under certain models for the mean process.  The ability to find a
+ range preferred wealth would then explain how alpha investing is able to
+ compete with various geometric rules.  Ideally, we would like to obtain results
+ analogous to those in \citet{rissanen83} that show that alpha investing is
+ about as good as one can do.  Such a proof would then avoid concern for
+ modelers in how to choose the alpha wealth and move the modeling into better
+ methods for generating the features to be tested in this manner.
 
 
 %--------------------------------------------------------------------------
@@ -955,7 +926,7 @@ Improve the estimator by shrinkage.
 \section*{Acknowledgement}
 %--------------------------------------------------------------------------
 
-The authors thank ...
+The authors thank NSF.
 
 
 %--------------------------------------------------------------------------
