@@ -683,6 +683,32 @@
  upper boundary of ${\cal R}_p$.
 
 
+ Figure \ref{fig:simRisk} graphs a realized example of the stochastic process
+ that that generates the risks on the boundary of the feasible risk set.  For
+ this figure, we chose the process that produces the point with expected risks
+ $(101, 657)$ which can be found along the left side of Figure
+ \ref{fig:riFeasibleSet}.  The points shown in Figure \ref{fig:simRisk} plot the
+ values of $\mu_j$ versus the test index $j$ for $j = 1,\,2, \ldots, p=1000$.
+  The graph also shows the cumulative risk of the universal testimator for this
+ particular realization.  The risk of the testimator in this example reaches 688
+ whereas the the oracle accumulates risk 123.  The nonzero value for the mean is
+ nearly constant and fluctuates around 2.63, though some realizations show an
+ end effect as the testing nears $p=$1,000.
+
+
+\begin{figure}
+ \caption{ \label{fig:simRisk} {\sl Realization of the mean process that
+ produces a point on the boundary of the feasible set.} The increasing trend
+ shows the accumulating risk of the testimator which reaches 688 in this
+ example.  }
+
+ \vspace{0.1in}
+ \centerline{
+ \includegraphics[width=3.5in]{figures/simRisk}    }
+ \vspace{0.2in}
+\end{figure}
+
+
  Displays of several feasible sets within the same plot allow one to compare the
  effects of various choices.  As an example, Figure \ref{fig:univRI} considers
  the effect of lowering the initial wealth $w_0$ and payoff $\omega$ from 0.50
@@ -907,6 +933,18 @@
  reduction in the risk.  This choice for $\omega$ implies that one is
  controlling the expected false discovery rate at 25\%, quite a bit larger than
  would usually be acceptable.
+
+
+ Figures \ref{fig:riFeasibleSet} and \ref{fig:simRisk} suggest that one can
+ approximate the boundary of the feasible risk set using the two-parameter model
+ described in \eqn{eq:muj}.  The path along the lower boundary of ${\cal R}_p$
+ obtained with $mu^{*}=1$ in Figure \ref{fig:fiFeasibleSet} suggests this to be
+ a good model for most of the risks until the risks become very large.  The
+ simulation of the boundary producing mean process for the upper boundary of the
+ feasible set hints that one may be able to approximate the upper boundary in a
+ similar manner, though doing so would require changing the value of $\mu^{*}$.
+  In either case, one needs the probability $\pi$ which gives the chance of a
+ non-zero mean.
 
  
  We have explored, but not fully characterized, the asymptotic feasible risk
