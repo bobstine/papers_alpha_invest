@@ -122,7 +122,7 @@
   Streaming selection can thus adaptively explore collections of explanatory
  variables that are larger than typically considered with conventional methods;
  for large samples, the slowest step in forward stepwise regression is the
- calculation of the $X'X$ matrix.  \citet{fosterlin10} demonstrate the speed
+ calculation of the $X'X$ matrix.  \citet{fosterlin11} demonstrate the speed
  attained by sequential selection when picking a regression from
  $p$=100,000 explanatory variables.
 
@@ -323,10 +323,15 @@
  universal rule invests more than every geometric rule.  For example, the
  geometric rule that invests 1\% of its wealth at each test ($\psi=0.01$)
  invests more than the universal rule when testing $H_{11}$ through $H_{581}$;
- otherwise it invests less. \ras{ Say more here about why this 'blending' of the
- geometric rates is a good thing; too bad we don't have that 'habitation' idea
- worked out where the universal finds a steady rate appropriate for the rate of
- false nulls. }
+ otherwise it invests less.  Each geometric spending rule with successively
+ smaller rate $\psi$ eventually spends more than the rules that spend at a
+ larger rate; eventually each rule spends the most for a portion of testing.
+  The graph shows that the universal rule saves enough so that it too can spend
+ close to this rate.  Making this precise is exactly what the makes it the
+ underlying distribution universal in the information theoretic sense.
+
+ % Too bad we don't have that 'habitation' idea worked out where the universal
+ % finds a steady rate appropriate for the rate of false nulls.
 
 
  \begin{figure}
@@ -447,7 +452,7 @@
 
  The analysis of the risk of testimators is typically done in the context of
  estimation a vector of $p$ means, $\bmu \equiv \mu_{1:p} =
- (\mu_1,\ldots,\mu_p)'$.  The available data is the vector $\YY \equiv Y_{1:p} =
+ (\mu_1, \,\ldots, \mu_p)'$.  The available data is the vector $\YY \equiv Y_{1:p} =
  (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  The estimator
  of $\bmu$ combines testimators with a common level, $\hat{\bmu}_\al =
  (\hat\mu_\al(Y_1), \ldots, \hat\mu_\al(Y_p))'$.  The estimator $\hat{\bmu}_\al$
@@ -455,22 +460,18 @@
  risk of $\hat{\bmu}_\al$ is the sum of the risks of the coordinate testimators,
  \begin{equation}
     R(\hat{\bmu}_\al, \bmu) 
-      = \ev\; \normsq{\hat{\bmu}_\al - \bmu} \;,
+      = \ev \sum_{j=1}^p \Bigl( \hat{\mu}_{\al}(Y_j) - \mu_j \Bigr)^2 \;.
  \label{eq:risk}
  \end{equation}
- where $\normsq{x} = x'x$ for vectors $x$.  We note that our notation suppresses
- the dependence of the estimator $\hat{\bmu}_\al(\YY)$ on the data.  The full
- vector $\YY$ is available for setting the level as well.
 
 
  Minimax bounds for the risk $R(\hat{\bmu}_\al,\bmu)$ are well-understood.  We
  review the results of \citet{fostergeorge94} who introduced the concept of the
  risk inflation of an estimator. \citep[][obtain similar results.]
   {donohojohnstone94} The risk inflation of $\hat{\bmu}_\al$ is the supremum of
- the ratio of the risk of the testimator $\hat{\bmu}_\al$ at level $\al$ to the
- risk of a testimator that obtains the optimal level from an oracle.  Their
- results imply that the risk inflation of $\hat{\bmu}_\al$ is asymptotically $2
- \log p$,
+ the ratio of the risk of $\hat{\bmu}_\al$ to that of a testimator that obtains
+ the optimal level from an oracle.  Their results imply that the risk inflation
+ of $\hat{\bmu}_\al$ is asymptotically about $2 \log p$,
  \begin{equation}
     2 \log p - o(\log p) 
     \le
@@ -567,8 +568,9 @@
  risk when compared to an alternative.  We want to see how various sequential
  testimators perform when estimating the same collection of means.  In the style
  of risk inflation \eqn{eq:ri}, we want to contrast the risk of \test\ to that
- of another testimator or to a testimator that benefits from an oracle that
- reveals $\bmu$.  The oracle-based testimator has elements
+ of another realizable testimator or to a testimator that benefits from an
+ oracle that reveals $\bmu$.  The oracle-based, risk-inflation testimator
+ $\tilde{\bmu}$ has elements
  \begin{equation}
    \tilde\mu_j(Y_j) = \left\{ \begin{array}{cc} 
                        0    & \mbox{ if } \mu_j^2 \le 1,        \cr
@@ -581,8 +583,6 @@
     R(\tilde{\bmu},\bmu) = \sum_j \min(\mu_j^2,1) \;.   
  \label{eq:riskMuTilde}
  \end{equation}
-
-
  We summarize such comparisons of risks by finding the collection of all
  possible risks that are obtainable under any mean process.  We call this
  collection the feasible risk set.  Let $\hat{\bmu}_1$ and $\hat{\bmu}_2$ denote
@@ -651,8 +651,7 @@
   These bounds suggest that the worst case risk for the testimator should be
  about $2 \log p$ times the risk of the oracle.  The feasible set calculations
  show that the risk of \uTest\ does indeed fall below this boundary, but that is
- not true of all estimators.  \ras{ Say more about the cool shape of the risk as
- the risk of the oracle goes to zero? }
+ not true of all estimators. 
 
 
  Curves within the feasible set shown in Figure \ref{fig:riFeasibleSet} identify
@@ -712,10 +711,10 @@
  inflation in the non-sequential setting, shown here by points in the feasible
  set above the bound provided in \eqn{eq:ri}.  Because the plots in Figure
  \ref{fig:univRI} show several feasible sets together, one can no longer
- associate a point in the graph as representing a single mean vector $\bmu$.
+ associate a point in the graph as representing a single mean process $\bmu$.
   Points within each feasible set for that pair of estimators indicate that
- there exists a mean vector that generates the shown risks, but at a given
- $(x,y)$ location, the mean vectors that produce the risks for the feasible sets
+ there exists a mean process that generates the shown risks, but at a given
+ $(x,y)$ location, the mean processes that produce the risks for the feasible sets
  differ.
 
 
@@ -771,7 +770,7 @@
  $w_0 = \omega = 0.25$.  The rates of the geometric strategy are set to
  $\psi=0.001$, 0.002, and 0.005.  Small rates are necessary to avoid the surge
  in risk illustrated in Figure \ref{fig:univGeo} when the geometric strategy runs
- out of wealth.  There are clearly mean vectors for which either choice,
+ out of wealth.  There are clearly mean processes for which either choice,
  universal or geometric, dominate the other.  That said, this figure clarifies
  the relative advantages of universal investing over geometric investing at
  several rates.  Again, a higher investing rate $\psi$ for geometric investing
@@ -849,8 +848,8 @@
    U^\theta_{jk} &=&  \max_\mu \;\Bigl\{
      \cos(\theta) R(\hat\mu_{\al(G_k)}, \mu) + \sin(\theta) R(\tilde{\mu},\mu) \cr
      & &+ r_\mu\left(\al(G_k)\right) \;
-          \left(c \,U^{\theta}_{j+1,k_r+1} + (1-c) U^{\theta}_{j+1,k_r}\right) \cr
-     & & + (1- r_\mu\left(\al(G_k)\right) \; 
+          \left(c \,U^{\theta}_{j+1,k_c+1} + (1-c) U^{\theta}_{j+1,k_c}\right) \cr
+     & & + \left(1- r_\mu(\al(G_k))\right) \; 
           \left(d \,U^{\theta}_{j+1,k_d+1} + (1-d) U^{\theta}_{j+1,k_d}\right)   
      \Bigr\}
  \label{eq:Ujk}
@@ -863,9 +862,9 @@
  subsequent risk if the test rejects $H_j$, which occurs with probability
  $r_\mu(\al(G_k))$.  If the test rejects, the alpha wealth increases to $G_k -
  \al(G_k) + \omega$.  This wealth is unlikely to match that at any grid
- position, so we linearly interpolate between positions $k_r$ and $k_r+1$ so
- that $G_{k_r} \le G_k - \al(G_k) + \omega \le G_{k_r+1}$ and set the weight $c$
- in \eqn{eq:Ujk} to $c = (G_k - \al(G_k) + \omega)/(G_{k_r+1}-G_{k_r})$.
+ position, so we linearly interpolate between positions $k_c$ and $k_c+1$ so
+ that $G_{k_c} \le G_k - \al(G_k) + \omega \le G_{k_c+1}$ and set the weight $c$
+ in \eqn{eq:Ujk} to $c = (G_k - \al(G_k) + \omega)/(G_{k_c+1}-G_{k_c})$.
   Similarly, the third line of \eqn{eq:Ujk} adds the expected contribution if
  the testimator does not reject $H_j$ and its wealth falls to $G_k - \al(G_k)$.
 
@@ -874,7 +873,7 @@
  \cdot}$ to compute $U_{j,\cdot}$.  Such space saving -- using just two rows
  rather than the full matrix -- becomes essential in problems that track a
  larger state space.  Note also that one can cache the indices and weights
- ($k_r, r$ and $k_d, d$) prior to the recursion because these can be determined
+ ($k_c, c$ and $k_d, d$) prior to the recursion because these can be determined
  from the grid positions and $\omega$ and remain fixed throughout the backward
  recursion.}
 
@@ -919,38 +918,53 @@
  Feasible risk sets allow us to study the risks of testimators in sequential
  problems.  The comparisons shown here suggest that universal alpha investing
  does well and can compete with the risks attained by any geometric procedure.
-  It is also of interest to notice in Figure \ref{fig:univRI} that a large
- initial alpha wealth and payout $w_0 = \omega = 0.25$ produce a noticeable
- reduction in the risk.  This choice for $\omega$ implies that one is
- controlling the expected false discovery rate at 25\%, quite a bit larger than
- would usually be chosen.
+  It is also of interest to point out that a large initial alpha wealth and
+ payout $w_0 = \omega = 0.25$ produce a noticeable reduction in the risk (Figure
+ \ref{fig:univRI}).  This choice for $\omega$ implies that controlling the
+ expected false discovery rate at 25\%, quite a bit larger than would usually be
+ chosen, produces lower risk unless the mean process is quite sparse.
 
 
  A particular benefit of these computations is that they suggest conjectures
  about asymptotic properties of these estimators.  For example, it appears that
- we can approximate the boundary of the feasible risk set using the two-point
- model defined in \eqn{eq:muj}.  Figure \ref{fig:riFeasibleSet} shows that by
- varying the signal probability $\pi$ such a model can be found that approaches
- the worst case relative risk.  Further, Figure \ref{fig:simRisk} shows that (at
- least for this location) the boundary mean vector is either zero or
- approximately a single, non-zero value.  Hence, it would appear that,
- asymptotically in $p$, there exists a two-point model $(\pi,\,\mu^{*})$ for
- which the risks lie within some epsilon ball of the boundary of the feasible
- set.
+ we can approximate the boundary of the feasible risk set using two-point models
+ defined in \eqn{eq:muj}.  Figure \ref{fig:riFeasibleSet} shows that by varying
+ the signal probability $\pi$ such a model can be found that approaches the
+ boundary of the feasible risk set.  Further, the simulation shown in Figure
+ \ref{fig:simRisk} shows that (at least for this location) the boundary mean
+ process generates either zero or approximately a single, non-zero value.
+  Hence, it would appear that, asymptotically in $p$, there exists a two-point
+ model $(\pi,\,\mu^{*})$ for which the risks lie within some epsilon ball of the
+ boundary of the feasible risk set.
 
+
+ The shapes of the various feasible sets are also intriguing.  For instance in
+ Figure \ref{fig:riFeasibleSet}, the set has a vertical segment where the risk
+ of the oracle attains its maximum at $p$.  These risks occur when the mean
+ process is saturated in the sense that every $\mu_j^2 \ge 1$ so that the
+ risk-inflation oracle ``fits everything.''.  Although the oracle then has fixed
+ risk $p$, the risk of the testimator varies with the size of $\mu_j$.  This
+ property of the feasible risk set for saturated mean processes is rather
+ different from the behavior for sparse processes.  As the risk of the oracle
+ estimator approaches its minimum, the feasible risk set approaches a single
+ point.  That the set comes to a point is not surprising.  Unlike the saturated
+ case, a unique process produces the minimum risk, namely the process for which
+ every $\mu_j = 0$.  What is surprising is the lack of evident curvature.  Does
+ the feasible set come to a point or instead form a very tight curve?
  
- The performance of testimators derived from the universal rule $\al_u(\cdot)$
- suggest that this choice may simplify the choice of an alpha investing method.
-  Figure \ref{fig:univGeo} shows its ability to match the risks obtained by various
- geometric testimators.  Ideally, we would like to obtain results analogous to
- those in \citet{rissanen83} that show that alpha investing is about as good as
- one can do.  Such a proof would then avoid concern for modelers in how to
- choose the alpha wealth and move the modeling into better methods for
- generating the stream of features.
+
+ As a final conjecture, the performance of testimators derived from the
+ universal rule $\al_u(\cdot)$ suggests that this investing rule can simplify
+ the choice of an alpha investing method.  Figure \ref{fig:univGeo} shows its
+ ability to match the risks obtained by various geometric testimators.  Ideally,
+ we would like to obtain results analogous to those in \citet{rissanen83} that
+ show that alpha investing is about as good as one can do.  Such a proof would
+ then simplify the use of alpha investing in practice as one would not need to
+ struggle with the choice of an investing rule but instead could focus on
+ generating a better stream of features.
 
 
 %--------------------------------------------------------------------------
-\section{ Bibliography }
 \section*{Acknowledgement}
 %--------------------------------------------------------------------------
 
