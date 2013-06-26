@@ -70,16 +70,15 @@
 \abstract{ 
 
  Streaming feature selection evaluates potential explanatory variables
- sequentially rather than all at once.  This approach provides adaptive control
+ sequentially rather than all at once.  This approach allows adaptive control
  of the scope of a search for predictive features and makes it possible to rapidly
  explore large collections of features.  It also produces novel challenges for
  variable selection.  Methods such as alpha investing can be used to control the
- rate of false discoveries, but little is known about how the configuration of these  
- procedures influences the risk of the resulting
- estimator.  To meet these needs, we provide a computational framework based on stochastic dynamic
+ rate of false discoveries, but little is known about the estimation risk and how the configuration of these  
+ procedures influences the risk.  To meet these needs, we provide a computational framework based on stochastic dynamic
  programming that determines the exact, non-asymptotic minimax risk of a
  sequential estimator relative to an alternative.  The alternative can be data
- driven or derived from an oracle.  This framework allows us to contrast the
+ driven or derived from an oracle.  This framework allows us to compute and contrast the
  risk inflation of sequential estimators derived from various
  alpha investing rules.  We find that a universal investing rule performs well over a variety of models
  and that estimators allowed to have larger than conventional rates of false
@@ -123,8 +122,8 @@
  variables that are larger than typically considered with conventional methods;
  for large samples, the slowest step in forward stepwise regression is the
  calculation of the $X'X$ matrix.  \citet{fosterlin11} demonstrate the speed
- attained by sequential selection when picking a regression from
- $p$=100,000 explanatory variables.
+ attained by sequential selection when picking a regression from up to
+ 100,000 explanatory variables.
 
 
  Streaming selection poses a challenge, however, for variable selection.
@@ -137,7 +136,7 @@
  second-order interactions,
  then the maximum number of possible explanatory variables is $m = p(p+1)/2$
  variables.  One could allow higher order interactions as well.  Because a streaming search may not consider all of these, it would be conservative to combine $m$ with a criterion such as AIC, BIC, or RIC.
-  Similarly, selection using FDR requires the complete set of $p$-values at the
+  Similarly, selection using FDR requires the complete set of p-values at the
  start of the search.
 
 
@@ -186,17 +185,17 @@
  sequential nature of the problem, it should not be surprising that we rely on
  stochastic dynamic programming.  The risks so obtained are exact (up to
  computational accuracy) rather than asymptotic.  We further show a
- probabilistic model for the underlying parameters that produces those risks.
+ probabilistic model for the underlying parameters that approximates those risks.
   Although we consider sequential estimators, we find that bounds for the risk
  inflation of conventional testimators also characterize the risk of sequential testimators.
 
 
  The following section provides further introduction to alpha investing.  We
- define two alpha investing strategies derived from continuous probability
+ derive two alpha investing strategies from continuous probability
  distributions.  Our construction of these strategies in Section 2 is novel and
  allows us to minimize the state space required in the dynamic program.  Section
  3 describes the risk of a sequence of testimators.  Section 4 defines the
- feasible set of all possible risks and offers examples of these that compare
+ feasible set of possible risks and uses these to compare
  testimators to an oracle and to each other.  Section 5 describes the
  computations in more detail.  We conclude in Section 6 with a brief discussion
  of the results and pose conjectures motivated by our computations.
@@ -213,8 +212,7 @@
  0$ of alpha wealth.    An alpha-investing rule can test $H_1$ at
  any level $\al_1$ up to the initial alpha wealth, $0 \le \alpha_1 \le W_0$.
   The level $\al_1$ is `invested' and cannot be used for subsequent tests.  We
- say that $\al_1$ is invested rather than spent because  the
- outcome of testing $H_1$ increases the alpha wealth if $H_1$ is rejected.  Let $p_1$ denote
+ say that $\al_1$ is invested rather than spent because rejecting $H_1$ produces an increment in the alpha wealth, a return on the investment.  Let $p_1$ denote
  the p-value of the test of $H_1$.  If $p_1 \le \alpha_1$, the test rejects
  $H_1$, and the alpha investing rule earns a contribution $\omega \ge
  0$ to its alpha wealth.  Otherwise, the alpha wealth available to test $H_2$
@@ -233,11 +231,11 @@
  hypotheses, it is essential for alpha investing to control the rate of false
  rejections.  To this end, \citet{fosterstine08} show that alpha investing
  controls a sequential version of the expected false discovery rate, mFDR.  Let
- $T(j)$ count the number of hypothesis rejected in the first $j$ tests, and let
+ $T(j)$ count the number of hypothesis rejected among the first $j$ tests, and let
  $V(j) \le T(j)$ denote the total number of {\em false} rejections among the
  first $j$ tests.  The sequential mFDR is
  \begin{equation}
-    \mbox{mFDR}_\eta(j) = \frac{\ev V(j)}{\eta + \ev T(j)} \;, \eta > 0.
+    \mbox{mFDR}_\eta(j) = \frac{\ev V(j)}{\eta + \ev T(j)} \;, \quad \eta > 0.
  \label{eq:mFDR}
  \end{equation}
  In contrast, FDR is the expected value of the ratio $V(j)/T(j)$ conditional on
@@ -290,7 +288,7 @@
     \al_g(w, \psi) = \psi \, w, \quad  0 < \psi < 1.
  \label{eq:Ageo}
  \end{equation}
- Since the alpha wealth increases after a rejection, a geometric rule $\al_g$
+ Since the alpha wealth increases after a rejection (provided $\al_j < \omega$), a geometric rule $\al_g$
  invests more following a rejection and then gradually -- at the rate determined
  by $\psi$ -- reduces the level of subsequent tests.
 
@@ -309,10 +307,10 @@
 
  
  Figure \ref{fig:rules} contrasts the investments produced by the universal and
- several geometric alpha investing rules on a log-log scale.  The figure conveys
+ several geometric alpha investing rules.  The figure conveys
  the sense in which $\al_u$ is universal in the way that it mimics a collection
  of geometric rules.  For convenience, the initial wealth for all rules shown in
- Figure \ref{fig:rules} is $W_0 = 1$.  With this scaling, the amounts invested
+ Figure \ref{fig:rules} is $W_0 = 1$.  On a log-log scale, the amounts invested
  by the universal rule fall off approximately linearly.  The amounts are
  initially larger than those of any of the geometric rules.  Starting from
  $W_0=1$, the universal rule invests about $0.369$, $0.131$, $0.0693$, $0.0438$,
@@ -324,8 +322,8 @@
  invests more than the universal rule when testing $H_{11}$ through $H_{581}$;
  otherwise it invests less.  Each geometric spending rule with successively
  smaller rate $\psi$ eventually spends more than the rules that spend at a
- larger rate; eventually each rule spends the most for a portion of testing.
-  The graph shows that the universal rule saves enough so that it too can spend
+ larger rate.
+ The graph shows that the universal rule saves enough so that it too can spend
  close to this rate.  Making this precise is exactly what the makes it the
  underlying distribution universal in the information theoretic sense.
 
@@ -444,9 +442,9 @@
  
 
  The risk of testimators is typically studied in the context of
- estimation a vector of $p$ means, $\bmu \equiv \mu_{1:p} =
+ estimating a vector of $p$ means, $\bmu \equiv \mu_{1:p} =
  (\mu_1, \,\ldots, \mu_p)'$.  The available data is the vector $\YY \equiv Y_{1:p} =
- (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  The estimator
+ (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  In this context, the estimator
  of $\bmu$ combines testimators with a common level, $\hat{\bmu}_\al =
  (\hat\mu_\al(Y_1), \ldots, \hat\mu_\al(Y_p))'$.  The estimator $\hat{\bmu}_\al$
  consists of zeros except for those coordinates where $z_\al^2 \le Y_j^2$.  The
@@ -497,15 +495,14 @@
  \end{equation}
  where $\al(\cdot)$ denotes the defining investing rule, $W_0$ is the initial
  alpha wealth, and $\omega$ is the payout earned when rejecting a hypothesis.
-  We omit $W_0$ and $\omega$ from this notation when convenient and unambiguous.
+  We omit $W_0$ and $\omega$ from this notation when unambiguous.
  
 
  The most convenient expression for the risk of \test\ relies on a recurrence.
-  For convenience, let
- \begin{equation}
+ Let
+ \begin{displaymath}
    r_\mu(\al) = \Phi(\mu-z_\al)+\Phi(-\mu-z_\al)   
- \label{eq:rMu}
- \end{equation}
+ \end{displaymath}
  denote the probability of rejecting $H_0: \mu=0$ using a two-sided $z$-test at
  level $\al$ (the power of the test).  The risk of the testimator given by alpha
  investing can then be decomposed as
@@ -530,7 +527,7 @@
  $1- r_{\mu_1}(\al_1)$, testing begins with wealth $w_1 - \al_1$.
 
 
- The calculation of the maximum risk obtained by \test\ is similarly recursive,
+ The calculation of the maximum risk of \test\ is similarly recursive,
  and we compute the sum by backward induction.  Because the performance of
  subsequent tests depends on the outcome of the first, the choice of $\mu_1$ is
  not so simple as setting $\mu_1 = \arg \max R(\hat\mu_{0.05}, \mu)$.  Doing so
@@ -606,7 +603,7 @@
  this comparison; by construction, no realizable testimator can have smaller
  risk than $\tilde{\bmu}$.  The frame on the left of Figure
  \ref{fig:riFeasibleSet} shows the feasible set on the scale of risks; the frame
- on the right shows the same data on log scales.  (The feasible risk set is not
+ on the right shows ${\cal R}_p$ on log scales.  (${\cal R}_p$ is not
  convex on a log scale but the approximation is quite close in practice.)  We
  add 1 to the risks of both estimators, in the fashion of risk inflation, in
  order to be able to show the feasible risk set near 0 on a log-log scale.
@@ -632,7 +629,7 @@
  \end{figure}
 
 
- The two scales of the risk shown in Figure \ref{fig:riFeasibleSet} emphasize
+ The two plots in Figure \ref{fig:riFeasibleSet} emphasize
  models with substantial signal (non-zero means) and those that are sparse or
  nearly black (most $\mu_j=0$).  The frame scaled by the risk itself emphasizes
  the performance in models with substantial signal.  The vertical right edge of
@@ -649,14 +646,14 @@
 
  Curves within the feasible set shown in Figure \ref{fig:riFeasibleSet} identify
  the risks that result if the means $\mu_{1:p}$ are determined by a two-point
- Bayesian model.  Suppose that the stochastic process that determines $\bmu$
+ model.  Suppose that the stochastic process that determines $\bmu$
  sets $\mu_j$ independently to some $\mu^{*} \ne 0$ with probability $\pi$ and sets $\mu_j=0$ otherwise:
  \begin{equation}
     \mu_j = B_j \; \mu^{*}, \quad B_j  \iid \mbox{ Bernoulli}(\pi)  \;.
  \label{eq:muj}
  \end{equation}
  The smooth curves within the feasible set show the risks under this
- probabilistic model, with $\mu^{*}$ = 1.0 (red), 1.5 (magenta), or 3 (blue),
+ model, with $\mu^{*}$ = 1.0 (red), 1.5 (magenta), or 3 (blue),
  and the probability of a non-zero mean varying over the range $10^{-6} \le \pi
  \le 1-10^{-6}$.  With $\mu^{*} = 1.0$, the risks nearly trace out the lower
  boundary of the feasible set.  The crossing of the paths for $\mu^{*}=1.5$ and
@@ -664,14 +661,14 @@
  upper boundary of ${\cal R}_p$.
 
 
- Although the simple, two-point model \eqn{eq:muj} cannot fully characterize the feasible set, the processes that do define the boundary resemble its structure.  For example, Figure \ref{fig:simRisk} graphs a realized example of the stochastic process
+ Although the simple, two-point model \eqn{eq:muj} cannot fully characterize the feasible set, the processes that define the boundary resemble its structure.  For example, Figure \ref{fig:simRisk} graphs a realization of the stochastic process
  that generates the risks on the boundary of the feasible risk set.  For this
  figure, we chose the process that produces the point with expected risks $(101,
  657)$ which can be found along the left side of the feasible set in Figure \ref{fig:riFeasibleSet}.
   The dots in Figure \ref{fig:simRisk} graph the elements $\mu_j$ versus the
- test index $j$ for $j = 1,\,2, \ldots, p=1,000$.  As in the two-point model, the means randomly shift between 0 and a value that fluctuations around 2.63.  The figure also shows the cumulative risk obtained by the universal testimator for this realization, shown as the increasing trend in the
+ test index $j$ for $j = 1,\,2, \ldots, p=1,000$.  As in the two-point model, the means randomly shift between 0 and a value that fluctuates around 2.63.  The figure also shows the cumulative risk obtained by the universal testimator for this realization, shown as the increasing trend in the
  figure.  Its risk in this instance reaches 688,
- whereas the the oracle accumulates risk 123.
+ whereas the oracle accumulates risk 123.
 
 
 \begin{figure}
@@ -723,7 +720,7 @@
 
  We have emphasized universal investing defined by $\al_u(\cdot)$, and Figure
  \ref{fig:geo} offers a partial explanation for our preference.  Figure
- \ref{fig:geo} superimposes the feasible sets obtained by geometric investing with various rates versus the risk inflation testimator.  The results are for a sequence of $p = 500$ tests.  In general, increasing the spending rate $\psi$ from 0.001 up to 0.01 reduces the risk of the geometric testimator $al_g(w,\psi)$. The feasible sets for $\psi=0.001$, 0.005, and 0.01 progressively move toward
+ \ref{fig:geo} superimposes the feasible sets obtained by geometric investing with various rates versus the risk inflation testimator.  The results are for a sequence of $p = 500$ tests.  In general, increasing the spending rate $\psi$ from 0.001 up to 0.01 reduces the risk of the geometric testimator $\al_g(w,\psi)$. The feasible sets for $\psi=0.001$, 0.005, and 0.01 progressively move toward
  the diagonal, better competing with the risk-inflation testimator.  The move to
  $\psi = 0.05$, however, goes too far.  The geometric estimator essentially exhausts its
  alpha wealth before the testing is complete, and consequently its risk soars.
@@ -746,7 +743,7 @@
  As a final example, feasible risk sets also allow us to directly compare
  realizable testimators produced by different methods of alpha investing.
   Rather than compare a realizable testimator to an oracle
- as in Figure \ref{fig:univRI}, the feasible set ${\cal R}_p (\hat\mu(\al_u),
+ as in Figures \ref{fig:univRI} and \ref{fig:geo}, the feasible set ${\cal R}_p (\hat\mu(\al_u),
  \hat\mu(\al_g))$ shown in Figure \ref{fig:univGeo} pits these two against each
  other in a head-to-head comparison.  The initial value and payout for both are
  $W_0 = \omega = 0.25$.  The rates of the geometric strategy are set to
@@ -798,7 +795,7 @@
  \end{equation}
  denote the maximum expected value with respect to a stochastic process $\bmu$
  of the weighted sum of risks defined by the angle $ 0 \le \theta \le 2 \pi$.
-  Let $\bmu^\theta$ denote the mean process that maximizes $U^\theta$.  The
+  Let $\bmu^\theta$ denote the mean process that maximizes ${\cal U}^\theta$.  The
  point $\evsub{\bmu^\theta}(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies on
  the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible risk
  set is tangent to the line defined by the mixture weights in \eqn{eq:U}.  Plots
@@ -811,8 +808,8 @@
  We compute ${\cal U}^\theta$ via numerical backward induction.  This induction
  approximates the wealth of the alpha investing testimator on a grid.  The
  wealth grid $G$ spans the minimal attainable wealth ($W_0 - \sum_{j=1}^p
- \al_j$) to a maximum allowed wealth, which we set to $w_{\max} = 5$.  (Our
- results have not been sensitive to the choice of $w_{\max}$ so long as it is
+ \al_j$) to a maximum allowed wealth, which we set to $W_{\max} = 5$.  (Our
+ results have not been sensitive to the choice of $W_{\max}$ so long as it is
  substantially larger than $W_0 + \omega$.)  The wealth grid is
  `logarithmically' spaced at $N$ points, with a finer spacing 0.0001 for small
  wealths below 0.001 and gradually larger spacing as the wealth increases.  We
@@ -922,7 +919,7 @@
  Figure \ref{fig:riFeasibleSet}, the set has a vertical segment where the risk
  of the oracle attains its maximum at $p$.  These risks occur when the mean
  process is saturated in the sense that every $\mu_j^2 \ge 1$ so that the
- risk-inflation oracle ``fits everything.''.  Although the oracle then has fixed
+ risk-inflation oracle ``fits everything.''  Although the oracle then has fixed
  risk $p$, the risk of the testimator varies with the size of $\mu_j$.  This
  property of the feasible risk set for saturated mean processes is rather
  different from the behavior for sparse processes.  As the risk of the oracle
@@ -937,8 +934,8 @@
  universal rule $\al_u(\cdot)$ suggests that this investing rule can simplify
  the choice of an alpha investing method.  Figure \ref{fig:univGeo} shows its
  ability to match the risks obtained by various geometric testimators.  Ideally,
- we would like to obtain results analogous to those in \citet{rissanen83} that
- show that alpha investing is about as good as one can do.  Such a proof would
+ we would like to obtain results that show that universal alpha investing is about
+ as good as one can do, analogous to those in \citet{rissanen83}.  Such a proof would
  then simplify the use of alpha investing in practice as one would not need to
  struggle with the choice of an investing rule but instead could focus on
  generating a better stream of features.
@@ -948,7 +945,7 @@
 \section*{Acknowledgement}
 %--------------------------------------------------------------------------
 
-The authors thank NSF.
+The authors thank NSF for its support.
 
 
 %--------------------------------------------------------------------------
