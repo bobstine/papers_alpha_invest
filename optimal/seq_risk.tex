@@ -1,4 +1,4 @@
-% -*- mode: LaTex; outline-regexp: "\\\\section\\|\\\\subsection";fill-column: 80; -*-
+% -*- mode: LaTex; outline-regexp: "\\\\section\\|\\\\subsection";fill-column: 90; -*-
 \documentclass[12pt]{article}
 \usepackage[longnamesfirst]{natbib}
 \usepackage[usenames]{color}
@@ -48,41 +48,45 @@
 
 % --- Title
 
-\title{ Risk of Sequential Estimators \\ Defined by Alpha Investing }
+\title{ Risk of Streaming Estimators \\ Controlled by Alpha Investing }
 \author{
         Dean P. Foster and Robert A. Stine
         \thanks{Research supported by NSF grant DMS-1106743 }  \\
         Department of Statistics            \\
         The Wharton School of the University of Pennsylvania \\
-        Philadelphia, PA 19104-6340                          \\
-        www-stat.wharton.upenn.edu/$\sim$stine 
+        Philadelphia, PA 19104-6340           
 }
 
 \date{\today}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% something about submission problem
+\pdfminorversion=4 
+
 
 \begin{document}
 \maketitle 
 %------------------------------------------------------------------------
-
+\vspace{-0.2in}
 \abstract{ 
 
- Streaming feature selection evaluates potential explanatory variables
- sequentially rather than all at once.  This approach allows adaptive control
- of the scope of a search for predictive features and makes it possible to rapidly
- explore large collections of features.  It also produces novel challenges for
- variable selection.  Methods such as alpha investing can be used to control the
- rate of false discoveries, but little is known about the estimation risk and how the configuration of these  
- procedures influences the risk.  To meet these needs, we provide a computational framework based on stochastic dynamic
- programming that determines the exact, non-asymptotic minimax risk of a
- sequential estimator relative to an alternative.  The alternative can be data
- driven or derived from an oracle.  This framework allows us to compute and contrast the
- risk inflation of sequential estimators derived from various
- alpha investing rules.  We find that a universal investing rule performs well over a variety of models
- and that estimators allowed to have larger than conventional rates of false
- discoveries produce generally smaller risk.
+ Streaming feature selection is a very greedy approach to variable selection that evaluates
+ potential explanatory variables sequentially.  It selects significant features as soon as
+ they are discovered rather than testing them all and picking the best one.  Because it is
+ so greedy, streaming selection can rapidly explore large collections of features.  If
+ significance is defined by an alpha investing protocol, then the rate of false
+ discoveries will be controlled.  The focus of attention in variable selection, however,
+ should be on fit rather than hypothesis testing.  Unfortunately, little is known about
+ the estimation risk produced by streaming selection and how the configuration of these
+ procedures influences the risk.  To meet these needs, we provide a computational
+ framework based on stochastic dynamic programming that allows fast calculation
+ the minimax risk of a sequential estimator relative to an alternative.  The alternative
+ can be data-driven or derived from an oracle.  This framework allows us to compute and
+ contrast the risk inflation of sequential estimators derived from various alpha investing
+ rules.  We find that a universal investing rule performs well over a variety of models
+ and that estimators allowed to have larger than conventional rates of false discoveries
+ produce generally smaller risk.
 
 }
 
@@ -90,8 +94,8 @@
 \vspace{0.05in}
 
 \noindent
-{\it Key Phrases: Bellman equations, stochastic dynamic programming, streaming
- feature selection, testimator, variable selection}
+{\it Key Phrases: Bellman equations, stochastic dynamic programming,  
+                           testimator, variable selection}
 
 \clearpage
 
@@ -101,29 +105,29 @@
 % ----------------------------------------------------------------------
 
  Our analysis concerns the risk of sequential estimators in which
- characteristics of later estimates depend on the outcomes of earlier
- estimates.  Our interest in the risk of such estimators arises from their use
- in streaming feature selection.  Streaming feature selection constructs a
- predictive model by choosing explanatory variables from a sequence offered by
- an exogenous source.  Think of forward stepwise regression, but without
- knowledge of the complete domain of explanatory variables.  Rather than evaluate
- every possible explanatory variable simultaneously, streaming selection
- evaluates them one-at-a-time.  Greedy searches like stepwise regression consider
- the full batch of, say, $p$ potential explanatory variables together, choosing
- at the first step the predictor $X_{(1)}$ that obtains the best fitting model.
-  In contrast, streaming selection evaluates the predictors sequentially
- as $X_1, \, X_2, \ldots$, evaluating $X_j$ in the context of
- the model produced by picking features from $X_1, \ldots, X_{j-1}$.  Hence,
- streaming selection does not require the full set of explanatory variables at
- the start of the search and is free to use the results of evaluating initial
- variables to guide the search for those to consider subsequently.  For example,
- a streaming search might test the interaction $X_j \, X_k$ after finding significant effects for $X_j$ and $X_k$.
+ characteristics of later estimates depend on the outcomes of earlier estimates.
+  Our interest in the risk of such estimators arises from their use in streaming
+ feature selection.  Streaming feature selection constructs a predictive model
+ by greedily choosing explanatory variables from a sequence offered by an exogenous
+ source.  Think of forward stepwise regression, but without knowledge of the
+ complete domain of explanatory variables.  Rather than evaluate the collection of possible
+ explanatory variables together, streaming selection evaluates them
+ one-at-a-time.  Searches like stepwise regression consider the full
+ batch of, say, $p$ potential explanatory variables together, choosing at the
+ first step the predictor $X_{(1)}$ that obtains the best fitting model.  In
+ contrast, streaming selection is even more greedy and evaluates features 
+ sequentially as $X_1, \, X_2, \ldots$, judging $X_j$ having observed
+ $X_1, \ldots, X_{j-1}$.  Hence, streaming selection does not
+ wait to examine every explanatory variable.  It is also free to use 
+ the results of evaluating initial variables to guide the search for
+ those to consider subsequently.  For example, a streaming search might test the
+ interaction $X_j \, X_k$ after finding significant effects for $X_j$ and $X_k$.
   Streaming selection can thus adaptively explore collections of explanatory
- variables that are larger than typically considered with conventional methods;
- for large samples, the slowest step in forward stepwise regression is the
+ variables that are larger than typically considered with conventional methods.
+ For large samples, the slowest step in forward stepwise regression is the
  calculation of the $X'X$ matrix.  \citet{fosterlin11} demonstrate the speed
- attained by sequential selection when picking a regression from up to
- 100,000 explanatory variables.
+ attained by sequential selection when picking a regression from up to 100,000
+ explanatory variables.
 
 
  Streaming selection poses a challenge, however, for variable selection.
@@ -133,61 +137,61 @@
  example, suppose the search begins with a list of $p$ possible features $X_1,
  X_2, \ldots, X_p$.  As mentioned, the search could expand to include
  interactions in $X_j$ once $X_j$ joins the model.  If the search is limited to
- second-order interactions,
- then the maximum number of possible explanatory variables is $m = p(p+1)/2$
- variables.  One could allow higher order interactions as well.  Because a streaming search may not consider all of these, it would be conservative to combine $m$ with a criterion such as AIC, BIC, or RIC.
-  Similarly, selection using FDR requires the complete set of p-values at the
- start of the search.
+ second-order interactions, then the maximum number of possible explanatory
+ variables is $m = p(p+1)/2$ variables.  One could allow higher order
+ interactions as well.  Because a streaming search may not consider all of
+ these, it would be conservative to combine $m$ with a criterion such as AIC,
+ BIC, or RIC.  Similarly, selection using FDR requires the complete set of
+ p-values at the start of the search.
 
 
  Alpha investing \citep{fosterstine08} is a sequential testing procedure that we
  designed to work with streaming feature selection.  Because alpha investing can
  test an infinite sequence of hypotheses, it is well-matched to a search of a
- possibly unbounded collection of features.  Rather than test multiple hypotheses at once, alpha investing
- tests hypotheses one-at-a-time in a specified order.  Alpha investing begins
- with an initial allowance for Type I error that is called its alpha wealth.
-  Each test consumes some of the available alpha wealth, as in alpha spending
- rules used in clinical trials.  Alpha investing overcomes the conservatism of
- alpha spending rules, which include the Bonferroni method, by earning a
- contribution to the alpha wealth for each rejected null hypothesis.  Thus
- rejections beget more rejections.  Alpha investing further allows one to test
- an infinite stream of hypotheses, accommodate dependent tests, and incorporate
- domain knowledge.
+ possibly unbounded collection of features.  Rather than test multiple
+ hypotheses at once, alpha investing tests hypotheses one-at-a-time in a
+ specified order.  Alpha investing begins with an initial allowance for Type I
+ error that is called its alpha wealth.  Each test consumes some of the
+ available alpha wealth, as in alpha spending rules used in clinical trials.
+  Alpha investing overcomes the conservatism of alpha spending rules, which
+ include the Bonferroni method, by earning a contribution to the alpha wealth
+ for each rejected null hypothesis.  Thus rejections beget more rejections.
+  Alpha investing further allows one to test an infinite stream of hypotheses,
+ accommodate dependent tests, and incorporate domain knowledge.
  
 
- Like other procedures for multiple testing, alpha investing controls the
- expected number of false rejections.  Controlling the false discovery rate
- protects against overfitting in variable selection.  One can guarantee that on
- average not more than, say, 5\% of the rejected hypotheses spuriously add a
- predictor to the model.  When building a predictive model, however, we find
- that controlling the false discovery rate is secondary to obtaining a more
- predictive model.  Control of the false discovery rate does not imply that one
- finds the most predictive model.  It only guarantees that a high
- percentage of chosen features are in fact useful.  The quadratic risk of the
- implied estimator is more relevant.  Furthermore, alpha investing is not one method, but rather a general approach to testing a sequence of hypotheses.  It offers a modeler a variety of choices that vary how the procedure sets the level for the next test. The impact of these choices on the risk of the resulting model is by-and-large unknown.
+ Like other procedures for multiple testing, alpha investing controls the expected number
+ of false rejections.  Controlling the false discovery rate protects against overfitting
+ in variable selection.  One can guarantee that on average not more than, say, 5\% of the
+ rejected hypotheses spuriously add a predictor to the model.  When building a predictive
+ model, however, we find that controlling the false discovery rate is secondary to
+ obtaining a more predictive model.  Control of the false discovery rate does not imply
+ that one finds the most predictive model.  It only guarantees that a high percentage of
+ chosen features are in fact useful.  The quadratic risk of the implied estimator is more
+ relevant.  Furthermore, alpha investing is not one method, but rather a general approach
+ to testing a sequence of hypotheses.  It offers a modeler a variety of choices that vary
+ how the procedure sets the level for the next test. The impact of these choices on the
+ risk of the resulting model is by-and-large unknown.
 
 
- To evaluate the risk of alpha investing estimators and identify the impact of choosing 
- among various options, the methods shown here find the cumulative risk of a sequence 
- of testimators implied by
- testing a sequence of null hypotheses.  A testimator is also known as a
- keep-or-kill estimator or a hard thresholding estimator.  The estimator of the
- parameter $\mu$ is zero unless $H_0: \,\mu = 0$ is rejected.  For
- this paper, we consider a simplified version of the variable selection problem
- that avoids issues related to collinearity among explanatory variables.  Rather
- than observe a sequence of slope estimates, we assume that the observed data
- are a sequence of $p$ random variables $Y_j \sim N(\mu_j,1)$.  Within
- this context, our algorithm reveals the attainable risks of a
- testimator for {\em any} choice of parameters.  We accomplish this task by
- adopting the perspective of risk inflation and comparing the competitive
- performance of two sequential estimators.  For any pair, we find the set of
- risks attainable for the underlying parameters.  Given the
- sequential nature of the problem, it should not be surprising that we rely on
- stochastic dynamic programming.  The risks so obtained are exact (up to
- computational accuracy) rather than asymptotic.  We further show a
- probabilistic model for the underlying parameters that approximates those risks.
-  Although we consider sequential estimators, we find that bounds for the risk
- inflation of conventional testimators also characterize the risk of sequential testimators.
+ To evaluate the risk of alpha investing estimators and identify the impact of choosing
+ among various options, the methods shown here find the cumulative risk of a sequence of
+ testimators implied by testing a sequence of null hypotheses.  A testimator is also known
+ as a keep-or-kill estimator or a hard thresholding estimator.  The estimator of the
+ parameter $\mu$ is zero unless $H_0: \,\mu = 0$ is rejected.  For this paper, we consider
+ a simplified version of the variable selection problem that avoids issues related to
+ collinearity among explanatory variables.  Rather than observe a sequence of slope
+ estimates, we assume that the observed data are a sequence of $p$ random variables $Y_j
+ \sim N(\mu_j,1)$.  Within this context, our algorithm reveals the attainable risks of a
+ testimator for {\em any} choice of parameters.  We accomplish this task by adopting the
+ perspective of risk inflation and comparing the competitive performance of two sequential
+ estimators.  For any pair, we find the set of risks attainable for the underlying
+ parameters.  Given the sequential nature of the problem, it should not be surprising that
+ we rely on stochastic dynamic programming.  The risks so obtained are exact (up to
+ computational accuracy) rather than asymptotic.  We further show a probabilistic model
+ for the underlying parameters that approximates those risks.  Although we consider
+ sequential estimators, we find that bounds for the risk inflation of conventional
+ testimators also characterize the risk of sequential testimators.
 
 
  The following section provides further introduction to alpha investing.  We
@@ -212,7 +216,8 @@
  0$ of alpha wealth.    An alpha-investing rule can test $H_1$ at
  any level $\al_1$ up to the initial alpha wealth, $0 \le \alpha_1 \le W_0$.
   The level $\al_1$ is `invested' and cannot be used for subsequent tests.  We
- say that $\al_1$ is invested rather than spent because rejecting $H_1$ produces an increment in the alpha wealth, a return on the investment.  Let $p_1$ denote
+ say that $\al_1$ is invested rather than spent because rejecting $H_1$ produces an 
+ increment in the alpha wealth, a return on the investment.  Let $p_1$ denote
  the p-value of the test of $H_1$.  If $p_1 \le \alpha_1$, the test rejects
  $H_1$, and the alpha investing rule earns a contribution $\omega \ge
  0$ to its alpha wealth.  Otherwise, the alpha wealth available to test $H_2$
@@ -306,35 +311,29 @@
  identify it by a subscript $u$.  (See the following remark.)
 
  
- Figure \ref{fig:rules} contrasts the investments produced by the universal and
+ Figure \ref{fig:rules} contrasts the investments of the universal and
  several geometric alpha investing rules.  The figure conveys
  the sense in which $\al_u$ is universal in the way that it mimics a collection
  of geometric rules.  For convenience, the initial wealth for all rules shown in
  Figure \ref{fig:rules} is $W_0 = 1$.  On a log-log scale, the amounts invested
- by the universal rule fall off approximately linearly.  The amounts are
+ by the universal rule fall off approximately linearly.  These amounts are
  initially larger than those of any of the geometric rules.  Starting from
  $W_0=1$, the universal rule invests about $0.369$, $0.131$, $0.0693$, $0.0438$,
  and $0.0306$ in the first five tests before its spending gradually slows.
-  After this initial period, each geometric rule provides a larger alpha level
- than the universal rule for a range of tests.  Ultimately, however, the
- universal rule invests more than every geometric rule.  For example, the
+  After this initial period, there is a range of tests over which each geometric rule invests the largest alpha level.  For tests in this range, that rule is the most able to find signal. The universal rule invests almost as much as each geometric rule when that rule invests the most, and utimately,  the universal rule invests more.  For example, the
  geometric rule that invests 1\% of its wealth at each test ($\psi=0.01$)
  invests more than the universal rule when testing $H_{11}$ through $H_{581}$;
- otherwise it invests less.  Each geometric spending rule with successively
- smaller rate $\psi$ eventually spends more than the rules that spend at a
- larger rate.
- The graph shows that the universal rule saves enough so that it too can spend
- close to this rate.  Making this precise is exactly what the makes it the
- underlying distribution universal in the information theoretic sense.
+ otherwise it invests less.  
+ The graph shows that the universal rule saves enough so that it can spend
+ close to the rate of the maximal geometric.  
 
  % Too bad we don't have that 'habitation' idea worked out where the universal
  % finds a steady rate appropriate for the rate of false nulls.
 
 
  \begin{figure}
- \caption{ \label{fig:rules} { \sl Investments for the universal and several
- geometric alpha investing rules if no intervening test rejects. } The initial
- wealth $W_0$=1. }
+ \caption{ \label{fig:rules} { \sl Each geometric alpha investing rule has a range of hypotheses where it invests the most and hence is the most sensitive to detecting signal.  The universal rule spends almost as much as each geometric  when that
+geometric is the highest spender.} The graph shows the alpha levels assuming no intervening test rejects and the initial wealth $W_0$=1. }
 
  \centerline{
  \vspace{0.1in}
@@ -387,8 +386,9 @@
  \begin{displaymath}
     A_u(x) = \frac{\log 2}{(x+1) (\log(x+1))^2} \;, \quad 1 < x,
  \end{displaymath}
- in place of $A_g$.  $A_u(x)$ is a continuous version of the distribution
- defined by the penultimate code of \citet{elias75}.  \citet{rissanen83} obtains the universal code as a refinement of the penultimate code. }
+ in place of $A_g$.  $A_u(x)$ is a continuous version of the distribution defined by the
+ penultimate code of \citet{elias75}.  \citet{rissanen83} obtains the universal code as a
+ refinement of the penultimate code. }
 
 
 %--------------------------------------------------------------------------
@@ -430,7 +430,7 @@
 
 
  \begin{figure}
- \caption{ \label{fig:risk} \sl Risk of testimators. (a) Risk of testimators with
+ \caption{ \label{fig:risk} \sl The risk of testimators peaks near $z_\alpha$ due to a large contribution from the bias as the level $\alpha$ decreases. (a) Risk of testimators with
  $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance components of the
  risk of $\hat\mu_{0.05}$. } 
  \vspace{0.1in}
@@ -615,11 +615,11 @@
 
 
  \begin{figure}
- \caption{ \label{fig:riFeasibleSet} {\sl Feasible set comparing the risk
- inflation oracle to the risk of the universal estimator \uTest with
- $W_0=\omega=0.5$ with $p$=1,000 tests on the scale of risks (left) or log risks
- (right).}  Curves within the feasible set show the risks for varying signal
- levels defined in \eqn{eq:muj}. Boundary points show calculation locations described in Section 5. }
+ \caption{ \label{fig:riFeasibleSet} {\sl The shaded feasible set identifies the possible risks 
+ of the oracle estimator $\tilde{\bmu}$ and universal testimator \uTest with $W_0=\omega=0.5$, $p$=1,000.} The left frame emphasizes models with substantial signal; the right frame (log scale) highlights nearly black models. Curves within the
+ feasible set show the risks as the signal levels varies in the model \eqn{eq:muj}. Boundary 
+ points show calculation locations described in Section 5; the line parallel to the diagonal in
+ the right frame is the risk-inflation boundary discussed in the text.}
 
  \vspace{0.1in}
 \centerline{
@@ -661,21 +661,24 @@
  upper boundary of ${\cal R}_p$.
 
 
- Although the simple, two-point model \eqn{eq:muj} cannot fully characterize the feasible set, the processes that define the boundary resemble its structure.  For example, Figure \ref{fig:simRisk} graphs a realization of the stochastic process
- that generates the risks on the boundary of the feasible risk set.  For this
- figure, we chose the process that produces the point with expected risks $(101,
- 657)$ which can be found along the left side of the feasible set in Figure \ref{fig:riFeasibleSet}.
-  The dots in Figure \ref{fig:simRisk} graph the elements $\mu_j$ versus the
- test index $j$ for $j = 1,\,2, \ldots, p=1,000$.  As in the two-point model, the means randomly shift between 0 and a value that fluctuates around 2.63.  The figure also shows the cumulative risk obtained by the universal testimator for this realization, shown as the increasing trend in the
- figure.  Its risk in this instance reaches 688,
- whereas the oracle accumulates risk 123.
+ Although the simple, two-point model \eqn{eq:muj} cannot fully characterize the feasible
+ set, the processes that define the boundary resemble its structure.  For example, Figure
+ \ref{fig:simRisk} graphs a realization of the stochastic process that generates the risks
+ on the boundary of the feasible risk set.  For this figure, we chose the process that
+ produces the point with expected risks $(101, 657)$ which can be found along the left
+ side of the feasible set in Figure \ref{fig:riFeasibleSet}.  The dots in Figure
+ \ref{fig:simRisk} graph the elements $\mu_j$ versus the test index $j$ for $j = 1,\,2,
+ \ldots, p=1,000$.  As in the two-point model, the means randomly shift between 0 and a
+ value that fluctuates around 2.63.  The figure also shows the cumulative risk obtained by
+ the universal testimator for this realization, shown as the increasing trend in the
+ figure.  Its risk in this instance reaches 688, whereas the oracle accumulates risk 123.
 
 
 \begin{figure}
- \caption{ \label{fig:simRisk} {\sl Realization of the mean process that
- produces a point on the boundary of the feasible set.} The increasing trend
- shows the accumulating risk of the testimator which reaches 688 in this
- example.  }
+ \caption{ \label{fig:simRisk} {\sl The mean process associated with a boundary point of 
+ the feasible set produces realizations that resemble those of the two-point model 
+ \eqn{eq:muj}.} The increasing trend shows the accumulating risk of the testimator 
+ which reaches 688 in this example.  }
 
  \vspace{0.1in}
  \centerline{
@@ -684,16 +687,17 @@
 \end{figure}
 
 
- Displays that combine several feasible sets allow one to compare the effects of
- various choices for $W_0$ and $\omega$.  As an example, Figure \ref{fig:univRI}
- considers the effect of reducing the initial wealth $W_0$ and payoff $\omega$
- from 0.50 down to 0.25 and 0.05.  As before, the left
- frame emphasizes estimation with greater levels of signal; the right frame on
- the log scale emphasizes sparse models.  Within the context of hypothesis testing,
- $\al=0.05$ is a virtual default and one may be similarly tempted to control mFDR at 0.05.  Unless one believes that nature will play a nearly black strategy, however, setting $W_0 = \omega = 0.05$  generates greater risk than $W_0=0.25$ or
- 0.50.  With $W_0=0.05$, the risks even escape the bounds suggested by risk
- inflation in the non-sequential setting, shown here by a portion of the feasible
- set above the bound provided in \eqn{eq:ri}.  
+ Displays that combine several feasible sets allow one to compare the effects of various
+ choices for $W_0$ and $\omega$.  As an example, Figure \ref{fig:univRI} considers the
+ effect of reducing the initial wealth $W_0$ and payoff $\omega$ from 0.50 down to 0.25
+ and 0.05.  As before, the left frame emphasizes estimation with greater levels of signal;
+ the right frame on the log scale emphasizes sparse models.  Within the context of
+ hypothesis testing, $\al=0.05$ is a virtual default and one may be similarly tempted to
+ control mFDR at 0.05.  Unless one believes that nature will play a nearly black strategy,
+ however, setting $W_0 = \omega = 0.05$ generates greater risk than $W_0=0.25$ or 0.50.
+  With $W_0=0.05$, the risks even escape the bounds suggested by risk inflation in the
+ non-sequential setting, shown here by a portion of the feasible set above the bound
+ provided in \eqn{eq:ri}.
  
  \remark{ Because the plots in Figure
  \ref{fig:univRI} show several feasible sets together, one can no longer
@@ -705,7 +709,8 @@
 
 
 \begin{figure}
- \caption{ \label{fig:univRI} {\sl Impact of varying the initial wealth and payout on the  feasible set that compares the risk inflation oracle to the universal estimator
+ \caption{ \label{fig:univRI} {\sl Varying the initial wealth and payout influence the 
+  feasible set of risks that contrast the risk inflation oracle to the universal estimator
  \uTest.} The initial wealth varies over $W_0=0.05$,
  0.25, and 0.50 with $p$=1,000 tests on the scale of risks (left) or log risks
  (right).  }
@@ -719,19 +724,21 @@
 
 
  We have emphasized universal investing defined by $\al_u(\cdot)$, and Figure
- \ref{fig:geo} offers a partial explanation for our preference.  Figure
- \ref{fig:geo} superimposes the feasible sets obtained by geometric investing with various rates versus the risk inflation testimator.  The results are for a sequence of $p = 500$ tests.  In general, increasing the spending rate $\psi$ from 0.001 up to 0.01 reduces the risk of the geometric testimator $\al_g(w,\psi)$. The feasible sets for $\psi=0.001$, 0.005, and 0.01 progressively move toward
- the diagonal, better competing with the risk-inflation testimator.  The move to
- $\psi = 0.05$, however, goes too far.  The geometric estimator essentially exhausts its
- alpha wealth before the testing is complete, and consequently its risk soars.
-  Because this geometric estimator essentially sets $\hat\mu_j \equiv 0$ as its
- alpha wealth approaches 0, its risk exceeds the risk inflation boundary
+ \ref{fig:geo} offers a partial explanation for our preference.  Figure \ref{fig:geo}
+ superimposes the feasible sets obtained by geometric investing with various rates versus
+ the risk inflation testimator.  The results are for a sequence of $p = 500$ tests.  In
+ general, increasing the spending rate $\psi$ from 0.001 up to 0.01 reduces the risk of
+ the geometric testimator $\al_g(w,\psi)$. The feasible sets for $\psi=0.001$, 0.005, and
+ 0.01 progressively move toward the diagonal, better competing with the risk-inflation
+ testimator.  The move to $\psi = 0.05$, however, goes too far.  The geometric estimator
+ essentially exhausts its alpha wealth before the testing is complete, and consequently
+ its risk soars.  Because this geometric estimator essentially sets $\hat\mu_j \equiv 0$
+ as its alpha wealth approaches 0, its risk exceeds the risk inflation boundary
  \eqn{eq:ri}.
 
 
 \begin{figure}
- \caption{ \label{fig:geo} {\sl The spending rate $\psi$ influences the feasible risk set for geometric investing defined by \eqn{eq:Ageo}.}  The results are for $p=500$ tests and rates $\psi=$ 0.001, 0.005, 0.01, and 0.05. Spending down the wealth too quickly
- with $\psi=0.05$ leads to excessive risk.  }
+ \caption{ \label{fig:geo} {\sl A high spending rate $\psi$ potentially exhausts the wealth of a geometric testimator and produces excessive risks.}  These results are for $p=500$ tests and rates $\psi=$ 0.001, 0.005, 0.01, and 0.05.  }
 
  \vspace{0.1in}
  \centerline{
@@ -757,13 +764,12 @@
  higher risks in nearly black models.  For instance, the set in Figure
  \ref{fig:univGeo} associated with $\psi = 0.005$ reduces the bulge toward higher
  risks in the left frame, but this choice is soundly dominated by slower
- spending rates in models with fewer non-zero parameters emphasized by the log scale in the right frame.  Universal investing removes this tuning parameter.
+ spending rates in models with fewer non-zero parameters emphasized by the log scale
+ in the right frame.  Universal investing removes this tuning parameter.
 
 
  \begin{figure}
- \caption{ \label{fig:univGeo} {\sl Direct comparison of universal investing
- (\ref{eq:Auniv}, $y$-axis) with geometric investing (\ref{eq:Ageo}, $x$-axis) at
- rates $\psi = 0.001$, 0.002, and 0.005 for $p=$ 1,000.}  }
+ \caption{ \label{fig:univGeo} {\sl The universal alpha investing testimator \uTest\ (y-axis) produces typically smaller risks than geometric testimators \gTest\ (x-axis).}  The geometric rates are $\psi = 0.001$, 0.002, and 0.005 with $p=$1,000.}
 
  \vspace{0.1in}
  \centerline{
