@@ -71,16 +71,17 @@
 
  Streaming feature selection evaluates potential explanatory variables
  sequentially rather than all at once.  This approach provides adaptive control
- of the scope of a search for predictive features and makes it possible to
+ of the scope of a search for predictive features and makes it possible to rapidly
  explore large collections of features.  It also produces novel challenges for
  variable selection.  Methods such as alpha investing can be used to control the
- rate of false discoveries, but little is known about the risk of the resulting
- estimator.  We provide a computational framework based on stochastic dynamic
- programming that determines the exact, nonasymptotic minimax risk of a
+ rate of false discoveries, but little is known about how the configuration of these  
+ procedures influences the risk of the resulting
+ estimator.  To meet these needs, we provide a computational framework based on stochastic dynamic
+ programming that determines the exact, non-asymptotic minimax risk of a
  sequential estimator relative to an alternative.  The alternative can be data
- driven or derived from an oracle.  We illustrate the power of this framework by
- computing the risk inflation of sequential estimators derived from several
- alpha investing rules.  We find that a universal investing rule performs well
+ driven or derived from an oracle.  This framework allows us to contrast the
+ risk inflation of sequential estimators derived from various
+ alpha investing rules.  We find that a universal investing rule performs well over a variety of models
  and that estimators allowed to have larger than conventional rates of false
  discoveries produce generally smaller risk.
 
@@ -107,18 +108,17 @@
  predictive model by choosing explanatory variables from a sequence offered by
  an exogenous source.  Think of forward stepwise regression, but without
  knowledge of the complete domain of explanatory variables.  Rather than evaluate
- these possible explanatory variables simultaneously, streaming selection
+ every possible explanatory variable simultaneously, streaming selection
  evaluates them one-at-a-time.  Greedy searches like stepwise regression consider
  the full batch of, say, $p$ potential explanatory variables together, choosing
  at the first step the predictor $X_{(1)}$ that obtains the best fitting model.
-  In contrast, streaming selection evaluates the offered predictors sequentially
+  In contrast, streaming selection evaluates the predictors sequentially
  as $X_1, \, X_2, \ldots$, evaluating $X_j$ in the context of
  the model produced by picking features from $X_1, \ldots, X_{j-1}$.  Hence,
  streaming selection does not require the full set of explanatory variables at
  the start of the search and is free to use the results of evaluating initial
  variables to guide the search for those to consider subsequently.  For example,
- a streaming search might add the interaction $X_j \, X_k$ to the queue of
- possible features after finding significant effects for $X_j$ and $X_k$.
+ a streaming search might test the interaction $X_j \, X_k$ after finding significant effects for $X_j$ and $X_k$.
   Streaming selection can thus adaptively explore collections of explanatory
  variables that are larger than typically considered with conventional methods;
  for large samples, the slowest step in forward stepwise regression is the
@@ -132,7 +132,7 @@
  predictor, the absence of a fixed set of features in streaming selection
  requires a different type of selection criterion from those commonly used.  For
  example, suppose the search begins with a list of $p$ possible features $X_1,
- X_2, \ldots, X_p$.  As mentioned previously, the search could expand to include
+ X_2, \ldots, X_p$.  As mentioned, the search could expand to include
  interactions in $X_j$ once $X_j$ joins the model.  If the search is limited to
  second-order interactions,
  then the maximum number of possible explanatory variables is $m = p(p+1)/2$
@@ -165,10 +165,12 @@
  predictive model.  Control of the false discovery rate does not imply that one
  finds the most predictive model.  It only guarantees that a high
  percentage of chosen features are in fact useful.  The quadratic risk of the
- implied estimator is more relevant.
+ implied estimator is more relevant.  Furthermore, alpha investing is not one method, but rather a general approach to testing a sequence of hypotheses.  It offers a modeler a variety of choices that vary how the procedure sets the level for the next test. The impact of these choices on the risk of the resulting model is by-and-large unknown.
 
 
- The analysis developed here finds the cumulative risk of a sequence of testimators implied by
+ To evaluate the risk of alpha investing estimators and identify the impact of choosing 
+ among various options, the methods shown here find the cumulative risk of a sequence 
+ of testimators implied by
  testing a sequence of null hypotheses.  A testimator is also known as a
  keep-or-kill estimator or a hard thresholding estimator.  The estimator of the
  parameter $\mu$ is zero unless $H_0: \,\mu = 0$ is rejected.  For
