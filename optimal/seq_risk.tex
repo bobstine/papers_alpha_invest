@@ -1,34 +1,33 @@
 % -*- mode: LaTex; outline-regexp: "\\\\section\\|\\\\subsection";fill-column: 90; -*-
-\documentclass[12pt]{article}
-\usepackage[longnamesfirst]{natbib}
+\documentclass{gSCS2e}   %\documentclass[12pt]{article}\usepackage[longnamesfirst]{natbib}
 \usepackage[usenames]{color}
-\usepackage{graphicx}  % Macintosh pdf files for figures
-\usepackage{bbm}       % one symbol
+\usepackage{graphicx}    % Macintosh pdf files for figures
+\usepackage{bbm}            % one symbol
 \usepackage{amssymb}   % Real number symbol {\Bbb R}
 \input{../../standard}
   
 % --- margins
-\usepackage{../../sty/simplemargins}
-\setleftmargin{1in}   % 1 inch is NSF legal minimum
-\setrightmargin{1in}  % 1 inch is NSF legal minimum
-\settopmargin{1in}    % 1 inch is NSF legal minimum
-\setbottommargin{1in} % 1 inch is NSF legal minimum
+% \usepackage{../../sty/simplemargins}
+% \setleftmargin{1in}   % 1 inch is NSF legal minimum
+% \setrightmargin{1in}  % 1 inch is NSF legal minimum
+% \settopmargin{1in}    % 1 inch is NSF legal minimum
+% \setbottommargin{1in} % 1 inch is NSF legal minimum
 
 % --- Paragraph split, indents
-\setlength{\parskip}{0.00in}
-\setlength{\parindent}{0in}
+% \setlength{\parskip}{0.00in}
+% \setlength{\parindent}{0in}
 
 % --- Line spacing
-\renewcommand{\baselinestretch}{1.3}
+\renewcommand{\baselinestretch}{1.8}
 
 % --- Margins
-\setlength{\topmargin}{-0.5in}
-\setlength{\oddsidemargin}{-0.1in}
-\setlength{\textheight}{9.0in}
-\setlength{\textwidth}{6.5in}
+% \setlength{\topmargin}{-0.5in}
+% \setlength{\oddsidemargin}{-0.1in}
+% \setlength{\textheight}{9.0in}
+% \setlength{\textwidth}{6.5in}
 
 % --- page numbers
-\pagestyle{empty}  % so no page numbers
+% \pagestyle{empty}  % so no page numbers
 
 % --- Hypthenation
 \sloppy  % fewer hyphenated
@@ -43,8 +42,8 @@
 \newcommand{\gTest}[1]{\mbox{$\hat\mu(\al_g(\cdot,{#1}),W_0,\omega)$}}
 
 % --- Header
-\pagestyle{myheadings}
-\markright{\TIT}
+% \pagestyle{myheadings}
+% \markright{\TIT}
 
 % --- Title
 
@@ -60,9 +59,9 @@
 \date{\today}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % something about submission problem
-\pdfminorversion=4 
+% \pdfminorversion=4 
 
 
 \begin{document}
@@ -71,7 +70,7 @@
 \vspace{-0.2in}
 \abstract{ 
 
- Streaming feature selection is a very greedy approach to variable selection that evaluates
+ Streaming feature selection is a  greedy approach to variable selection that evaluates
  potential explanatory variables sequentially.  It selects significant features as soon as
  they are discovered rather than testing them all and picking the best one.  Because it is
  so greedy, streaming selection can rapidly explore large collections of features.  If
@@ -105,7 +104,7 @@
 % ----------------------------------------------------------------------
 
  Our analysis concerns the risk of sequential estimators in which
- characteristics of later estimates depend on the outcomes of earlier estimates.
+ characteristics of later estimators depend on earlier estimates.
   Our interest in the risk of such estimators arises from their use in streaming
  feature selection.  Streaming feature selection constructs a predictive model
  by greedily choosing explanatory variables from a sequence offered by an exogenous
@@ -123,7 +122,7 @@
  those to consider subsequently.  For example, a streaming search might test the
  interaction $X_j \, X_k$ after finding significant effects for $X_j$ and $X_k$.
   Streaming selection can thus adaptively explore collections of explanatory
- variables that are larger than typically considered with conventional methods.
+ variables that are larger than typically considered with conventional methods. \citet{wu13} provide several examples, including image processing, in which streaming selection is valuable. 
  For large samples, the slowest step in forward stepwise regression is the
  calculation of the $X'X$ matrix.  \citet{fosterlin11} demonstrate the speed
  attained by sequential selection when picking a regression from up to 100,000
@@ -303,7 +302,7 @@
  wealth, the following rule invests progressively less wealth as the wealth
  drops.  The rule is defined by
  \begin{equation}
-   \al_u(w) = w - \frac{\log 2}{\log(1+2^{1/w})} \;.   
+   \al_u(w) = w - \frac{1}{\log_2(1+2^{1/w})} \;.   
  \label{eq:Auniv}
  \end{equation}
  Because we obtained this investing rule from the universal prior for integers
@@ -384,7 +383,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
   The universal rule $\al_u(w)$ follows from the same construction, but starts
  with the density
  \begin{displaymath}
-    A_u(x) = \frac{\log 2}{(x+1) (\log(x+1))^2} \;, \quad 1 < x,
+    A_u(x) = \frac{1}{(x+1) (\log_2(x+1))^2} \;, \quad 1 < x,
  \end{displaymath}
  in place of $A_g$.  $A_u(x)$ is a continuous version of the distribution defined by the
  penultimate code of \citet{elias75}.  \citet{rissanen83} obtains the universal code as a
@@ -905,7 +904,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  payout $W_0 = \omega = 0.25$ produce a noticeable reduction in the risk (Figure
  \ref{fig:univRI}).  This choice for $\omega$ implies that controlling the
  expected false discovery rate at 25\%, quite a bit larger than would usually be
- chosen, produces lower risk unless the mean process is quite sparse.
+ chosen, produces lower risk unless the mean process is quite sparse.  For example, the comparisons of streaming estimators in \citet{wu13} set $W_0$ and $\omega = 0.01, 0.05$.  It would be useful to investigate whether larger choices improve the performance of these estimates in their models (which are more complex than the idealized testing of independent means shown here).
 
 
  A particular benefit of these computations is that they suggest conjectures
@@ -959,7 +958,7 @@ The authors gratefully acknowledge support from NSF (award \#1106743).
 %--------------------------------------------------------------------------
 
 \bibliography{../../../../references/stat}
-\bibliographystyle{../../bst/asa}
+\bibliographystyle{../../bst/asr}
 
 \end{document} %==========================================================
 
