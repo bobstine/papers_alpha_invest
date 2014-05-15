@@ -76,10 +76,10 @@
  so greedy, streaming selection can rapidly explore large collections of features.  If
  significance is defined by an alpha investing protocol, then the rate of false
  discoveries will be controlled.  The focus of attention in variable selection, however,
- should be on fit rather than hypothesis testing.  Unfortunately, little is known about
- the estimation risk produced by streaming selection and how the configuration of these
- procedures influences the risk.  To meet these needs, we provide a computational
- framework based on stochastic dynamic programming that allows fast calculation
+ should be on fit rather than hypothesis testing.  Little is known, however, about
+ the risk of estimators produced by streaming selection and how the configuration of these
+ estimators influences the risk.  To meet these needs, we provide a computational
+ framework based on stochastic dynamic programming that allows fast calculation of
  the minimax risk of a sequential estimator relative to an alternative.  The alternative
  can be data-driven or derived from an oracle.  This framework allows us to compute and
  contrast the risk inflation of sequential estimators derived from various alpha investing
@@ -133,19 +133,28 @@
   Although one gains advantages by avoiding simultaneously evaluating every
  predictor, the absence of a fixed set of features in streaming selection
  requires a different type of selection criterion from those commonly used.  For
- example, suppose the search begins with a list of $p$ possible features $X_1,
+ example, suppose the search begins with a list of $p$ potential features $X_1,
  X_2, \ldots, X_p$.  As mentioned, the search could expand to include
- interactions in $X_j$ once $X_j$ joins the model.  If the search is limited to
- second-order interactions, then the maximum number of possible explanatory
- variables is $m = p(p+1)/2$ variables.  One could allow higher order
- interactions as well.  Because a streaming search may not consider all of
- these, it would be conservative to combine $m$ with a criterion such as AIC,
- BIC, or RIC.  Similarly, selection using FDR requires the complete set of
+ interactions in $X_j$ once $X_j$ joins the model.  If the search were limited to
+ second-order interactions, then the number of possible explanatory
+ variables would become $m = p(p+1)/2$ variables.  \ras{
+ One could go further and  allow the sequential search to construct and test third
+ and fourth-order interactions derived by interacting previously selected features and pairwise interactions. The 
+ resulting search would examine only those higher-order interactions that generate 
+ nontrivial lower-order interactions. Because higher-order interactions
+ with non-zero effects typically have nontrivial lower-order projections (??? Kailath),
+  this ``bottom-up'' search is likely to detect these interactions.  Even so, fourth-order 
+ interactions are likely to be very sparse, and the streaming search would likely
+  examine only a few of these.  It would thus be conservative to combine this search with a criterion
+  such as AIC or BIC that adds a penalty proportional to the size of the search 
+  space that would grow to $m = O(p^4)$.  The penalties used in the criteria 
+  presume one examines all $m$ features rather than a dynamically chosen subset.
+   Similarly, selection using FDR requires the complete set of $m$ possible 
  p-values at the start of the search.
+}
 
-
- Alpha investing \citep{fosterstine08} is a sequential testing procedure that we
- designed to work with streaming feature selection.  Because alpha investing can
+ Alpha investing \citep{fosterstine08} is a sequential testing procedure
+ that is well-suited to streaming feature selection.  Because alpha investing can
  test an infinite sequence of hypotheses, it is well-matched to a search of a
  possibly unbounded collection of features.  Rather than test multiple
  hypotheses at once, alpha investing tests hypotheses one-at-a-time in a
@@ -168,14 +177,36 @@
  that one finds the most predictive model.  It only guarantees that a high percentage of
  chosen features are in fact useful.  The quadratic risk of the implied estimator is more
  relevant.  Furthermore, alpha investing is not one method, but rather a general approach
- to testing a sequence of hypotheses.  It offers a modeler a variety of choices that vary
+ to testing a sequence of hypotheses.  It offers a modeler a variety of choices that control
  how the procedure sets the level for the next test. The impact of these choices on the
  risk of the resulting model is by-and-large unknown.
 
-
- To evaluate the risk of alpha investing estimators and identify the impact of choosing
- among various options, the methods shown here find the cumulative risk of a sequence of
- testimators implied by testing a sequence of null hypotheses.  A testimator is also known
+\vspace{0.1in} 
+ \ras{ 
+ To study the risk of alpha investing estimators and the effects its tuning parameters, we convert
+ the choice of features in regression into the classical normal means problem.  Consider 
+ fitting the regression of $Y$, now representing a vector of $n$ observations, on the 
+ linearly independent columns  $X_1,\ldots,X_p$ that make up the $n\times p$ matrix $X$. 
+ The Gram-Schmidt algorithm sequentially converts these explanatory variables into 
+ orthonormal variables $\tilde{X}_1,\ldots,\,\tilde{X}_p$.   In matrix form, the regression 
+ $Y = X \beta + \epsilon$ with $\ep_i \sim N(0,\sigma^2)$ becomes 
+ $Y = (X T)( T^{-1}\beta) + \epsilon = \tilde{X} \mu + \epsilon$, 
+ where $T$ is the upper triangular matrix defined by the Gram-Schmidt algorithm.  
+ Multiplying both sides of this equation on the left by $\tilde{X}'$ produces
+\begin{equation*}
+   \tilde{X}'Y =  \tilde{Y}  = \mu + \tilde \epsilon \;,
+\end{equation*}
+ where $\tilde\epsilon = X'\epsilon \sim N(0,\sigma^2)$.  \citet{lehmann05} (Chapter 7) describes 
+ this conversion in more detail.  Evaluating which of $X_1,\ldots,X_p$ to add to the 
+ regression thus amounts to testing which of the first $p$ elements of $\mu$  differ 
+ from zero. In practical implementations of sequential variable selection 
+ (such as \cite{fosterlin11}), one only sweeps selected features from those 
+ that remain, allowing $p > n$.
+ }
+ 
+ 
+ The methods developed here find the cumulative risk of a sequence of
+ testimators in the context of testing a sequence of means.  A testimator is also known
  as a keep-or-kill estimator or a hard thresholding estimator.  The estimator of the
  parameter $\mu$ is zero unless $H_0: \,\mu = 0$ is rejected.  For this paper, we consider
  a simplified version of the variable selection problem that avoids issues related to
@@ -244,11 +275,11 @@
  \end{equation}
  In contrast, FDR is the expected value of the ratio $V(j)/T(j)$ conditional on
  $T(j)>0$ rather than the ratio of expected values.  The constant $\eta$ in the
- denominator of mFDR avoids dividing by values near zero under the complete null
+ denominator of mFDR avoids dividing by zero under the complete null
  hypothesis in which all $\mu_j = 0$.  If $W_0 \le \eta\,\omega$, then
  alpha-investing rules control $\mbox{mFDR}_\eta(p) \le \omega$, and this result
  implies weak control of the family wide error rate.  Because these properties
- of alpha investing originate in a martingale, the index $j$ in \eqn{eq:mFDR} is
+ of alpha investing originate in a martingale, the index $j$ in \eqn{mFDR} is
  allowed to be an arbitrary stopping time, such as the occurrence of the $k$th
  rejection.
 
@@ -266,8 +297,8 @@
  \label{eq:A}
  \end{equation}
  For example, $\cal A$ can set the level of the next test higher or lower
- depending upon the number of tests since the last rejection or the number of
- rejections accumulated so far.  Although alpha investing allows this
+ depending upon the number of tests since the last rejection or the accumulated number of
+ rejections.  Although alpha investing allows this
  generality, we focus on a simpler class of investing rules that have a path
  independent, Markovian structure.  The amount invested by these rules depends
  only on the current wealth rather than the full path, $\alpha_j = {\cal
@@ -280,9 +311,9 @@
  these uses, the symbol $\alpha$ consistently gives the level of a test; only
  the context of the test changes.  By itself, $\al$ represents the
  generic level of a test.  When given an integer subscript, $\al_j$ is the level
- of the $j$th test in sequence of tests, as in \eqn{eq:Wj}.  Finally, denoting a
+ of the $j$th test in sequence of tests, as in \eqn{Wj}.  Finally, denoting a
  function, $\al(w)$ is the level invested in a test by an alpha investing rule
- that has available wealth $w$, as in \eqn{eq:Ageo} that follows.  }
+ that has available wealth $w$, as in \eqn{Ageo} that follows.  }
 
 
  The simplest representatives of this class of alpha investing rules are
@@ -292,24 +323,54 @@
     \al_g(w, \psi) = \psi \, w, \quad  0 < \psi < 1.
  \label{eq:Ageo}
  \end{equation}
- Since the alpha wealth increases after a rejection (provided $\al_j < \omega$), a geometric rule $\al_g$
+ Since the alpha wealth increases after a rejection (provided $\al_j < \omega$), 
+ a geometric rule $\al_g$
  invests more following a rejection and then gradually -- at the rate determined
  by $\psi$ -- reduces the level of subsequent tests.
 
 
  Alternatively an alpha investing rule can vary the share of the current wealth
  to invest in the next test.  Rather than invest a fixed share of the available
- wealth, the following rule invests progressively less wealth as the wealth
+ wealth, the following rule invests progressively less  as its wealth
  drops.  The rule is defined by
  \begin{equation}
-   \al_u(w) = w - \frac{1}{\log_2(1+2^{1/w})} \;.   
+   \al_u(w) = w - \frac{\log 2}{\log(1+2^{1/w})} \;.
  \label{eq:Auniv}
  \end{equation}
- Because we obtained this investing rule from the universal prior for integers
- defined by \citet{rissanen83}, we call this a universal investing rule and
- identify it by a subscript $u$.  (See the following remark.)
+ Using the procedure described in the appendix, we derived $\alpha_u$ from the density function
+  \begin{equation}
+    A_u(x) = \frac{\log 2}{x (\log x)^2} \;, \quad 2 \le x \;.
+    \label{eq:Au}
+ \end{equation}
+ \ras{
+  $A_u$ is motivated by the penultimate code for positive integers defined by \citet{elias75}. 
+   This code is universal in the sense of data compression, 
+   and so we refer to $\al_u$ as a universal investing rule. }
+   
+ \remark{   \ras{  
+  The structure of the penultimate code leads directly to $A_u$ and may be of independent interest.
+  Suppose that the discrete random variable $X$ has a discrete 
+  distribution on the positive integers with $\pr(X = j) = p_j$ for $j = 1,\,2,\, \ldots$.  
+  A code that represents $X$ using $\log_2 p_{X}$ bits has the minimal expected length, which is given by the entropy of the distribution, $\sum_{j=1}^n (\log_2 p_j) p_j = H_X$.   Hence, the shortest binary prefix code for an {\it iid} sequence $\{X_1,\ldots,X_n\}$ from this distribution has expected length $n\;H_X$. 
+  Within this context, the penultimate code of Elias 
+  is universal in the following sense.  Let $L(j)$ denote the length of the penultimate code for the
+   integer $j$. So long as the probabilities $p_j$ are monotone decreasing, $p_j \ge p_k$ if $j \le k$, 
+   then $\lim_n \sum_{j=1}^n E\,L(X_j)/(n H_X)$ is bounded. That is, regardless of the choice of monotone probabilities, the expected length of the penultimate code lies within a constant factor of
+    the length of the best possible code. The structure of the penultimate code is quite simple and 
+    leads to the expression \eqn{Au} for $A_u$.  The penultimate code for an integer $x$ contains 
+    the binary representation of $x$ which requires $b(x) \approx \log_2 x$ bits. To form 
+    a prefix code, this code includes a binary representation of $b(x)$ that requires 
+    about $2 \log_2 b(x)$ additional bits.  Combining these, 
+    $L(x) \approx \log_2 x + 2 \log_2 \log_2 x$.  This 
+    length suggests a probability distribution of the form $q(x) = c_q 2^{-L(x)} =
+     c_q/(x \; \log(x)^2)$ with $c_q$ chosen so that $\sum_x q(x) = 1$.   
+     \citet{rissanen83} refined the penultimate code by 
+     incorporating a more efficient representation for $b(x)$ and labeled the result the 
+     universal code for integers.  For an extensive introduction to coding and its connections to statistics, see \citet{coverthomas06}.
+} }
 
- 
+  
+  
  Figure \ref{fig:rules} contrasts the investments of the universal and
  several geometric alpha investing rules.  The figure conveys
  the sense in which $\al_u$ is universal in the way that it mimics a collection
@@ -339,55 +400,6 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \includegraphics[width=3.5in]{figures/rules} }
  \vspace{0.2in}
  \end{figure}
-
-
- \remark{ We obtained the universal rule $\al_u$ defined in \eqn{eq:Auniv} by
- the following construction.  The idea is to define a spending rule by a
- probability distribution that allocates wealth over subsequent tests and then
- shift from discrete to continuous distributions.  We illustrate the
- construction for the geometric rule.  If the initial wealth is $W_0$, then the
- alpha wealth invested in the $j$th test (assuming no intervening test rejects)
- is
- \begin{equation}
-    \al_j = W_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
- \label{eq:alj1}
- \end{equation}
-  Rather than define the investing rule using a discrete distribution on
- $j=1,\,2,\ldots$ as in \eqn{eq:alj1}, consider the continuous density
- \begin{equation}
-   A_g(x) = c_g \; \psi\,(1-\psi)^{x-1}, \quad 1 \le x\;,
- \label{eq:alg}
- \end{equation}
- where the normalizing constant $c_g = -\log (1-\psi)/\psi$ implies
- $\int_1^{\infty} A_g(x) dx = 1$.  Notice that the wealth invested in the $j$th
- test \eqn{eq:alj1} matches $W_0$ times the integral of $A_g(x)$ from $x=j$ to
- $j+1$,
- \begin{equation}
-    \al_j = W_0 \int_j^{j+1} A_g(x) dx = W_0 \, \psi\; (1-\psi)^{j-1} \;.
- \label{eq:alj2}
- \end{equation}
- To move away from discrete indexing, we use the following tail integral,
- \begin{equation}
-    W_g(x) = W_0 \int_x^\infty A_g(t,\psi) dt = W_0 (1-\psi)^{x-1}\;.
- \label{eq:Wg}
- \end{equation}
- For integers $j$, $W_g(j)$ is the wealth available to test $H_j$ if none of
- $H_1$, $H_2, \ldots,\, H_{j-1}$ are rejected.  By inverting this tail integral,
- we can write the investing rule as a function of just the available wealth,
- \begin{equation}
-   \al_g(w,\psi) = A_g(W_g^{-1}(w)) = \psi\,w \;,
- \label{eq:Ag}
- \end{equation}
- as in \eqn{eq:Ageo}.  This construction uses the inverse of the tail wealth to
- determine a `hypothesis index' $W_g^{-1}(w)$ that corresponds to wealth $w$.
-  The universal rule $\al_u(w)$ follows from the same construction, but starts
- with the density
- \begin{displaymath}
-    A_u(x) = \frac{1}{(x+1) (\log_2(x+1))^2} \;, \quad 1 < x,
- \end{displaymath}
- in place of $A_g$.  $A_u(x)$ is a continuous version of the distribution defined by the
- penultimate code of \citet{elias75}.  \citet{rissanen83} obtains the universal code as a
- refinement of the penultimate code. }
 
 
 %--------------------------------------------------------------------------
@@ -429,7 +441,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
  \begin{figure}
- \caption{ \label{fig:risk} \sl The risk of testimators peaks near $z_\alpha$ due to a large contribution from the bias as the level $\alpha$ decreases. (a) Risk of testimators with
+ \caption{ \label{fig:risk} \sl The risk of a testimator peaks near $z_\alpha$ due to a large contribution from bias as the level $\alpha$ decreases. (a) Risk of testimators with
  $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance components of the
  risk of $\hat\mu_{0.05}$. } 
  \vspace{0.1in}
@@ -457,8 +469,8 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
  Minimax bounds for the risk $R(\hat{\bmu}_\al,\bmu)$ are well-understood.  We
  review the results of \citet{fostergeorge94} who introduced the concept of the
- risk inflation of an estimator. \citep[][obtain similar results.]
-  {donohojohnstone94} The risk inflation of $\hat{\bmu}_\al$ is the supremum of
+ risk inflation of an estimator. \citet{donohojohnstone94} obtain similar results. 
+ The risk inflation of $\hat{\bmu}_\al$ is the supremum of
  the ratio of the risk of $\hat{\bmu}_\al$ to that of a testimator that obtains
  the optimal level from an oracle.  Their results imply that the risk inflation
  of $\hat{\bmu}_\al$ is asymptotically about $2 \log p$,
@@ -473,7 +485,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \end{equation}
  Foster and George further show that the testimator $\hat{\bmu}_{1/p}$ --
  essentially the Bonferroni estimator -- obtains the risk inflation threshold.
-  The constant 1 added to the risks in the ratio of \eqn{eq:ri} arises in the
+  The constant 1 added to the risks in the ratio of \eqn{ri} arises in the
  context of regression models in which one always estimates the intercept.  As a
  practical device, its presence avoids dividing by zero under the complete null
  model in which $\mu_j = 0$ for all $j$.
@@ -533,8 +545,8 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  ignores the payoff $\omega$ obtained if $H_1$ is rejected.  By rejecting the
  first test, alpha investing adds
  $\omega$ to its alpha wealth, allowing it to increase the level -- and so
- potentially reduce its risk -- in subsequent tests.  The problem to be solved
- at the first test is to choose
+ potentially reduce its risk -- in subsequent tests.  To find the maximum risk, one 
+ must choose at the first test the mean
  \begin{eqnarray*}
     \mu_1 = \arg \max_{m} & \Bigl\{ & R(\hat\mu_{\al_1},m) \Bigr. 
         + r_{m}(\al_1) \; \max_{\mu_{2:p}} 
@@ -542,9 +554,9 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
     & & + \Bigl. (1-r_{m}(\al_1)) \max_{\mu_{2:p}} \; 
               R(\hat\mu(\al,W_0-\al_1,\omega),\mu_{2:p}) \Bigr\} \;.
  \end{eqnarray*}
- Notice that the means $\mu_1,\, \mu_2,\ldots, \mu_p$ that maximize the risk are
+ Notice that the sequence of means $\mu_1,\, \mu_2,\ldots, \mu_p$ that maximizes the risk is
  not deterministic because of the stochastic outcome of the tests.  As a result,
- our calculations define a stochastic process for the mean that obtains, on
+ our calculations identify a stochastic process of means that obtains, on
  average, the maximum risk.
 
 
@@ -556,7 +568,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  Our interest is not simply in the risk of a testimator, however, but in its
  risk when compared to an alternative.  We want to see how various sequential
  testimators perform when estimating the same collection of means.  In the style
- of risk inflation \eqn{eq:ri}, we want to contrast the risk of \test\ to that
+ of risk inflation \eqn{ri}, we want to contrast the risk of \test\ to that
  of another realizable testimator or to a testimator that benefits from an
  oracle that reveals $\bmu$.  The oracle-based, risk-inflation testimator
  $\tilde{\bmu}$ has elements
@@ -616,7 +628,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \begin{figure}
  \caption{ \label{fig:riFeasibleSet} {\sl The shaded feasible set identifies the possible risks 
  of the oracle estimator $\tilde{\bmu}$ and universal testimator \uTest with $W_0=\omega=0.5$, $p$=1,000.} The left frame emphasizes models with substantial signal; the right frame (log scale) highlights nearly black models. Curves within the
- feasible set show the risks as the signal levels varies in the model \eqn{eq:muj}. Boundary 
+ feasible set show the risks as the amount of signal varies in the model \eqn{muj}. Boundary 
  points show calculation locations described in Section 5; the line parallel to the diagonal in
  the right frame is the risk-inflation boundary discussed in the text.}
 
@@ -628,15 +640,15 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \end{figure}
 
 
- The two plots in Figure \ref{fig:riFeasibleSet} emphasize
- models with substantial signal (non-zero means) and those that are sparse or
+ The two plots in Figure \ref{fig:riFeasibleSet} contrast
+ models with substantial signal (non-zero means) to those that are sparse or
  nearly black (most $\mu_j=0$).  The frame scaled by the risk itself emphasizes
  the performance in models with substantial signal.  The vertical right edge of
  the feasible set shows the risk for saturated models in which $|\mu_j| \ge 1$;
- for these models, the risk of the oracle testimator is ${\cal
- R}_p(\tilde{\bmu}, \bmu) = p$.  The plot on the log scale emphasizes sparse
+ for these models, the risk of $\tilde\bmu$ is 
+ $R(\tilde{\bmu}, \bmu) = p$.  The plot on the log scale emphasizes sparse
  models.  In this frame, the line parallel to and above the diagonal is the
- risk-inflation boundary \eqn{eq:ri} that obtains for non-sequential estimators.
+ risk-inflation boundary \eqn{ri} that obtains for non-sequential estimators.
   These bounds suggest that the worst case risk for the testimator should be
  about $2 \log p$ times the risk of the oracle.  The feasible set calculations
  show that the risk of \uTest\ does indeed fall below this boundary, but that is
@@ -660,23 +672,21 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  upper boundary of ${\cal R}_p$.
 
 
- Although the simple, two-point model \eqn{eq:muj} cannot fully characterize the feasible
- set, the processes that define the boundary resemble its structure.  For example, Figure
+ Although the simple, two-point model \eqn{muj} cannot fully characterize the feasible
+ set, the processes that define the boundary resemble its structure.  Figure
  \ref{fig:simRisk} graphs a realization of the stochastic process that generates the risks
  on the boundary of the feasible risk set.  For this figure, we chose the process that
  produces the point with expected risks $(101, 657)$ which can be found along the left
  side of the feasible set in Figure \ref{fig:riFeasibleSet}.  The dots in Figure
  \ref{fig:simRisk} graph the elements $\mu_j$ versus the test index $j$ for $j = 1,\,2,
  \ldots, p=1,000$.  As in the two-point model, the means randomly shift between 0 and a
- value that fluctuates around 2.63.  The figure also shows the cumulative risk obtained by
- the universal testimator for this realization, shown as the increasing trend in the
- figure.  Its risk in this instance reaches 688, whereas the oracle accumulates risk 123.
+ value that fluctuates around 2.63.  The increasing trend in the figure shows the cumulative risk obtained by the universal testimator for this realization.  Its risk in this instance reaches 688, whereas the cumulative risk of the oracle is 123.
 
 
 \begin{figure}
  \caption{ \label{fig:simRisk} {\sl The mean process associated with a boundary point of 
  the feasible set produces realizations that resemble those of the two-point model 
- \eqn{eq:muj}.} The increasing trend shows the accumulating risk of the testimator 
+ \eqn{muj}.} The increasing trend shows the accumulating risk of the testimator 
  which reaches 688 in this example.  }
 
  \vspace{0.1in}
@@ -696,7 +706,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  however, setting $W_0 = \omega = 0.05$ generates greater risk than $W_0=0.25$ or 0.50.
   With $W_0=0.05$, the risks even escape the bounds suggested by risk inflation in the
  non-sequential setting, shown here by a portion of the feasible set above the bound
- provided in \eqn{eq:ri}.
+ provided in \eqn{ri}.
  
  \remark{ Because the plots in Figure
  \ref{fig:univRI} show several feasible sets together, one can no longer
@@ -708,8 +718,8 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
 \begin{figure}
- \caption{ \label{fig:univRI} {\sl Varying the initial wealth and payout influence the 
-  feasible set of risks that contrast the risk inflation oracle to the universal estimator
+ \caption{ \label{fig:univRI} {\sl The initial wealth and payout influence the 
+  feasible set of risks that contrast the risk-inflation testimator $\tilde\bmu$  to the universal estimator
  \uTest.} The initial wealth varies over $W_0=0.05$,
  0.25, and 0.50 with $p$=1,000 tests on the scale of risks (left) or log risks
  (right).  }
@@ -722,22 +732,22 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 \end{figure}
 
 
- We have emphasized universal investing defined by $\al_u(\cdot)$, and Figure
+ We have emphasized universal investing defined by $\al_u$, and Figure
  \ref{fig:geo} offers a partial explanation for our preference.  Figure \ref{fig:geo}
  superimposes the feasible sets obtained by geometric investing with various rates versus
- the risk inflation testimator.  The results are for a sequence of $p = 500$ tests.  In
+ the \ras{risk-inflation testimator $\tilde\bmu$}.  The results are for a sequence of $p = 500$ tests.  In
  general, increasing the spending rate $\psi$ from 0.001 up to 0.01 reduces the risk of
  the geometric testimator $\al_g(w,\psi)$. The feasible sets for $\psi=0.001$, 0.005, and
- 0.01 progressively move toward the diagonal, better competing with the risk-inflation
- testimator.  The move to $\psi = 0.05$, however, goes too far.  The geometric estimator
+ 0.01 progressively concentrate toward the diagonal, better competing with $\tilde\bmu$.  
+ The move to $\psi = 0.05$, however, goes too far.  The geometric estimator
  essentially exhausts its alpha wealth before the testing is complete, and consequently
  its risk soars.  Because this geometric estimator essentially sets $\hat\mu_j \equiv 0$
  as its alpha wealth approaches 0, its risk exceeds the risk inflation boundary
- \eqn{eq:ri}.
+ \eqn{ri}.
 
 
 \begin{figure}
- \caption{ \label{fig:geo} {\sl A high spending rate $\psi$ potentially exhausts the wealth of a geometric testimator and produces excessive risks.}  These results are for $p=500$ tests and rates $\psi=$ 0.001, 0.005, 0.01, and 0.05.  }
+ \caption{ \label{fig:geo} {\sl A high spending rate $\psi$ potentially exhausts the wealth of a geometric testimator and produces excessive risks compared to $\tilde\bmu$.}  These results are for $p=500$ tests and rates $\psi=$ 0.001, 0.005, 0.01, and 0.05.  }
 
  \vspace{0.1in}
  \centerline{
@@ -785,8 +795,8 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
  We describe first the calculation of the feasible set ${\cal R}_p(\hat\mu(
  \al(\cdot), W_0, \omega), \tilde{\bmu})$ that contrasts an alpha investing
- testimator with the risk-inflation estimator $\tilde{\bmu}$.  The
- risk-inflation estimator has no wealth constraint; calculations need only track
+ testimator with the risk-inflation testimator $\tilde\bmu$.  Because $\tilde\bmu$
+ has no wealth constraint, calculations need only track
  the wealth of the alpha investing estimator, which we abbreviate as
  $\hat{\bmu}$ with the understanding that it depends on the choice of the
  investing function $\al(\cdot)$, $W_0$, and $\omega$ throughout this section.
@@ -803,7 +813,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
   Let $\bmu^\theta$ denote the mean process that maximizes ${\cal U}^\theta$.  The
  point $\evsub{\bmu^\theta}(R(\hat{\bmu}, \bmu), R(\tilde{\bmu}, \bmu))$ lies on
  the boundary of ${\cal R}_p(\hat{\bmu},\tilde{\bmu})$ where the feasible risk
- set is tangent to the line defined by the mixture weights in \eqn{eq:U}.  Plots
+ set is tangent to the line defined by the mixture weights in \eqn{U}.  Plots
  that show the feasible risk set, such as Figure \ref{fig:riFeasibleSet},
  highlight the boundary points that are explicitly computed.  By varying
  $\theta$ over the circle, we approximate the feasible risk set as the
@@ -812,7 +822,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  
  We compute ${\cal U}^\theta$ via numerical backward induction.  This induction
  approximates the wealth of the alpha investing testimator on a grid.  The
- wealth grid $G$ spans the minimal attainable wealth ($W_0 - \sum_{j=1}^p
+ wealth grid $G$ reaches from the minimal attainable wealth ($W_0 - \sum_{j=1}^p
  \al_j$) to a maximum allowed wealth, which we set to $W_{\max} = 5$.  (Our
  results have not been sensitive to the choice of $W_{\max}$ so long as it is
  substantially larger than $W_0 + \omega$.)  The wealth grid is
@@ -837,17 +847,17 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \label{eq:Ujk}
  \end{eqnarray}
  for $j=p, p-1,\ldots,1$ and $k = 1,\ldots,N$ and the boundary condition
- $U^\theta_{p+1,k} = 0$.  Note the similarity to expression \eqn{eq:RMuHat}.  At
+ $U^\theta_{p+1,k} = 0$.  Note the similarity to expression \eqn{RMuHat}.  At
  the completion of the computation, ${\cal U}^\theta = U^{\theta}_{1,k_0}$.  The
- first line of \eqn{eq:Ujk} adds the contribution to the weighted risk from
+ first line of \eqn{Ujk} adds the contribution to the weighted risk from
  testing $H_j$ at the alpha level $\al(G_k)$.  The second line adds the expected
  subsequent risk if the test rejects $H_j$, which occurs with probability
  $r_\mu(\al(G_k))$.  If the test rejects, the alpha wealth increases to $G_k -
  \al(G_k) + \omega$.  This wealth is unlikely to match that at any grid
  position, so we linearly interpolate between positions $k_c$ and $k_c+1$ so
  that $G_{k_c} \le G_k - \al(G_k) + \omega \le G_{k_c+1}$ and set the weight $c$
- in \eqn{eq:Ujk} to $c = (G_k - \al(G_k) + \omega)/(G_{k_c+1}-G_{k_c})$.
-  Similarly, the third line of \eqn{eq:Ujk} adds the expected contribution if
+ in \eqn{Ujk} to $c = (G_k - \al(G_k) + \omega)/(G_{k_c+1}-G_{k_c})$.
+  Similarly, the third line of \eqn{Ujk} adds the expected contribution if
  the testimator does not reject $H_j$ and its wealth falls to $G_k - \al(G_k)$.
 
  \remark{ One need not store the full matrix $U^\theta$, but its use simplifies
@@ -863,9 +873,9 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  The feasible set that compares the testimators defined by two alpha investing
  rules $\al(\cdot)$ and $\beta(\cdot)$ requires a more complex recursion that
  must track the wealths of both.  The linear grid $G$ remains, but the matrix
- $U^\theta$ defined in \eqn{eq:Ujk} becomes a three dimensional tensor of size
+ $U^\theta$ defined in \eqn{Ujk} becomes a three dimensional tensor of size
  $p \times N \times N$.  The calculation is essentially a more messy version of
- \eqn{eq:Ujk} but for one nuance that we want to emphasize.  To simplify the
+ \eqn{Ujk} but for one nuance that we want to emphasize.  To simplify the
  presentation, we suppress the linear interpolation and pretend that all of the
  concerned wealths are represented in the wealth grid.  If the alpha investing
  rule $\al(\cdot)$ with wealth $G_k$ rejects $H_j$, its wealth goes from $G_k$
@@ -883,7 +893,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \label{eq:Ujkl}
  \end{eqnarray}
  where the boundary condition is $U_{p+1,\cdot,\cdot}^\theta= 0$.  The first
- line in \eqn{eq:Ujkl} is the expected risk produced by the test of $H_j$, and
+ line in \eqn{Ujkl} is the expected risk produced by the test of $H_j$, and
  following summands denote the expected contributions to the risk if both
  reject, if only the rule with the larger alpha level rejects, and if neither
  rejects.  The point of writing this out is to emphasize these testimators see
@@ -910,7 +920,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  A particular benefit of these computations is that they suggest conjectures
  about asymptotic properties of these estimators.  For example, it appears that
  we can approximate the boundary of the feasible risk set using two-point models
- defined in \eqn{eq:muj}.  Figure \ref{fig:riFeasibleSet} shows that by varying
+ defined in \eqn{muj}.  Figure \ref{fig:riFeasibleSet} shows that by varying
  the signal probability $\pi$ such a model can be found that approaches the
  boundary of the feasible risk set.  Further, the simulation shown in Figure
  \ref{fig:simRisk} shows that (at least for this location) the boundary mean
@@ -947,10 +957,57 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
 %--------------------------------------------------------------------------
+\section*{Appendix}
+%--------------------------------------------------------------------------
+
+ We obtained the universal rule $\al_u$ defined in \eqn{Auniv} by
+ the following construction.  The idea is to define a spending rule by a
+ probability distribution that allocates wealth over subsequent tests and then
+ shift from discrete to continuous distributions.  We illustrate the
+ construction for the geometric rule.  If the initial wealth is $W_0$, then the
+ alpha wealth invested in the $j$th test (assuming no intervening test rejects)
+ is
+ \begin{equation}
+    \al_j = W_0\; \psi \; (1-\psi)^{j-1} \;, \quad j = 1, 2, \ldots\;.   
+ \label{eq:alj1}
+ \end{equation}
+  Rather than define the investing rule using a discrete distribution on
+ $j=1,\,2,\ldots$ as in \eqn{alj1}, consider the continuous density
+ \begin{equation}
+   A_g(x) = c_g \; \psi\,(1-\psi)^{x-1}, \quad 1 \le x\;,
+ \label{eq:alg}
+ \end{equation}
+ where the normalizing constant $c_g = -\log (1-\psi)/\psi$ implies
+ $\int_1^{\infty} A_g(x) dx = 1$.  Notice that the wealth invested in the $j$th
+ test \eqn{alj1} matches $W_0$ times the integral of $A_g(x)$ from $x=j$ to
+ $j+1$,
+ \begin{equation}
+    \al_j = W_0 \int_j^{j+1} A_g(x) dx = W_0 \, \psi\; (1-\psi)^{j-1} \;.
+ \label{eq:alj2}
+ \end{equation}
+ To move away from discrete indexing, we use the following tail integral,
+ \begin{equation}
+    W_g(x) = W_0 \int_x^\infty A_g(t,\psi) dt = W_0 (1-\psi)^{x-1}\;.
+ \label{eq:Wg}
+ \end{equation}
+ For integers $j$, $W_g(j)$ is the wealth available to test $H_j$ if none of
+ $H_1$, $H_2, \ldots,\, H_{j-1}$ are rejected.  By inverting this tail integral,
+ we can write the investing rule as a function of just the available wealth,
+ \begin{equation}
+   \al_g(w,\psi) = A_g(W_g^{-1}(w)) = \psi\,w \;,
+ \label{eq:Ag}
+ \end{equation}
+ as in \eqn{Ageo}.  This construction uses the inverse of the tail wealth to
+ determine a `hypothesis index' $W_g^{-1}(w)$ that corresponds to wealth $w$.
+  The universal rule $\al_u(w)$ follows from the same construction, but starts
+ with the density $A_u$ defined in equation \eqn{Au}.
+ 
+
+%--------------------------------------------------------------------------
 \section*{Acknowledgement}
 %--------------------------------------------------------------------------
 
-The authors gratefully acknowledge support from NSF (award \#1106743).
+The authors gratefully acknowledge support from NSF (award \#1106743) and the helpful suggestions from an anonymous referee.
 
 
 %--------------------------------------------------------------------------
