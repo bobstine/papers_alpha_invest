@@ -1,0 +1,64 @@
+Reply to Comments from the Reviewer
+
+We agree with the comments of the reviewer and believe that addressing
+these issues improve the paper noticeably.  We have tried to make the
+appropriate adjustments without substantiallyt expanding the length of
+the paper.  In addition to responding to the review comments, we made
+several other small changes to the wording here and there.
+
+
+1.  By far the largest improvement I think this article would benefit
+from is to make a more concrete connection between the theoretical
+results and an applied problem of interest...
+
+The second paragraph on page 3 explains the relationship between the
+normal means problem and regression models. It includes a citation to
+a textbook description of this correspondence.
+
+
+
+2.  I do not understand the example on page 2 lines 29-41 of the
+additional challenges posed by streaming selection to variable
+selection.  Specifically, why is it that since streaming selection may
+not consider higher-order interactions, that these should be combined
+with AIC, BIC, etc?  How is this any different from stepwise
+regression?  Does m on line 87 stand for the number itself or the set
+of variables?
+
+The wording in the prior manuscript in this section was confusing, and
+we have rewritten this paragraph (second paragraph of the introduction
+on page 2)
+
+
+3.  Remark B on page 5 describes the construction of the "universal
+investing rule".  In my opinion, the method of passing from discrete
+to continuous distributions is far less interesting than explanation
+of the "penultimate code" and "universal code" presented at the bottom
+of page 6.  I would suggest that the authors provide some intuition to
+these codes in addition to citing the references, and perhaps skip the
+discrete-continuous discussion of remark B, or relegate it to the
+appendix.
+
+We moved the contents of the prior Remark B into an appendix.  The new
+Remark B (top of page 6) describes the motivating ideas for the
+universal investing rule from information theory without belaboring
+too many details.
+
+
+
+4.  page 13, line 47.  The "risk-inflation estimator" is mentioned,
+but I am having trouble figuring out what this estimator is.  Is it
+$\hat \mu_{1/p}$ defined on p. 8, line 12?
+
+This is the oracle estimator.  The new text (page 12, paragraph at
+bottom) refers to the name "risk-inflation estimator" and includes the
+notation for the estimator (\tilde\mu).
+
+
+5.  Small typo in the abstract line 40: "that allows fast calculation
+the minimax risk".  The word "of" is missing.  Also, the keyword
+"Bellman equations" is not mentioned anywhere else in the article.
+
+We fixed the typo.  The connection to Bellman equations seemed neat,
+but agree that this probably ought not be a key word.
+
