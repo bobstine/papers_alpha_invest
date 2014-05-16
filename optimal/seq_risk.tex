@@ -1,5 +1,6 @@
 % -*- mode: LaTex; outline-regexp: "\\\\section\\|\\\\subsection";fill-column: 90; -*-
-\documentclass{gSCS2e}   %\documentclass[12pt]{article}\usepackage[longnamesfirst]{natbib}
+\documentclass{gSCS2e}   
+% \documentclass[12pt]{article}\usepackage[longnamesfirst]{natbib}
 \usepackage[usenames]{color}
 \usepackage{graphicx}    % Macintosh pdf files for figures
 \usepackage{bbm}            % one symbol
@@ -93,8 +94,7 @@
 \vspace{0.05in}
 
 \noindent
-{\it Key Phrases: Bellman equations, stochastic dynamic programming,  
-                           testimator, variable selection}
+{\it Key Phrases: stochastic dynamic programming, testimator, variable selection}
 
 \clearpage
 
@@ -103,55 +103,51 @@
 \section{ Introduction }
 % ----------------------------------------------------------------------
 
- Our analysis concerns the risk of sequential estimators in which
- characteristics of later estimators depend on earlier estimates.
-  Our interest in the risk of such estimators arises from their use in streaming
- feature selection.  Streaming feature selection constructs a predictive model
- by greedily choosing explanatory variables from a sequence offered by an exogenous
- source.  Think of forward stepwise regression, but without knowledge of the
- complete domain of explanatory variables.  Rather than evaluate the collection of possible
- explanatory variables together, streaming selection evaluates them
- one-at-a-time.  Searches like stepwise regression consider the full
- batch of, say, $p$ potential explanatory variables together, choosing at the
- first step the predictor $X_{(1)}$ that obtains the best fitting model.  In
- contrast, streaming selection is even more greedy and evaluates features 
- sequentially as $X_1, \, X_2, \ldots$, judging $X_j$ having observed
- $X_1, \ldots, X_{j-1}$.  Hence, streaming selection does not
- wait to examine every explanatory variable.  It is also free to use 
- the results of evaluating initial variables to guide the search for
- those to consider subsequently.  For example, a streaming search might test the
- interaction $X_j \, X_k$ after finding significant effects for $X_j$ and $X_k$.
-  Streaming selection can thus adaptively explore collections of explanatory
- variables that are larger than typically considered with conventional methods. \citet{wu13} provide several examples, including image processing, in which streaming selection is valuable. 
- For large samples, the slowest step in forward stepwise regression is the
- calculation of the $X'X$ matrix.  \citet{fosterlin11} demonstrate the speed
- attained by sequential selection when picking a regression from up to 100,000
- explanatory variables.
+ Our analysis concerns the risk of sequential estimators in which characteristics of later
+ estimators depend on earlier estimates.  Our interest in the risk of such estimators
+ arises from their use in streaming feature selection.  Streaming feature selection
+ constructs a predictive model by greedily choosing explanatory variables from a sequence
+ offered by an exogenous source.  Think of forward stepwise regression, but without
+ knowledge of the complete domain of explanatory variables.  Rather than evaluate the
+ collection of possible explanatory variables together, streaming selection evaluates them
+ one-at-a-time.  Searches like stepwise regression consider the full batch of, say, $p$
+ potential explanatory variables together, choosing at the first step the predictor
+ $X_{(1)}$ that obtains the best fitting model.  In contrast, streaming selection is even
+ more greedy and evaluates features sequentially as $X_1, \, X_2, \ldots$, judging $X_j$
+ having observed $X_1, \ldots, X_{j-1}$.  Hence, streaming selection does not wait to
+ examine every explanatory variable before making a selection.  It is also free to use the
+ results of evaluating initial variables to guide the search for those to consider
+ subsequently.  For example, a streaming search might test the interaction $X_j \, X_k$
+ after finding significant effects for $X_j$ and $X_k$.  Streaming selection can thus
+ adaptively explore collections of explanatory variables that are larger than typically
+ considered with conventional methods. \citet{wu13} provide several examples, including
+ image processing, in which streaming selection is valuable.  For large samples, the
+ slowest step in forward stepwise regression is the calculation of the $X'X$ matrix.
+  \citet{fosterlin11} demonstrate the speed attained by sequential selection when picking
+ a regression from up to 100,000 explanatory variables.
 
 
- Streaming selection poses a challenge, however, for variable selection.
-  Although one gains advantages by avoiding simultaneously evaluating every
- predictor, the absence of a fixed set of features in streaming selection
- requires a different type of selection criterion from those commonly used.  For
- example, suppose the search begins with a list of $p$ potential features $X_1,
- X_2, \ldots, X_p$.  As mentioned, the search could expand to include
- interactions in $X_j$ once $X_j$ joins the model.  If the search were limited to
- second-order interactions, then the number of possible explanatory
- variables would become $m = p(p+1)/2$ variables.  \ras{
- One could go further and  allow the sequential search to construct and test third
- and fourth-order interactions derived by interacting previously selected features and pairwise interactions. The 
- resulting search would examine only those higher-order interactions that generate 
- nontrivial lower-order interactions. Because higher-order interactions
- with non-zero effects typically have nontrivial lower-order projections (??? Kailath),
-  this ``bottom-up'' search is likely to detect these interactions.  Even so, fourth-order 
- interactions are likely to be very sparse, and the streaming search would likely
-  examine only a few of these.  It would thus be conservative to combine this search with a criterion
-  such as AIC or BIC that adds a penalty proportional to the size of the search 
-  space that would grow to $m = O(p^4)$.  The penalties used in the criteria 
-  presume one examines all $m$ features rather than a dynamically chosen subset.
-   Similarly, selection using FDR requires the complete set of $m$ possible 
- p-values at the start of the search.
-}
+ Streaming selection poses a challenge, however, for variable selection.  Although one
+ gains advantages by avoiding simultaneously evaluating every predictor, the absence of a
+ fixed set of features in streaming selection requires a different type of selection
+ criterion from those commonly used.  For example, suppose the search begins with a list
+ of $p$ potential features $X_1, X_2, \ldots, X_p$.  As mentioned, the search could expand
+ to include interactions in $X_j$ once $X_j$ joins the model.  If the search were limited
+ to second-order interactions, then the number of possible explanatory variables would
+ become $m = p(p+1)/2$ variables.  One could go further and allow the sequential search to
+ construct and test third and fourth-order interactions derived by interacting previously
+ selected features and pairwise interactions. The resulting search would examine only
+ those higher-order interactions that generate nontrivial lower-order
+ interactions. Because higher-order interactions with non-zero effects typically have
+ nontrivial lower-order projections \citep{kalai09}, this ``bottom-up'' search is likely
+ to detect these interactions.  Even so, fourth-order interactions are likely to be very
+ sparse, and the streaming search would likely examine only a few of these.  It would thus
+ be conservative to combine this search with a criterion such as AIC or BIC that adds a
+ penalty proportional to the size of the search space that would grow to $m = O(p^4)$.
+  The penalties used in these criteria presume one examines all $m$ features rather than a
+ dynamically chosen subset.  Similarly, selection using FDR requires the complete set of
+ $m$ possible p-values at the start of the search.
+
 
  Alpha investing \citep{fosterstine08} is a sequential testing procedure
  that is well-suited to streaming feature selection.  Because alpha investing can
@@ -181,47 +177,43 @@
  how the procedure sets the level for the next test. The impact of these choices on the
  risk of the resulting model is by-and-large unknown.
 
-\vspace{0.1in} 
- \ras{ 
- To study the risk of alpha investing estimators and the effects its tuning parameters, we convert
- the choice of features in regression into the classical normal means problem.  Consider 
- fitting the regression of $Y$, now representing a vector of $n$ observations, on the 
- linearly independent columns  $X_1,\ldots,X_p$ that make up the $n\times p$ matrix $X$. 
- The Gram-Schmidt algorithm sequentially converts these explanatory variables into 
- orthonormal variables $\tilde{X}_1,\ldots,\,\tilde{X}_p$.   In matrix form, the regression 
- $Y = X \beta + \epsilon$ with $\ep_i \sim N(0,\sigma^2)$ becomes 
- $Y = (X T)( T^{-1}\beta) + \epsilon = \tilde{X} \mu + \epsilon$, 
- where $T$ is the upper triangular matrix defined by the Gram-Schmidt algorithm.  
- Multiplying both sides of this equation on the left by $\tilde{X}'$ produces
+
+ To study the risk of alpha investing estimators and the effects its tuning parameters, we
+ convert the choice of features in regression into the classical normal means problem.
+  Consider fitting the regression of $Y$, a vector of $n$ observations, on the linearly
+ independent columns $X_1,\ldots,X_p$ that make up the $n\times p$ matrix $X$.  The
+ Gram-Schmidt algorithm sequentially converts these explanatory variables into orthonormal
+ variables $\tilde{X}_1,\ldots,\,\tilde{X}_p$.  In matrix form, the regression $Y = X
+ \beta + \epsilon$ with $\ep_i \sim N(0,\sigma^2)$ becomes $Y = (X T)( T^{-1}\beta) +
+ \epsilon = \tilde{X} \mu + \epsilon$, where $T$ is the upper triangular matrix defined by
+ the Gram-Schmidt algorithm.  Multiplying both sides of this equation on the left by
+ $\tilde{X}'$ produces
 \begin{equation*}
    \tilde{X}'Y =  \tilde{Y}  = \mu + \tilde \epsilon \;,
 \end{equation*}
- where $\tilde\epsilon = X'\epsilon \sim N(0,\sigma^2)$.  \citet{lehmann05} (Chapter 7) describes 
- this conversion in more detail.  Evaluating which of $X_1,\ldots,X_p$ to add to the 
- regression thus amounts to testing which of the first $p$ elements of $\mu$  differ 
- from zero. In practical implementations of sequential variable selection 
- (such as \cite{fosterlin11}), one only sweeps selected features from those 
- that remain, allowing $p > n$.
- }
+ where $\tilde\epsilon = X'\epsilon \sim N(0,\sigma^2)$.  Evaluating which of
+ $X_1,\ldots,X_p$ to add to the regression thus becomes a test of which of the first $p$
+ elements of $\mu$ differ from zero.  \citet{lehmann05} (Chapter 7) describes this
+ conversion in more detail. In practical implementations of sequential variable selection
+ (such as \cite{fosterlin11}), one only sweeps selected features from those that remain,
+ allowing $p > n$.
  
  
- The methods developed here find the cumulative risk of a sequence of
- testimators in the context of testing a sequence of means.  A testimator is also known
- as a keep-or-kill estimator or a hard thresholding estimator.  The estimator of the
- parameter $\mu$ is zero unless $H_0: \,\mu = 0$ is rejected.  For this paper, we consider
- a simplified version of the variable selection problem that avoids issues related to
- collinearity among explanatory variables.  Rather than observe a sequence of slope
- estimates, we assume that the observed data are a sequence of $p$ random variables $Y_j
- \sim N(\mu_j,1)$.  Within this context, our algorithm reveals the attainable risks of a
+ The methods developed here find the cumulative risk of a sequence of testimators in the
+ context of testing a sequence of means.  Rather than observe a sequence of slope
+ estimates, we assume that the observed statistics are a sequence of $p$ random variables
+ $Y_j \sim N(\mu_j,1)$.  A testimator is also known as a keep-or-kill estimator or a hard
+ thresholding estimator.  The estimator of the parameter $\mu$ is zero unless $H_0: \,\mu
+ = 0$ is rejected.  Within this context, our algorithm reveals the attainable risks of a
  testimator for {\em any} choice of parameters.  We accomplish this task by adopting the
  perspective of risk inflation and comparing the competitive performance of two sequential
- estimators.  For any pair, we find the set of risks attainable for the underlying
- parameters.  Given the sequential nature of the problem, it should not be surprising that
- we rely on stochastic dynamic programming.  The risks so obtained are exact (up to
- computational accuracy) rather than asymptotic.  We further show a probabilistic model
- for the underlying parameters that approximates those risks.  Although we consider
- sequential estimators, we find that bounds for the risk inflation of conventional
- testimators also characterize the risk of sequential testimators.
+ estimators.  For any pair, we find the set of attainable risks.  Given the sequential
+ nature of the problem, it should not be surprising that we rely on stochastic dynamic
+ programming.  The risks so obtained are exact (up to computational accuracy) rather than
+ asymptotic.  We further show a probabilistic model for the underlying parameters that
+ approximates those risks.  Although we consider sequential estimators, we find that
+ bounds for the risk inflation of conventional testimators also characterize the risk of
+ sequential testimators.
 
 
  The following section provides further introduction to alpha investing.  We
@@ -284,27 +276,25 @@
  rejection.
 
  
- Alpha-investing rules are quite general.  The underlying theory requires only
- that the level of the test of $H_j$ is bounded by the available wealth
- $W_{j-1}$ and that the test indeed have level $\al_j$, conditional on the
- outcomes of prior tests.  Otherwise, an alpha investing rule can use the
- pattern of prior rejections.  We represent
- this dependence by writing an alpha investing rule ${\cal A}$ as a function of the
- sequence of prior wealths $W_{0:j-1} = \{W_0, W_1, \ldots, W_{j-1}\}$.  The rule
- $\cal A$ maps this history to the interval from zero to the current wealth:
+ Alpha-investing rules are quite general.  The underlying theory requires only that the
+ level of the test of $H_j$ is bounded by the available wealth $W_{j-1}$ and that the test
+ indeed have level $\al_j$, conditional on the outcomes of prior tests.  Otherwise, an
+ alpha investing rule can use the pattern of prior rejections.  We represent this
+ dependence by writing an alpha investing rule ${\cal A}$ as a function of the sequence of
+ prior wealths $W_{0:j-1} = \{W_0, W_1, \ldots, W_{j-1}\}$.  The rule $\cal A$ maps this
+ history to the interval from zero to the current wealth:
  \begin{equation}
     {\cal A}: W_{0:j-1} \mapsto [0, \min(W_{j-1},1)]    
  \label{eq:A}
  \end{equation}
- For example, $\cal A$ can set the level of the next test higher or lower
- depending upon the number of tests since the last rejection or the accumulated number of
- rejections.  Although alpha investing allows this
- generality, we focus on a simpler class of investing rules that have a path
- independent, Markovian structure.  The amount invested by these rules depends
- only on the current wealth rather than the full path, $\alpha_j = {\cal
- A}(W_{0:j-1}) = \al(W_{j-1})$.  The only requirement is that $0 \le \al(w) \le w$; a
- rule cannot invest more wealth than the amount possessed.  It does seem
- natural, however, for $\al(w)$ to be monotone increasing in $w$.
+ For example, $\cal A$ can set the level of the next test higher or lower depending upon
+ the number of tests since the last rejection or the accumulated number of rejections.
+  Although alpha investing allows this generality, we focus on a simpler class of
+ investing rules that have a path independent, Markovian structure.  The amount invested
+ by these rules depends only on the current wealth rather than the full path, $\alpha_j =
+ {\cal A}(W_{0:j-1}) = \al(W_{j-1})$.  The only requirement is that $0 \le \al(w) \le w$;
+ a rule cannot invest more wealth than the amount possessed.  It does seem natural,
+ however, for $\al(w)$ to be monotone increasing in $w$.
 
 
  \remark{ To avoid adding notation, we overload the symbol $\al$.  Throughout
@@ -323,10 +313,9 @@
     \al_g(w, \psi) = \psi \, w, \quad  0 < \psi < 1.
  \label{eq:Ageo}
  \end{equation}
- Since the alpha wealth increases after a rejection (provided $\al_j < \omega$), 
- a geometric rule $\al_g$
- invests more following a rejection and then gradually -- at the rate determined
- by $\psi$ -- reduces the level of subsequent tests.
+ Since the alpha wealth increases after a rejection (provided $\al_j < \omega$), a
+ geometric rule $\al_g$ invests more following a rejection and then gradually -- at the
+ rate determined by $\psi$ -- reduces the level of subsequent tests.
 
 
  Alternatively an alpha investing rule can vary the share of the current wealth
@@ -342,58 +331,62 @@
     A_u(x) = \frac{\log 2}{x (\log x)^2} \;, \quad 2 \le x \;.
     \label{eq:Au}
  \end{equation}
- \ras{
-  $A_u$ is motivated by the penultimate code for positive integers defined by \citet{elias75}. 
-   This code is universal in the sense of data compression, 
-   and so we refer to $\al_u$ as a universal investing rule. }
+  $A_u$ is motivated by the penultimate binary code for representing positive integers defined by  
+  \citet{elias75}.  This code is universal in the sense of producing compact representations for 
+  data sampled from a variety of probability distributions, 
+   and so we refer to $\al_u$ as a universal investing rule.
    
- \remark{   \ras{  
-  The structure of the penultimate code leads directly to $A_u$ and may be of independent interest.
-  Suppose that the discrete random variable $X$ has a discrete 
-  distribution on the positive integers with $\pr(X = j) = p_j$ for $j = 1,\,2,\, \ldots$.  
-  A code that represents $X$ using $\log_2 p_{X}$ bits has the minimal expected length, which is given by the entropy of the distribution, $\sum_{j=1}^n (\log_2 p_j) p_j = H_X$.   Hence, the shortest binary prefix code for an {\it iid} sequence $\{X_1,\ldots,X_n\}$ from this distribution has expected length $n\;H_X$. 
-  Within this context, the penultimate code of Elias 
-  is universal in the following sense.  Let $L(j)$ denote the length of the penultimate code for the
-   integer $j$. So long as the probabilities $p_j$ are monotone decreasing, $p_j \ge p_k$ if $j \le k$, 
-   then $\lim_n \sum_{j=1}^n E\,L(X_j)/(n H_X)$ is bounded. That is, regardless of the choice of monotone probabilities, the expected length of the penultimate code lies within a constant factor of
-    the length of the best possible code. The structure of the penultimate code is quite simple and 
-    leads to the expression \eqn{Au} for $A_u$.  The penultimate code for an integer $x$ contains 
-    the binary representation of $x$ which requires $b(x) \approx \log_2 x$ bits. To form 
-    a prefix code, this code includes a binary representation of $b(x)$ that requires 
-    about $2 \log_2 b(x)$ additional bits.  Combining these, 
-    $L(x) \approx \log_2 x + 2 \log_2 \log_2 x$.  This 
-    length suggests a probability distribution of the form $q(x) = c_q 2^{-L(x)} =
-     c_q/(x \; \log(x)^2)$ with $c_q$ chosen so that $\sum_x q(x) = 1$.   
-     \citet{rissanen83} refined the penultimate code by 
-     incorporating a more efficient representation for $b(x)$ and labeled the result the 
-     universal code for integers.  For an extensive introduction to coding and its connections to statistics, see \citet{coverthomas06}.
-} }
+ \remark{ The structure of the penultimate code and its relationship to $A_u$ may be of
+ independent interest.  Suppose that the random variable $X$ has a discrete distribution
+ on the positive integers with $\pr(X = j) = p_j$ for $j = 1,\,2,\, \ldots$.  A code that
+ represents $X$ using $-\log_2 p_{X}$ bits has the minimal expected length, which is given
+ by the entropy of the distribution, $-\sum_{j=1}^n (\log_2 p_j) p_j = H_X$.  Hence, the
+ shortest binary prefix code for an {\it iid} sequence $\{X_1,\ldots,X_n\}$ from this
+ distribution has expected length $n\;H_X$.  Within this context, the penultimate code of
+ Elias is asymptotically optimal and universal in the following sense.  Let $L(j)$ denote
+ the length of the penultimate code for the integer $j$. So long as the probabilities
+ $p_j$ are monotone decreasing, $p_j \ge p_k$ if $j \le k$, then $\lim_n \sum_{j=1}^n
+ E\,L(X_j)/(n H_X) = 1$. That is, regardless of the choice of monotone probabilities, the
+ expected length of the penultimate code lies within a constant factor of the length of
+ the best possible code. The structure of the penultimate code is quite simple and leads
+ to the expression \eqn{Au} for $A_u$.  The penultimate code for an integer $x$ contains
+ the binary representation of $x$ which requires $b(x) \approx \log_2 x$ bits. To form a
+ prefix code, this code includes a binary representation of $b(x)$ that requires about $2
+ \log_2 b(x)$ additional bits.  Combining these, $L(x) \approx \log_2 x + 2 \log_2 \log_2
+ x$.  This length suggests a probability distribution of the form $q(x) = c_q 2^{-L(x)} =
+ c_q/(x \; \log(x)^2)$ with $c_q$ chosen so that $\sum_x q(x) = 1$. $A_u(x)$ is a
+ continuous version of $q(x)$.  \citet{rissanen83} refined the penultimate code by
+ incorporating a more efficient representation for $b(x)$ and labeled the result the
+ universal code for integers.  For an extensive introduction to coding and its connections
+ to statistics, see \citet{coverthomas06}.  }
 
   
   
- Figure \ref{fig:rules} contrasts the investments of the universal and
- several geometric alpha investing rules.  The figure conveys
- the sense in which $\al_u$ is universal in the way that it mimics a collection
- of geometric rules.  For convenience, the initial wealth for all rules shown in
- Figure \ref{fig:rules} is $W_0 = 1$.  On a log-log scale, the amounts invested
- by the universal rule fall off approximately linearly.  These amounts are
- initially larger than those of any of the geometric rules.  Starting from
- $W_0=1$, the universal rule invests about $0.369$, $0.131$, $0.0693$, $0.0438$,
- and $0.0306$ in the first five tests before its spending gradually slows.
-  After this initial period, there is a range of tests over which each geometric rule invests the largest alpha level.  For tests in this range, that rule is the most able to find signal. The universal rule invests almost as much as each geometric rule when that rule invests the most, and ultimately,  the universal rule invests more.  For example, the
- geometric rule that invests 1\% of its wealth at each test ($\psi=0.01$)
- invests more than the universal rule when testing $H_{11}$ through $H_{581}$;
- otherwise it invests less.  
- The graph shows that the universal rule saves enough so that it can spend
- close to the rate of the maximal geometric.  
+ Figure \ref{fig:rules} contrasts the investments of the universal and several geometric
+ alpha investing rules.  The figure conveys the sense in which $\al_u$ is universal in the
+ way that it mimics a collection of geometric rules.  For convenience, the initial wealth
+ for all rules shown in Figure \ref{fig:rules} is $W_0 = 1$.  On a log-log scale, the
+ amounts invested by the universal rule fall off approximately linearly.  These amounts
+ are initially larger than those of any of the geometric rules.  Starting from $W_0=1$,
+ the universal rule invests about $0.369$, $0.131$, $0.0693$, $0.0438$, and $0.0306$ in
+ the first five tests before its spending gradually slows.  After this initial period,
+ there is a range of tests over which each geometric rule invests the largest alpha level.
+  For tests in this range, that rule is the most able to find signal. The universal rule
+ invests almost as much as each geometric rule when that rule invests the most, and
+ ultimately, the universal rule invests more.  For example, the geometric rule that
+ invests 1\% of its wealth at each test ($\psi=0.01$) invests more than the universal rule
+ when testing $H_{11}$ through $H_{581}$; otherwise it invests less.  The graph shows that
+ the universal rule saves enough so that it can spend close to the rate of the maximal
+ geometric.
 
  % Too bad we don't have that 'habitation' idea worked out where the universal
  % finds a steady rate appropriate for the rate of false nulls.
 
 
  \begin{figure}
- \caption{ \label{fig:rules} { \sl Each geometric alpha investing rule has a range of hypotheses where it invests the most and hence is the most sensitive to detecting signal.  The universal rule spends almost as much as each geometric  when that
-geometric is the highest spender.} The graph shows the alpha levels assuming no intervening test rejects and the initial wealth $W_0$=1. }
+ \caption{ 
+ { \sl Each geometric alpha investing rule has a range of hypotheses where it invests the most and hence is the most sensitive to detecting signal.  The universal rule spends almost as much as each geometric  when that geometric is the highest spender.} The graph shows the alpha levels assuming no intervening test rejects and the initial wealth $W_0$=1. }
+ \label{fig:rules}
 
  \centerline{
  \vspace{0.1in}
@@ -441,9 +434,10 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
  \begin{figure}
- \caption{ \label{fig:risk} \sl The risk of a testimator peaks near $z_\alpha$ due to a large contribution from bias as the level $\alpha$ decreases. (a) Risk of testimators with
- $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance components of the
- risk of $\hat\mu_{0.05}$. } 
+ \caption{ \label{fig:risk} \sl The risk of a testimator peaks near $z_\alpha$ due to a
+ large contribution from bias as the level $\alpha$ decreases. (a) Risk of testimators
+ with $\al$ = 0.05, 0.20 versus $\mu$. (b) Squared bias and variance components of the
+ risk of $\hat\mu_{0.05}$. }
  \vspace{0.1in}
 \centerline{
  \includegraphics[width=3.0in]{figures/risk_a}
@@ -452,14 +446,14 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \end{figure}
  
 
- The risk of testimators is typically studied in the context of
- estimating a vector of $p$ means, $\bmu \equiv \mu_{1:p} =
- (\mu_1, \,\ldots, \mu_p)'$.  The available data is the vector $\YY \equiv Y_{1:p} =
- (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  In this context, the estimator
- of $\bmu$ combines testimators with a common level, $\hat{\bmu}_\al =
- (\hat\mu_\al(Y_1), \ldots, \hat\mu_\al(Y_p))'$.  The estimator $\hat{\bmu}_\al$
- consists of zeros except for those coordinates where $z_\al^2 \le Y_j^2$.  The
- risk of $\hat{\bmu}_\al$ is the sum of the risks of the coordinate testimators,
+ The risk of testimators is typically studied in the context of estimating a vector of $p$
+ means, $\bmu \equiv \mu_{1:p} = (\mu_1, \,\ldots, \mu_p)'$.  The available data is the
+ vector $\YY = (Y_1, \ldots, Y_p)'$ with distribution $\YY \sim N(\bmu,I_p)$.  In this
+ context, the estimator of $\bmu$ combines testimators with a common level,
+ $\hat{\bmu}_\al = (\hat\mu_\al(Y_1), \ldots, \hat\mu_\al(Y_p))'$.  The estimator
+ $\hat{\bmu}_\al$ consists of zeros except for those coordinates where $z_\al^2 \le
+ Y_j^2$.  The risk of $\hat{\bmu}_\al$ is the sum of the risks of the coordinate
+ testimators,
  \begin{equation}
     R(\hat{\bmu}_\al, \bmu) 
       = \ev \sum_{j=1}^p \Bigl( \hat{\mu}_{\al}(Y_j) - \mu_j \Bigr)^2 \;.
@@ -607,7 +601,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
  Figure \ref{fig:riFeasibleSet} shows two views of the feasible set that
- compares the oracle testimator $\tilde{\bmu}$ ($x$-axis) to the universal
+ compares the risk-inflation testimator $\tilde{\bmu}$ ($x$-axis) to the universal
  testimator \uTest\ ($y$-axis).  For this figure, $p$=1,000 tests and the
  initial wealth and payout $W_0 = \omega = 0.5$.  The feasible risk set is the
  shaded region in each frame.  The feasible risk set lies above the diagonal in
@@ -626,10 +620,12 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
  \begin{figure}
- \caption{ \label{fig:riFeasibleSet} {\sl The shaded feasible set identifies the possible risks 
- of the oracle estimator $\tilde{\bmu}$ and universal testimator \uTest with $W_0=\omega=0.5$, $p$=1,000.} The left frame emphasizes models with substantial signal; the right frame (log scale) highlights nearly black models. Curves within the
- feasible set show the risks as the amount of signal varies in the model \eqn{muj}. Boundary 
- points show calculation locations described in Section 5; the line parallel to the diagonal in
+ \caption{ \label{fig:riFeasibleSet} {\sl The shaded feasible set identifies the possible
+ risks of the oracle estimator $\tilde{\bmu}$ and universal testimator \uTest with
+ $W_0=\omega=0.5$, $p$=1,000.} The left frame emphasizes models with substantial signal;
+ the right frame (log scale) highlights nearly black models. Curves within the feasible
+ set show the risks as the amount of signal varies in the model \eqn{muj}. Boundary points
+ show calculation locations described in Section 5; the line parallel to the diagonal in
  the right frame is the risk-inflation boundary discussed in the text.}
 
  \vspace{0.1in}
@@ -640,47 +636,46 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  \end{figure}
 
 
- The two plots in Figure \ref{fig:riFeasibleSet} contrast
- models with substantial signal (non-zero means) to those that are sparse or
- nearly black (most $\mu_j=0$).  The frame scaled by the risk itself emphasizes
- the performance in models with substantial signal.  The vertical right edge of
- the feasible set shows the risk for saturated models in which $|\mu_j| \ge 1$;
- for these models, the risk of $\tilde\bmu$ is 
- $R(\tilde{\bmu}, \bmu) = p$.  The plot on the log scale emphasizes sparse
- models.  In this frame, the line parallel to and above the diagonal is the
- risk-inflation boundary \eqn{ri} that obtains for non-sequential estimators.
-  These bounds suggest that the worst case risk for the testimator should be
- about $2 \log p$ times the risk of the oracle.  The feasible set calculations
- show that the risk of \uTest\ does indeed fall below this boundary, but that is
- not true of all estimators. 
+ The two plots in Figure \ref{fig:riFeasibleSet} contrast models with substantial signal
+ (non-zero means) to those that are sparse or nearly black (most $\mu_j=0$).  The frame
+ scaled by the risk itself emphasizes the performance in models with substantial signal.
+  The vertical right edge of the feasible set shows the risk for saturated models in which
+ $|\mu_j| \ge 1$; for these models, $R(\tilde{\bmu}, \bmu) = p$.  The plot on the log
+ scale emphasizes sparse models.  In this frame, the line parallel to and above the
+ diagonal is the risk-inflation boundary \eqn{ri} that obtains for non-sequential
+ estimators.  These bounds suggest that the worst case risk for the testimator should be
+ about $2 \log p$ times the risk of the oracle.  The feasible set calculations show that
+ the risk of \uTest\ does indeed fall below this boundary, but that is not true of all
+ estimators.
 
 
- Curves within the feasible set shown in Figure \ref{fig:riFeasibleSet} identify
- the risks that result if the means $\mu_{1:p}$ are determined by a two-point
- model.  Suppose that the stochastic process that determines $\bmu$
- sets $\mu_j$ independently to some $\mu^{*} \ne 0$ with probability $\pi$ and sets $\mu_j=0$ otherwise:
+ Curves within the feasible set shown in Figure \ref{fig:riFeasibleSet} identify the risks
+ that result if $\bmu$ is determined by a two-point model.  Suppose that the stochastic
+ process that determines $\bmu$ sets $\mu_j$ independently to some $\mu^{*} \ne 0$ with
+ probability $\pi$ and sets $\mu_j=0$ otherwise:
  \begin{equation}
     \mu_j = B_j \; \mu^{*}, \quad B_j  \iid \mbox{ Bernoulli}(\pi)  \;.
  \label{eq:muj}
  \end{equation}
- The smooth curves within the feasible set show the risks under this
- model, with $\mu^{*}$ = 1.0 (red), 1.5 (magenta), or 3 (blue),
- and the probability of a non-zero mean varying over the range $10^{-6} \le \pi
- \le 1-10^{-6}$.  With $\mu^{*} = 1.0$, the risks nearly trace out the lower
- boundary of the feasible set.  The crossing of the paths for $\mu^{*}=1.5$ and
- $\mu^{*}=3$ shows, however, that no one value for $\mu^{*}$ can reproduce the
- upper boundary of ${\cal R}_p$.
+ The smooth curves within the feasible set show the risks under this model, with $\mu^{*}$
+ = 1.0 (red), 1.5 (magenta), or 3 (blue), and the probability of a non-zero mean varying
+ over the range $10^{-6} \le \pi \le 1-10^{-6}$.  With $\mu^{*} = 1.0$, the risks nearly
+ trace out the lower boundary of the feasible set.  The crossing of the paths for
+ $\mu^{*}=1.5$ and $\mu^{*}=3$ shows, however, that no one value for $\mu^{*}$ can
+ reproduce the upper boundary of ${\cal R}_p$.
 
 
  Although the simple, two-point model \eqn{muj} cannot fully characterize the feasible
  set, the processes that define the boundary resemble its structure.  Figure
  \ref{fig:simRisk} graphs a realization of the stochastic process that generates the risks
- on the boundary of the feasible risk set.  For this figure, we chose the process that
+ on the boundary of the feasible risk set.  For this figure, we chose the process thatcher
  produces the point with expected risks $(101, 657)$ which can be found along the left
  side of the feasible set in Figure \ref{fig:riFeasibleSet}.  The dots in Figure
  \ref{fig:simRisk} graph the elements $\mu_j$ versus the test index $j$ for $j = 1,\,2,
- \ldots, p=1,000$.  As in the two-point model, the means randomly shift between 0 and a
- value that fluctuates around 2.63.  The increasing trend in the figure shows the cumulative risk obtained by the universal testimator for this realization.  Its risk in this instance reaches 688, whereas the cumulative risk of the oracle is 123.
+ \ldots, p=1,000$.  As in the two-point model, the means jump between 0 and a value that
+ fluctuates around 2.63.  The increasing trend in the figure shows the cumulative risk
+ obtained by the universal testimator for this realization.  Its risk in this instance
+ reaches 688, whereas the cumulative risk of the oracle is 123.
 
 
 \begin{figure}
@@ -735,7 +730,7 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
  We have emphasized universal investing defined by $\al_u$, and Figure
  \ref{fig:geo} offers a partial explanation for our preference.  Figure \ref{fig:geo}
  superimposes the feasible sets obtained by geometric investing with various rates versus
- the \ras{risk-inflation testimator $\tilde\bmu$}.  The results are for a sequence of $p = 500$ tests.  In
+ the risk-inflation testimator $\tilde\bmu$.  The results are for a sequence of $p = 500$ tests.  In
  general, increasing the spending rate $\psi$ from 0.001 up to 0.01 reduces the risk of
  the geometric testimator $\al_g(w,\psi)$. The feasible sets for $\psi=0.001$, 0.005, and
  0.01 progressively concentrate toward the diagonal, better competing with $\tilde\bmu$.  
@@ -747,7 +742,9 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
 \begin{figure}
- \caption{ \label{fig:geo} {\sl A high spending rate $\psi$ potentially exhausts the wealth of a geometric testimator and produces excessive risks compared to $\tilde\bmu$.}  These results are for $p=500$ tests and rates $\psi=$ 0.001, 0.005, 0.01, and 0.05.  }
+ \caption{ \label{fig:geo} {\sl A high spending rate $\psi$ potentially exhausts the
+ wealth of a geometric testimator and produces excessive risks compared to $\tilde\bmu$.}
+  These results are for $p=500$ tests and rates $\psi=$ 0.001, 0.005, 0.01, and 0.05.  }
 
  \vspace{0.1in}
  \centerline{
@@ -778,7 +775,10 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 
 
  \begin{figure}
- \caption{ \label{fig:univGeo} {\sl The universal alpha investing testimator \uTest\ (y-axis) produces typically smaller risks than geometric testimators \gTest\ (x-axis).}  The geometric rates are $\psi = 0.001$, 0.002, and 0.005 with $p=$1,000.}
+ \caption{ \label{fig:univGeo} {\sl The universal alpha investing testimator
+ \uTest\ (y-axis) produces typically smaller risks than geometric testimators
+ \gTest\ (x-axis).}  The geometric rates are $\psi = 0.001$, 0.002, and 0.005 with
+ $p=$1,000.}
 
  \vspace{0.1in}
  \centerline{
@@ -907,14 +907,17 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 \section{ Discussion }
 %--------------------------------------------------------------------------
 
- Feasible risk sets allow us to study the risks of testimators in sequential
- problems.  The comparisons shown here suggest that universal alpha investing
- does well and can compete with the risks attained by any geometric procedure.
-  It is also of interest to point out that a large initial alpha wealth and
- payout $W_0 = \omega = 0.25$ produce a noticeable reduction in the risk (Figure
- \ref{fig:univRI}).  This choice for $\omega$ implies that controlling the
- expected false discovery rate at 25\%, quite a bit larger than would usually be
- chosen, produces lower risk unless the mean process is quite sparse.  For example, the comparisons of streaming estimators in \citet{wu13} set $W_0$ and $\omega = 0.01, 0.05$.  It would be useful to investigate whether larger choices improve the performance of these estimates in their models (which are more complex than the idealized testing of independent means shown here).
+ Feasible risk sets allow us to study the risks of testimators in sequential problems.
+  The comparisons shown here suggest that universal alpha investing does well and can
+ compete with the risks attained by any geometric procedure.  It is also of interest to
+ point out that a large initial alpha wealth and payout $W_0 = \omega = 0.25$ produce a
+ noticeable reduction in the risk (Figure \ref{fig:univRI}).  This choice for $\omega$
+ implies that controlling the expected false discovery rate at 25\%, quite a bit larger
+ than would usually be chosen, produces lower risk unless the mean process is quite
+ sparse.  For example, the comparisons of streaming estimators in \citet{wu13} set $W_0$
+ and $\omega = 0.01, 0.05$.  It would be useful to investigate whether larger choices
+ improve the performance of these estimates in their models (which are more complex than
+ the idealized testing of independent means shown here).
 
 
  A particular benefit of these computations is that they suggest conjectures
@@ -1007,7 +1010,8 @@ geometric is the highest spender.} The graph shows the alpha levels assuming no 
 \section*{Acknowledgement}
 %--------------------------------------------------------------------------
 
-The authors gratefully acknowledge support from NSF (award \#1106743) and the helpful suggestions from an anonymous referee.
+ The authors gratefully acknowledge support from NSF (award \#1106743) and the helpful
+ suggestions from an anonymous referee.
 
 
 %--------------------------------------------------------------------------
