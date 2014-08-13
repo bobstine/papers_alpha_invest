@@ -523,13 +523,14 @@
  \label{eq:RMuHat}
  \end{eqnarray}
  where $\al_1 = \al(W_0)$ and we have suppressed the dependence of the estimator
- on \YY.  The second expression for the risk emphasizes its recursive nature and
- motivates our method of computation.  The total risk of the estimator is the
+ on \YY.   The total risk of the estimator is the
  risk produced by the testimator for $H_1$ plus the cumulative risk of testing
  $H_2, \ldots, H_p$.  If the test of $H_1$ rejects, which happens with
  probability $r_{\mu_1}(\al_1)$, then testing the remaining hypotheses begins
  with alpha wealth $W_1 = W_0 - \alpha_1 + \omega$.  Otherwise, with probability
- $1- r_{\mu_1}(\al_1)$, testing begins with wealth $w_1 - \al_1$.
+ $1- r_{\mu_1}(\al_1)$, testing begins with wealth $w_1 - \al_1$. The second expression
+  for the risk \eqn{RMuHat} emphasizes its recursive nature and
+ motivates our method of computation. 
 
 
  The calculation of the maximum risk of \test\ is similarly recursive,
@@ -893,8 +894,8 @@
  \label{eq:Ujkl}
  \end{eqnarray}
  where the boundary condition is $U_{p+1,\cdot,\cdot}^\theta= 0$.  The first
- line in \eqn{Ujkl} is the expected risk produced by the test of $H_j$, and
- following summands denote the expected contributions to the risk if both
+ line in \eqn{Ujkl} is the expected risk produced by the test of $H_j$.
+ The following summands denote the expected contributions to the risk if both
  reject, if only the rule with the larger alpha level rejects, and if neither
  rejects.  The point of writing this out is to emphasize these testimators see
  the same data, not independent samples.  Hence, $\al(G_k) < \beta(G_\ell)$
